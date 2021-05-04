@@ -1,0 +1,72 @@
+@import url("https://fonts.googleapis.com/css2?family=Alata&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap");
+
+//vars
+
+$ivory: #fffff0;
+$cream: #fffdd0;
+$blood: #8a0000;
+$blue: #001b6b;
+$green: #00cc00;
+
+$title-font: "DM Serif Display", serif;
+$body-font: "Alata", sans-serif;
+
+// BS5
+$grid-breakpoints: (
+  "xs": 0,
+  "sm": 576px,
+  "md": 768px,
+  "lg": 992px,
+  "xl": 1200px,
+  "xxl": 1400px,
+);
+
+// global styles
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: $title-font;
+  font-weight: bold;
+}
+
+p,
+label,
+input,
+form {
+  font-family: $body-font;
+  font-size: medium;
+}
+
+.btn {
+  font-family: $title-font;
+  padding: 0.5em 1em 0.5em 1em;
+  margin: 0.4em 0.3em auto 0.3em;
+}
+
+.section-head {
+  margin: 2rem auto 1rem auto;
+}
+
+p.breaker {
+  text-align: center;
+  margin: 1rem;
+  color: $blood;
+}
+
+a {
+  text-decoration: none;
+  color: $cream;
+  display: inline-block;
+}
+
+a:visited {
+  color: $blue;
+}
+
+a:hover {
+  text-decoration: line-through;
+  color: $blue;
+}

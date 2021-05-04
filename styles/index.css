@@ -1,0 +1,127 @@
+@import url("https://fonts.googleapis.com/css2?family=Alata&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap");
+h1,
+h2,
+h3,
+h4 {
+  font-family: "DM Serif Display", serif;
+  font-weight: bold;
+}
+
+p,
+label,
+input,
+form {
+  font-family: "Alata", sans-serif;
+  font-size: medium;
+}
+
+.btn {
+  font-family: "DM Serif Display", serif;
+  padding: 0.5em 1em 0.5em 1em;
+  margin: 0.4em 0.3em auto 0.3em;
+}
+
+.section-head {
+  margin: 2rem auto 1rem auto;
+}
+
+p.breaker {
+  text-align: center;
+  margin: 1rem;
+  color: #8a0000;
+}
+
+a {
+  text-decoration: none;
+  color: #fffdd0;
+  display: inline-block;
+}
+
+a:visited {
+  color: #001b6b;
+}
+
+a:hover {
+  text-decoration: line-through;
+  color: #001b6b;
+}
+
+body {
+  background-color: black;
+}
+
+/* d3 */
+.upGreenArrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 4.5px 12px 4.5px;
+  border-color: transparent transparent #00cc00 transparent;
+}
+
+.downRedArrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 12px 4.5px 0 4.5px;
+  border-color: #8a0000 transparent transparent transparent;
+}
+
+.upArrow {
+  position: relative;
+  top: -15px;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-bottom-color: #00cc00;
+}
+
+.upArrow:after {
+  position: absolute;
+  content: "";
+  top: 20px;
+  left: -3px;
+  width: 6px;
+  height: 10px;
+  background: #00cc00;
+}
+
+.downArrow {
+  position: relative;
+  top: 18px;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-top-color: #8a0000;
+}
+
+.downArrow:after {
+  position: absolute;
+  content: "";
+  top: -15px;
+  left: -3px;
+  width: 6px;
+  height: 10px;
+  background: #8a0000;
+}
+
+/* d3 candle stick start */
+.axis path,
+.axis line {
+  fill: none;
+  stroke: white;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font-family: "Alata", sans-serif;
+  font-size: 11px;
+  fill: white;
+}
+
+/* d3 candle stick end */
+
+/*# sourceMappingURL=index.css.map */
