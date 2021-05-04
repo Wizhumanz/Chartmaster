@@ -30,7 +30,7 @@ function drawChart() {
     var xAxis = d3.axisBottom()
       .scale(xScale)
       .tickFormat(function (d) {
-        d = dates[d]
+        d = new Date(dates[d])
         hours = d.getHours()
         minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()
         amPM = hours < 13 ? 'am' : 'pm'
@@ -126,7 +126,7 @@ function drawChart() {
       gX.call(
         d3.axisBottom(xScaleZ).tickFormat((d, e, target) => {
           if (d >= 0 && d <= dates.length - 1) {
-            d = dates[d]
+            d = new Date(dates[d])
             hours = d.getHours()
             minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()
             amPM = hours < 13 ? 'am' : 'pm'
