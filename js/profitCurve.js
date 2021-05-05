@@ -31,17 +31,23 @@ var svg = d3.select("#profit").append("svg")
           "translate(" + margin.left + "," + margin.top + ")");
 
 // Get the data
-d3.csv("../data2.csv").then(function(data) {
-console.log(data)
+d3.json("http://localhost:8000/profitCurve").then(function(data) {
+
+
   // format the data
   data.forEach(function(d) {
-      d.date = parseTime(d.date);
+  //     d.Data.forEach(d => {
+  //        d.date = new Date(d.Date)
+  //       });
+  //       console.log(d.date)
+      
+      d.date = parseTime(d.date)
       d.close = +d.close;
       d.open = +d.open;
   });
 
   // Scale the range of the data
-  x.domain(d3.extent(data, function(d) { return d.date; }));
+  x.domain(d3.extent(data, function(d) { return d.Data.Date; }));
   y.domain([0, d3.max(data, function(d) {
 	  return Math.max(d.close, d.open); })]);
 
