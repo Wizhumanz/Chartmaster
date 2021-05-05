@@ -32,58 +32,53 @@ var svg = d3.select("#profit").append("svg")
 
 // Get the data
 d3.json("http://localhost:8000/profitCurve").then(function (data) {
-  console.log(JSON.stringify(data[0]))
+  let formattedData = []
+  let changedData = []
 
-  jsonTest = [
-    {
-      date: "2021-01-01",
-      param1: 9,
-      param2: 2,
-      param3: 1,
-    },
-    {
-      date: "2021-01-02",
-      param1: 4,
-      param2: 1,
-      param3: 4,
-    },
-    {
-      date: "2021-01-04",
-      param1: 6,
-      param2: 3,
-      param3: 2,
-    },
-    {
-      date: "2021-01-05",
-      param1: 5,
-      param2: 6,
-      param3: 8,
-    },
-    {
-      date: "2021-01-09",
-      param1: 2,
-      param2: 4,
-      param3: 6,
-    }]
-  data = jsonTest
-
-  // format the data
-  //for each param
+  // format the data. Change data from the backend to usuable form
   data.forEach(function (d) {
-    //for each point in param's line
-    data.Data.forEach(function (point) {
-      let dateExists = false
-      if (dateExists) {
+    d.Data.forEach(function (point) {
+      if (formattedData.map((a) => {return a.date}).includes(point.Date)) {
         //add point.Equity to existing obj
+        formattedData.forEach((a) => {
+          if (a.date == point.Date) {
+            a[d.DataLabel] = point.Equity
+          }
+        })
+        
       } else {
         //make new obj
-        //add point.Equity
+        let datum = {}
+        datum.date = point.Date
+        datum["Param 1"] = null
+        datum["Param 2"] = null
+        datum["Param 3"] = null
+        datum[d.DataLabel] = point.Equity
+        formattedData.push(datum)
       }
     })
+  });
 
-    d.date = parseTime(d.date)
-    d.close = +d.param1;
-    d.open = +d.param2;
+  // If data is null, it uses the previous data
+  formattedData.forEach((a, i) => {
+    let datum = {}
+    datum["date"] = new Date(a.date)
+    if (a["Param 1"] !== null) {
+      datum.close = a["Param 1"];
+    } else {
+      datum.close = changedData[i-1].close;
+    }
+    if (a["Param 2"] !== null) {
+      datum.open = a["Param 2"];
+    } else {
+      datum.open = changedData[i-1].open;
+    }
+    changedData.push(datum)
+  })
+
+  // Sorting the array based on date from earlier to later
+  data = changedData.sort(function(a,b){
+    return new Date(a.date) - new Date(b.date);
   });
 
   // Scale the range of the data
@@ -115,6 +110,4 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   svg.append("g")
     .call(d3.axisLeft(y))
     .style("color", "white")
-
-
 });
