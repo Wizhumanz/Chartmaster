@@ -1,7 +1,23 @@
 @import "./_all";
 
-body {
+body, .row, html {
     background-color: black;
+}
+
+.container-fluid {
+  height: 100%;
+
+}
+
+.col-3 {
+  border: $blood 3px solid;
+  padding: 0.5rem;
+}
+
+div.stacked {
+  border: hotpink 3px solid;
+  height: 50%;
+  margin-bottom: 0.5rem;
 }
 
 /* d3 */

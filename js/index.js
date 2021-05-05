@@ -9,9 +9,9 @@ function drawChart() {
       prices[i].Date = dateFormat(prices[i].Date)
     }
 
-    const margin = { top: 15, right: 65, bottom: 205, left: 50 },
-      w = 0.9 * (window.screen.width),
-      h = window.screen.height - 400;
+    const margin = { top: 35, right: 65, bottom: 205, left: 70 },
+      w = 1050,
+      h = 600;
 
     var svg = d3.select("#container")
       .attr("width", w + margin.left + margin.right)

@@ -6,6 +6,7 @@ h3,
 h4 {
   font-family: "DM Serif Display", serif;
   font-weight: bold;
+  color: #fffdd0;
 }
 
 p,
@@ -47,8 +48,23 @@ a:hover {
   color: #001b6b;
 }
 
-body {
+body, .row, html {
   background-color: black;
+}
+
+.container-fluid {
+  height: 100%;
+}
+
+.col-3 {
+  border: #8a0000 3px solid;
+  padding: 0.5rem;
+}
+
+div.stacked {
+  border: hotpink 3px solid;
+  height: 50%;
+  margin-bottom: 0.5rem;
 }
 
 /* d3 */
