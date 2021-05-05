@@ -79,6 +79,77 @@ function drawChart() {
       .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
       .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "green")
 
+    //trying to make a rectangle//////
+    var width = 500;
+    var height = 500;
+
+    //Create SVG element
+    var svg = d3.select("#container")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    //Create and append rectangle element
+    svg.append("rect")
+            .attr("x", 200)
+            .attr("y", 300)
+            .attr("width", 20)
+            .attr("height", 10)
+            .attr("fill", "blue")
+
+    //creating a label///////
+    var width = 1000;
+    var height = 1000;
+
+    //Create SVG element
+    var svg = d3.select("#container")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    //Create and append rectangle element
+    var x = 150
+    var y = 30
+    
+    var svg = d3.select("#container")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+    var g = svg.append("g")
+
+    g.append("rect")
+    .attr("x", x)
+    .attr("y", y)
+    .attr("width", 200)
+    .attr("height", 100)
+    .attr("fill", "white")
+    .attr("opacity", 0.7)
+
+    g.append("text")
+     .attr("x", x+30)
+     .attr("y", y+30)
+     .attr("stroke", "steelblue")
+     .attr("font-family", "sans-serif")
+     .attr("font-size", "24px")
+     .text("Mika is gay!");
+
+    //creating a horizontal line to show when strategy is in trade ///////
+
+    //Create SVG element
+    var svg = d3.select("#container")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    //Create and append rectangle element
+    svg.append("rect")
+            .attr("x", 200)
+            .attr("y", 620)
+            .attr("width", 5000)
+            .attr("height", 10)
+            .attr("fill", "yellow")
+
     // draw high and low
     let stems = chartBody.selectAll("g.line")
       .data(prices)
