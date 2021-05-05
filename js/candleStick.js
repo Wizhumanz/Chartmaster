@@ -1,6 +1,5 @@
 function drawChart() {
   d3.json("http://localhost:8000/chartmaster").then(function (prices) {
-    console.log(prices)
     const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
     var dateFormat = d3.timeParse("%Y-%m-%d");
@@ -12,12 +11,12 @@ function drawChart() {
     const margin = { top: 35, right: 65, bottom: 205, left: 70 },
       w = 1050,
       h = 600;
-
+    
     var svg = d3.select("#container")
       .attr("width", w + margin.left + margin.right)
       .attr("height", h + margin.top + margin.bottom)
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
     let dates = _.map(prices, 'Date');
 
@@ -88,6 +87,7 @@ function drawChart() {
             .append("svg")
             .attr("width", width)
             .attr("height", height);
+            
 
     //Create and append rectangle element
     shapes.append("rect")
@@ -126,8 +126,6 @@ function drawChart() {
      .attr("font-family", "sans-serif")
      .attr("font-size", "24px")
      .text("Mika is gay!");
-
- 
 
     // draw high and low
     let stems = chartBody.selectAll("g.line")
@@ -253,3 +251,4 @@ function wrap(text, width) {
 }
 
 drawChart();
+
