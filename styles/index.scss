@@ -15,9 +15,24 @@ body, .row, html {
 }
 
 div.stacked {
-  border-left: hotpink 3px solid;
-  height: 50%;
+  height: 450px;
   margin-bottom: 0.5rem;
+  overflow: scroll;
+  border-left: hotpink 3px solid;
+}
+
+div.stacked::-webkit-scrollbar {
+  width: 12px;
+}
+
+div.stacked::-webkit-scrollbar-track {
+  background: orange;
+}
+
+div.stacked::-webkit-scrollbar-thumb {
+  background-color: $blood;    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  border: 3px solid orange;
 }
 
 /* d3 */

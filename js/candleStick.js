@@ -9,8 +9,8 @@ function drawChart() {
     }
 
     const margin = { top: 35, right: 65, bottom: 205, left: 70 },
-      w = 650,
-      h = 600;
+      w = 1100,
+      h = 700;
     
     var svg = d3.select("#container")
       .attr("width", w + margin.left + margin.right)
