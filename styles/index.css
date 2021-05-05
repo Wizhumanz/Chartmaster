@@ -57,12 +57,12 @@ body, .row, html {
 }
 
 .col-3 {
-  border: #8a0000 3px solid;
+  border-left: #8a0000 3px solid;
   padding: 0.5rem;
 }
 
 div.stacked {
-  border: hotpink 3px solid;
+  border-left: hotpink 3px solid;
   height: 50%;
   margin-bottom: 0.5rem;
 }

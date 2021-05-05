@@ -10,12 +10,12 @@ body, .row, html {
 }
 
 .col-3 {
-  border: $blood 3px solid;
+  border-left: $blood 3px solid;
   padding: 0.5rem;
 }
 
 div.stacked {
-  border: hotpink 3px solid;
+  border-left: hotpink 3px solid;
   height: 50%;
   margin-bottom: 0.5rem;
 }
