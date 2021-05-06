@@ -51,13 +51,6 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
     })
   });
 
-  function sortByDate(arr) {
-    // Sorting the array based on date from earlier to later
-     arr.sort(function(a,b){
-      return new Date(new Date(a.date)) - new Date(new Date(b.date));
-    });
-  }
-
   // sorting the array before copying the data if null
   sortByDate(formattedData)
 
@@ -66,6 +59,7 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
     let datum = {}
     datum["date"] = new Date(a.date)
     for (const [key, value] of Object.entries(a)) {
+
       if (key !== "date") {
         if (value !== null) {
           datum[key.replace(" ", "")] = value;
@@ -83,7 +77,13 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   // Scale the range of the data
   x.domain(d3.extent(data, function (d) { return d.date; }));
   y.domain([0, d3.max(data, function (d) {
-    return Math.max(2000);
+    let maxValue = []
+    for (const [key, value] of Object.entries(d)) {
+      if (key !== "date") {
+        maxValue.push(value)
+      }
+    }
+    return Math.max(...maxValue);
   })]);
 
   let valueline = []
@@ -126,3 +126,22 @@ function getRandomColor() {
   }
   return color;
 }
+
+function sortByDate(arr) {
+  // Sorting the array based on date from earlier to later
+   arr.sort(function(a,b){
+    return new Date(new Date(a.date)) - new Date(new Date(b.date));
+  });
+}
+
+// function getKeyAndValue(obj) {
+//   console.log(obj)
+//   let arrayOfParams = [];
+//   for (const [key, value] of Object.entries(obj)) {
+//     if (value !== "date") {
+//       arrayOfParams.push(value)
+//     }
+//   }
+//   console.log(arrayOfParams)
+//   return arrayOfParams
+// }
