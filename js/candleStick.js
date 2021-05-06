@@ -30,7 +30,7 @@ function getRequest() {
 function drawChart() {
   d3.selectAll("#container > *").remove();
 
-  d3.json("http://localhost:8000/candlestick?time_start=2021-07-01T00:00:00&time_end=2021-09-01T00:00:00").then(function (prices) {
+  d3.json("http://localhost:8000/candlestick?time_start=2021-05-01T02:00:00&time_end=2021-05-02T00:00:00").then(function (prices) {
     const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
     if (addedData.length !== 0) {
       prices = [...addedData,...prices]
