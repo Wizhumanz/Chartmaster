@@ -22,7 +22,6 @@ var svg = d3.select("#profit").append("svg")
 
 // Get the data
 d3.json("http://localhost:8000/profitCurve").then(function (data) {
-  console.log(data)
   let formattedData = []
   let changedData = []
 
@@ -52,6 +51,16 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
     })
   });
 
+  function sortByDate(arr) {
+    // Sorting the array based on date from earlier to later
+     arr.sort(function(a,b){
+      return new Date(new Date(a.date)) - new Date(new Date(b.date));
+    });
+  }
+
+  // sorting the array before copying the data if null
+  sortByDate(formattedData)
+
   // If data is null, it uses the previous data
   formattedData.forEach((a, i) => {
     let datum = {}
@@ -68,10 +77,8 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
     changedData.push(datum)
   })
 
-  // Sorting the array based on date from earlier to later
-  data = changedData.sort(function(a,b){
-    return new Date(a.date) - new Date(b.date);
-  });
+  // assign to data, which is used by all d3
+  data = changedData
 
   // Scale the range of the data
   x.domain(d3.extent(data, function (d) { return d.date; }));
@@ -89,7 +96,7 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
         .y(function (d) { return y(d[key]); }))
     }
   }
-console.log(changedData)
+
   // Drawing the lines from the valueline array
   valueline.forEach((v) => {
     svg.append("path")
