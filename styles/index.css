@@ -53,10 +53,12 @@ body, .row, html {
 }
 
 button {
+  font-family: "Alata", sans-serif;
   background-color: black;
   color: #fffdd0;
+  border-radius: 5px !important;
   border: #fffdd0 2px solid;
-  border-radius: 5px;
+  padding: 0.25rem 0.5rem;
 }
 
 .container-fluid {

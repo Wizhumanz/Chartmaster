@@ -5,10 +5,12 @@ body, .row, html {
 }
 
 button {
+  font-family: $body-font;
   background-color: black;
   color: $cream;
+  border-radius: 5px !important;
   border: $cream 2px solid;
-  border-radius: 5px;
+  padding: 0.25rem 0.5rem;
 }
 
 .container-fluid {
