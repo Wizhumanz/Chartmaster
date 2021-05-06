@@ -22,6 +22,7 @@ var svg = d3.select("#profit").append("svg")
 
 // Get the data
 d3.json("http://localhost:8000/profitCurve").then(function (data) {
+  console.log(data)
   let formattedData = []
   let changedData = []
 
@@ -40,9 +41,11 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
         //make new obj
         let datum = {}
         datum.date = point.Date
-        datum["Param 1"] = null
-        datum["Param 2"] = null
-        datum["Param 3"] = null
+
+        data.forEach((d) => {
+          datum[d.DataLabel] = null
+        })
+
         datum[d.DataLabel] = point.Equity
         formattedData.push(datum)
       }
@@ -62,19 +65,8 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
         }
       }
     }
-    // if (a["Param 1"] !== null) {
-    //   datum.close = a["Param 1"];
-    // } else {
-    //   datum.close = changedData[i-1].close;
-    // }
-    // if (a["Param 2"] !== null) {
-    //   datum.open = a["Param 2"];
-    // } else {
-    //   datum.open = changedData[i-1].open;
-    // }
     changedData.push(datum)
   })
-
 
   // Sorting the array based on date from earlier to later
   data = changedData.sort(function(a,b){
@@ -97,7 +89,7 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
         .y(function (d) { return y(d[key]); }))
     }
   }
-
+console.log(changedData)
   // Drawing the lines from the valueline array
   valueline.forEach((v) => {
     svg.append("path")
