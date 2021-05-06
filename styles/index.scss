@@ -4,6 +4,13 @@ body, .row, html {
     background-color: black;
 }
 
+button {
+  background-color: black;
+  color: $cream;
+  border: $cream 2px solid;
+  border-radius: 5px;
+}
+
 .container-fluid {
   height: 100%;
 

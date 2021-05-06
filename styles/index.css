@@ -52,6 +52,13 @@ body, .row, html {
   background-color: black;
 }
 
+button {
+  background-color: black;
+  color: #fffdd0;
+  border: #fffdd0 2px solid;
+  border-radius: 5px;
+}
+
 .container-fluid {
   height: 100%;
 }
