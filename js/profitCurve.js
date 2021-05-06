@@ -59,7 +59,6 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
     let datum = {}
     datum["date"] = new Date(a.date)
     for (const [key, value] of Object.entries(a)) {
-
       if (key !== "date") {
         if (value !== null) {
           datum[key.replace(" ", "")] = value;
@@ -135,13 +134,10 @@ function sortByDate(arr) {
 }
 
 // function getKeyAndValue(obj) {
-//   console.log(obj)
-//   let arrayOfParams = [];
 //   for (const [key, value] of Object.entries(obj)) {
 //     if (value !== "date") {
 //       arrayOfParams.push(value)
 //     }
 //   }
-//   console.log(arrayOfParams)
 //   return arrayOfParams
 // }
