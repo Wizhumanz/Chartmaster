@@ -10,21 +10,6 @@ var parseTime = d3.timeParse("%d-%b-%y");
 var x = d3.scaleTime().range([0, width]);
 var y = d3.scaleLinear().range([height, 0]);
 
-// define the 1st line
-var valueline = d3.line()
-  .x(function (d) { return x(d.date); })
-  .y(function (d) { return y(d.Param1); });
-
-// define the 2nd line
-var valueline2 = d3.line()
-  .x(function (d) { return x(d.date); })
-  .y(function (d) { return y(d.Param2); });
-
-// define the 3nd line
-var valueline3 = d3.line()
-  .x(function (d) { return x(d.date); })
-  .y(function (d) { return y(d.Param3); });
-
 // append the svg obgect to the body of the page
 // appends a 'group' element to 'svg'
 // moves the 'group' element to the top left margin
@@ -40,7 +25,6 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   let formattedData = []
   let changedData = []
 
-  console.log(data)
   // format the data. Change data from the backend to usuable form
   data.forEach(function (d) {
     d.Data.forEach(function (point) {
@@ -71,14 +55,13 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
     datum["date"] = new Date(a.date)
     for (const [key, value] of Object.entries(a)) {
       if (key !== "date") {
-        console.log(key)
         if (value !== null) {
           datum[key.replace(" ", "")] = value;
         } else {
           datum[key.replace(" ", "")] = changedData[i-1][key.replace(" ", "")];
         }
+      }
     }
-  }
     // if (a["Param 1"] !== null) {
     //   datum.close = a["Param 1"];
     // } else {
@@ -92,15 +75,11 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
     changedData.push(datum)
   })
 
-  console.log(formattedData)
-  console.log(changedData)
 
   // Sorting the array based on date from earlier to later
   data = changedData.sort(function(a,b){
     return new Date(a.date) - new Date(b.date);
   });
-
-  console.log(data)
 
   // Scale the range of the data
   x.domain(d3.extent(data, function (d) { return d.date; }));
@@ -108,33 +87,25 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
     return Math.max(2000);
   })]);
 
-  // data.forEach((d) => {
-  //   console.log(d)
+  let valueline = []
 
-  //   var valueline = d3.line()
-  //   .x(function (d) { return x(d.date); })
-  //   .y(function (d) { return y(d.close); });
-  // })
+  // Creating lines and adding it to an array
+  for (const [key, value] of Object.entries(data[0])) {
+    if (key !== "date") {
+      valueline.push(d3.line()
+        .x(function (d) { return x(d.date); })
+        .y(function (d) { return y(d[key]); }))
+    }
+  }
 
-  // Add the valueline path.
-  svg.append("path")
-    .data([data])
-    .attr("class", "line")
-    .attr("d", valueline);
-
-  // Add the valueline2 path.
-  svg.append("path")
-    .data([data])
-    .attr("class", "line")
-    .style("stroke", "red")
-    .attr("d", valueline2);
-
-  // Add the valueline3 path.
-  svg.append("path")
-    .data([data])
-    .attr("class", "line")
-    .style("stroke", "green")
-    .attr("d", valueline3);
+  // Drawing the lines from the valueline array
+  valueline.forEach((v) => {
+    svg.append("path")
+      .data([data])
+      .attr("class", "line")
+      .attr("d", v)
+      .style("stroke", getRandomColor())
+  })
 
   // Add the X Axis
   svg.append("g")
@@ -147,3 +118,12 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
     .call(d3.axisLeft(y))
     .style("color", "white")
 });
+
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
