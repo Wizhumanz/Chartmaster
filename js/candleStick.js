@@ -35,7 +35,6 @@ function drawChart() {
     if (addedData.length !== 0) {
       prices = [...addedData,...prices]
     }
-
     var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
     for (var i = 0; i < prices.length; i++) {
       prices[i].Date = dateFormat(prices[i].Date)
@@ -116,7 +115,7 @@ function drawChart() {
     var height = 1000;
 
     //Create SVG element
-    var shapes = d3.select("#container")
+    var shapes = chartBody.selectAll("#container")
             .append("svg")
             .attr("width", width)
             .attr("height", height);
@@ -124,7 +123,8 @@ function drawChart() {
 
     //Create and append rectangle element
     shapes.append("rect")
-            .attr("x", 200)
+            .data(prices)
+            .attr("x", 500)
             .attr("y", 300)
             .attr("width", 20)
             .attr("height", 10)
@@ -192,7 +192,6 @@ function drawChart() {
     svg.call(zoom)
 
     function zoomed() {
-
       var t = d3.event.transform;
       let xScaleZ = t.rescaleX(xScale);
 
@@ -220,6 +219,21 @@ function drawChart() {
         .attr("width", xBand.bandwidth() * t.k);
       stems.attr("x1", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
       stems.attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
+
+      // var width = 1000;
+      // var height = 1000;
+
+      // //Create SVG element
+      // var shapes = d3.select("#container")
+      //         .append("svg")
+      //         .attr("width", width)
+      //         .attr("height", height);
+      
+      console.log(stems)
+
+      //Create and append rectangle element
+      shapes.attr("x", (d, i) => xScaleZ(i) )
+
 
       hideTicksWithoutLabel();
 
@@ -250,6 +264,12 @@ function drawChart() {
         stems.transition().duration(100)
           .attr("y1", (d) => yScale(d.High))
           .attr("y2", (d) => yScale(d.Low))
+
+        shapes.transition()
+              .duration(100)
+              .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
+              .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
+    
 
         gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
 
