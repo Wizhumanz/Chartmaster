@@ -1,10 +1,43 @@
+let addedData = []
+let date = 7
+function getRequest() {
+  if (date !== 1){
+    date -= 2
+  }
+
+  let url = "http://localhost:8000"
+  let hd = {
+    // "Content-Type": "application/json",
+    // Authorization: user.password,
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+    Expires: "0",
+  }
+  axios
+      .get(url + "/candlestick?time_start=2021-0" + date.toString() + "-01T00:00:00&time_end=2021-0" + (5 + 2).toString() + "-01T00:00:00", {
+        headers: hd,
+        // mode: "cors",
+      })
+      .then((res) => {
+        addedData = [...res.data]
+        drawChart()
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+}
+
 function drawChart() {
-  d3.json("http://localhost:8000/candlestick").then(function (prices) {
+  d3.selectAll("#container > *").remove();
+
+  d3.json("http://localhost:8000/candlestick?time_start=2021-07-01T00:00:00&time_end=2021-09-01T00:00:00").then(function (prices) {
     const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
+    if (addedData.length !== 0) {
+      prices = [...addedData,...prices]
+    }
 
-    var dateFormat = d3.timeParse("%Y-%m-%d");
+    var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
     for (var i = 0; i < prices.length; i++) {
-
       prices[i].Date = dateFormat(prices[i].Date)
     }
 
