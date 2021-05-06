@@ -23,26 +23,26 @@
 
   <div class="container-fluid">
     <div class="row">
-      <div class="col-9">
+      <div class="col-8">
         <svg id="container"></svg>
       </div>
-      <div class="col-3">
-        <div class="stacked">
+      <div class="col-4">
+        <div class="stacked" style="overflow-y: hidden;">
           <div id="profit"></div>
         </div>
         <div class="stacked">
-          <h1>Simulated Trades</h1>
+          <h1>Strategy Trades</h1>
           <table id="history">
-            <tr style="color: red;">
-              <td>Parameter</td>
-              <td>Date</td>
-              <td>Direction</td>
-              <td>Entry Price</td>
-              <td>Exit Price</td>
-              <td>Position Size</td>
-              <td>Risked Equity</td>
-              <td>Raw Profit Perc</td>
-            </tr>
+            <thead id="head">
+              <td class="thead">Parameter</td>
+              <td class="thead">Date</td>
+              <td class="thead">Direction</td>
+              <td class="thead">Entry Price</td>
+              <td class="thead">Exit Price</td>
+              <td class="thead">Position Size</td>
+              <td class="thead">Risked Equity</td>
+              <td class="thead">Raw Profit Perc</td>
+            </thead>
           </table>
         </div>
       </div>

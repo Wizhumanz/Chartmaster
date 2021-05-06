@@ -65,7 +65,8 @@ div.stacked {
   height: 450px;
   margin-bottom: 0.5rem;
   overflow: scroll;
-  border-left: hotpink 3px solid;
+  border-left: #8a0000 3px solid;
+  padding: 0.75rem;
 }
 
 div.stacked::-webkit-scrollbar {
@@ -82,6 +83,21 @@ div.stacked::-webkit-scrollbar-thumb {
   border-radius: 20px;
   /* roundness of the scroll thumb */
   border: 3px solid orange;
+}
+
+.thead {
+  background-color: #001b6b;
+  color: #fffdd0;
+  padding: auto 0.25rem;
+}
+
+td {
+  padding: 0.5rem;
+  font-size: xx-small;
+}
+
+tr:hover {
+  background-color: #8a0000;
 }
 
 /* d3 */
