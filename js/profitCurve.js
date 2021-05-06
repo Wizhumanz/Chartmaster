@@ -13,12 +13,17 @@ var y = d3.scaleLinear().range([height, 0]);
 // define the 1st line
 var valueline = d3.line()
   .x(function (d) { return x(d.date); })
-  .y(function (d) { return y(d.close); });
+  .y(function (d) { return y(d.Param1); });
 
 // define the 2nd line
 var valueline2 = d3.line()
   .x(function (d) { return x(d.date); })
-  .y(function (d) { return y(d.open); });
+  .y(function (d) { return y(d.Param2); });
+
+// define the 3nd line
+var valueline3 = d3.line()
+  .x(function (d) { return x(d.date); })
+  .y(function (d) { return y(d.Param3); });
 
 // append the svg obgect to the body of the page
 // appends a 'group' element to 'svg'
@@ -35,6 +40,7 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   let formattedData = []
   let changedData = []
 
+  console.log(data)
   // format the data. Change data from the backend to usuable form
   data.forEach(function (d) {
     d.Data.forEach(function (point) {
@@ -63,29 +69,52 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   formattedData.forEach((a, i) => {
     let datum = {}
     datum["date"] = new Date(a.date)
-    if (a["Param 1"] !== null) {
-      datum.close = a["Param 1"];
-    } else {
-      datum.close = changedData[i-1].close;
+    for (const [key, value] of Object.entries(a)) {
+      if (key !== "date") {
+        console.log(key)
+        if (value !== null) {
+          datum[key.replace(" ", "")] = value;
+        } else {
+          datum[key.replace(" ", "")] = changedData[i-1][key.replace(" ", "")];
+        }
     }
-    if (a["Param 2"] !== null) {
-      datum.open = a["Param 2"];
-    } else {
-      datum.open = changedData[i-1].open;
-    }
+  }
+    // if (a["Param 1"] !== null) {
+    //   datum.close = a["Param 1"];
+    // } else {
+    //   datum.close = changedData[i-1].close;
+    // }
+    // if (a["Param 2"] !== null) {
+    //   datum.open = a["Param 2"];
+    // } else {
+    //   datum.open = changedData[i-1].open;
+    // }
     changedData.push(datum)
   })
+
+  console.log(formattedData)
+  console.log(changedData)
 
   // Sorting the array based on date from earlier to later
   data = changedData.sort(function(a,b){
     return new Date(a.date) - new Date(b.date);
   });
 
+  console.log(data)
+
   // Scale the range of the data
   x.domain(d3.extent(data, function (d) { return d.date; }));
   y.domain([0, d3.max(data, function (d) {
-    return Math.max(d.close, d.open);
+    return Math.max(2000);
   })]);
+
+  // data.forEach((d) => {
+  //   console.log(d)
+
+  //   var valueline = d3.line()
+  //   .x(function (d) { return x(d.date); })
+  //   .y(function (d) { return y(d.close); });
+  // })
 
   // Add the valueline path.
   svg.append("path")
@@ -99,6 +128,13 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
     .attr("class", "line")
     .style("stroke", "red")
     .attr("d", valueline2);
+
+  // Add the valueline3 path.
+  svg.append("path")
+    .data([data])
+    .attr("class", "line")
+    .style("stroke", "green")
+    .attr("d", valueline3);
 
   // Add the X Axis
   svg.append("g")
