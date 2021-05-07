@@ -1,10 +1,8 @@
-let addedData = []
-let date = 7
-function getRequest() {
-  if (date !== 1){
-    date -= 2
-  }
 
+let startTime = "2021-05-01T02:00:00"
+let addedData = []
+
+function getRequest() {
   let url = "http://localhost:8000"
   let hd = {
     // "Content-Type": "application/json",
@@ -13,37 +11,31 @@ function getRequest() {
     Pragma: "no-cache",
     Expires: "0",
   }
+
+  let newStartDate = (new Date(startTime)).getTime() - (50 * candleDuration)
+  console.log(newStartDate)
+
   axios
-      .get(url + "/candlestick?time_start=2021-0" + date.toString() + "-01T00:00:00&time_end=2021-0" + (5 + 2).toString() + "-01T00:00:00", {
-        headers: hd,
-        // mode: "cors",
-      })
-      .then((res) => {
-        addedData = [...res.data]
-        drawChart()
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
+    .get(url + "/candlestick?time_start=2021-0" + newStartDate.toISOString() + "-01T00:00:00&time_end=2021-0" + (5 + 2).toString() + "-01T00:00:00", {
+      headers: hd,
+      // mode: "cors",
+    })
+    .then((res) => {
+      addedData = [...res.data]
+      drawChart()
+    })
+    .catch((error) => {
+      console.log(error.response);
+    });
 }
 
 function drawChart() {
   d3.selectAll("#container > *").remove();
-  //minute for now
-  let conversion = 60000
-  let startTime = "2021-05-01T02:00:00"
-  //take candle[1].Time - candle[0].Time (get duration)
-  //multiply duration by 50 to get new startTime
-  //make new req with new startTime
-  console.log(new Date(startTime).toISOString())
-  console.log((new Date(Date.parse(startTime) - 50 * conversion)).toString())
-  console.log((new Date(startTime)).toString())
-  console.log((new Date(Date.parse(startTime) - 50 * conversion)))
 
   d3.json("http://localhost:8000/candlestick?time_start=" + startTime + "&time_end=2021-05-02T00:00:00").then(function (prices) {
     const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
     if (addedData.length !== 0) {
-      prices = [...addedData,...prices]
+      prices = [...addedData, ...prices]
     }
     var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
     for (var i = 0; i < prices.length; i++) {
@@ -53,10 +45,14 @@ function drawChart() {
     const margin = { top: 35, right: 65, bottom: 205, left: 70 },
       w = 1100,
       h = 700;
-    
+
     var svg = d3.select("#container")
-      .attr("width", w + margin.left + margin.right)
-      .attr("height", h + margin.top + margin.bottom)
+      // .attr("width", "100%")
+      // .attr("height", "110%")
+      // .attr("padding-bottom", "3rem")
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      .attr("viewBox", "0 0 1200 1200")
+      .classed("svg-content", true)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
@@ -126,27 +122,27 @@ function drawChart() {
 
     //Create SVG element
     var shapes = chartBody.selectAll("#container")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height);
-            
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
 
     //Create and append rectangle element
     shapes.append("rect")
-            .data(prices)
-            .attr("x", 500)
-            .attr("y", 300)
-            .attr("width", 20)
-            .attr("height", 10)
-            .attr("fill", "blue")
+      .data(prices)
+      .attr("x", 500)
+      .attr("y", 300)
+      .attr("width", 20)
+      .attr("height", 10)
+      .attr("fill", "blue")
 
     //creating a horizontal line to show when strategy is in trade-----------
     shapes.append("rect")
-    .attr("x", 200)
-    .attr("y", 620)
-    .attr("width", 5000)
-    .attr("height", 10)
-    .attr("fill", "yellow")
+      .attr("x", 200)
+      .attr("y", 620)
+      .attr("width", 5000)
+      .attr("height", 10)
+      .attr("fill", "yellow")
 
     //creating a label-------------
     var x = 150
@@ -155,20 +151,20 @@ function drawChart() {
     var g = shapes.append("g")
 
     g.append("rect")
-    .attr("x", x)
-    .attr("y", y)
-    .attr("width", 200)
-    .attr("height", 100)
-    .attr("fill", "white")
-    .attr("opacity", 0.7)
+      .attr("x", x)
+      .attr("y", y)
+      .attr("width", 200)
+      .attr("height", 100)
+      .attr("fill", "white")
+      .attr("opacity", 0.7)
 
     g.append("text")
-     .attr("x", x+30)
-     .attr("y", y+30)
-     .attr("stroke", "steelblue")
-     .attr("font-family", "sans-serif")
-     .attr("font-size", "24px")
-     .text("Mika is gay!");
+      .attr("x", x + 30)
+      .attr("y", y + 30)
+      .attr("stroke", "steelblue")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "24px")
+      .text("Mika is gay!");
 
     // draw high and low
     let stems = chartBody.selectAll("g.line")
@@ -238,11 +234,11 @@ function drawChart() {
       //         .append("svg")
       //         .attr("width", width)
       //         .attr("height", height);
-      
+
       console.log(stems)
 
       //Create and append rectangle element
-      shapes.attr("x", (d, i) => xScaleZ(i) )
+      shapes.attr("x", (d, i) => xScaleZ(i))
 
 
       hideTicksWithoutLabel();
@@ -276,10 +272,10 @@ function drawChart() {
           .attr("y2", (d) => yScale(d.Low))
 
         shapes.transition()
-              .duration(100)
-              .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
-              .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
-    
+          .duration(100)
+          .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
+          .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
+
 
         gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
 
