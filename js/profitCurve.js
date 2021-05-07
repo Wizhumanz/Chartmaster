@@ -58,7 +58,8 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   formattedData.forEach((a, i) => {
     let datum = {}
     datum["date"] = new Date(a.date)
-    for (const [key, value] of Object.entries(a)) {
+
+    let fillNullData = (key, value) => {
       if (key !== "date") {
         if (value !== null) {
           datum[key.replace(" ", "")] = value;
@@ -67,6 +68,8 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
         }
       }
     }
+    useKeyAndValue(fillNullData, a)
+    
     changedData.push(datum)
   })
 
@@ -77,24 +80,28 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   x.domain(d3.extent(data, function (d) { return d.date; }));
   y.domain([0, d3.max(data, function (d) {
     let maxValue = []
-    for (const [key, value] of Object.entries(d)) {
+
+    let findMax = (key,value) => {
       if (key !== "date") {
         maxValue.push(value)
       }
     }
+    useKeyAndValue(findMax,d)
+
     return Math.max(...maxValue);
   })]);
 
   let valueline = []
 
   // Creating lines and adding it to an array
-  for (const [key, value] of Object.entries(data[0])) {
+  let newLines = (key, value) => {
     if (key !== "date") {
       valueline.push(d3.line()
-        .x(function (d) { return x(d.date); })
-        .y(function (d) { return y(d[key]); }))
+          .x(function (d) { return x(d.date); })
+          .y(function (d) { return y(d[key]); }))
     }
   }
+  useKeyAndValue(newLines, data[0])
 
   // Drawing the lines from the valueline array
   valueline.forEach((v) => {
@@ -133,11 +140,8 @@ function sortByDate(arr) {
   });
 }
 
-// function getKeyAndValue(obj) {
-//   for (const [key, value] of Object.entries(obj)) {
-//     if (value !== "date") {
-//       arrayOfParams.push(value)
-//     }
-//   }
-//   return arrayOfParams
-// }
+function useKeyAndValue(func, obj) {
+  for (const [key, value] of Object.entries(obj)) {
+    func(key, value)
+  }
+}
