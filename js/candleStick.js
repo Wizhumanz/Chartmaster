@@ -1,4 +1,3 @@
-
 let baseURL = "http://localhost:8000"
 let candlestickData = []
 let addedData = []
@@ -10,11 +9,13 @@ function getPickerDateTime(pickerID) {
   return document.getElementById(pickerID).value + ":00"
 }
 
+function getLocalTimezone() {
+  return (new Date().getHours() - new Date().getUTCHours()) * 3600000
+}
+
 function getMoreData() {
   wholeStartTime = getPickerDateTime("startDateTimePicker")
   wholeEndTime = getPickerDateTime("endDateTimePicker")
-  console.log(wholeStartTime)
-  console.log(wholeEndTime)
 
   let hd = {
     // "Content-Type": "application/json",
@@ -29,11 +30,8 @@ function getMoreData() {
   let candleDuration = Math.abs(date2 - date1); //in ms
 
   let currentStartTime = new Date(candlestickData[0].DateTime);
-  let newStartDate = new Date(Math.abs((new Date(currentStartTime)) - (newCandlesToFetch * candleDuration)))
-  let endTime = new Date(candlestickData[candlestickData.length - 1].DateTime);
-  console.log(currentStartTime)
-  console.log(endTime)
-
+  let newStartDate = new Date(Math.abs((new Date(currentStartTime)) - (newCandlesToFetch * candleDuration)) + getLocalTimezone())
+  let endTime = new Date(Math.abs(candlestickData[candlestickData.length - 1].DateTime) + getLocalTimezone());
   let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
   console.log(getURL)
 
@@ -160,7 +158,7 @@ function drawChart() {
       .attr("height", 10)
       .attr("fill", "yellow")
 
-      
+
     // Add index to Price Array
     prices.map(p => p["index"] = prices.indexOf(p))
 
