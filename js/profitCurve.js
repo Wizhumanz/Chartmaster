@@ -1,6 +1,6 @@
 // set the dimensions and margins of the graph
 var margin = { top: 20, right: 20, bottom: 30, left: 40 },
-  width = 900 - margin.left - margin.right,
+  width = 550 - margin.left - margin.right,
   height = 400 - margin.top - margin.bottom;
 
 // parse the date / time
@@ -14,8 +14,10 @@ var y = d3.scaleLinear().range([height, 0]);
 // appends a 'group' element to 'svg'
 // moves the 'group' element to the top left margin
 var svg = d3.select("#profit").append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
+  // .attr("width", "550")
+  // .attr("height", "400")
+  .attr("preserveAspectRatio", "xMinYMin meet")
+  .attr("viewBox", "0 0 600 600")
   .append("g")
   .attr("transform",
     "translate(" + margin.left + "," + margin.top + ")");
@@ -28,14 +30,14 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   // format the data. Change data from the backend to usuable form
   data.forEach(function (d) {
     d.Data.forEach(function (point) {
-      if (formattedData.map((a) => {return a.date}).includes(point.DateTime)) {
+      if (formattedData.map((a) => { return a.date }).includes(point.DateTime)) {
         //add point.Equity to existing obj
         formattedData.forEach((a) => {
           if (a.date == point.DateTime) {
             a[d.DataLabel] = point.Equity
           }
         })
-        
+
       } else {
         //make new obj
         let datum = {}
@@ -66,7 +68,7 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
           datum[key.replace(" ", "")] = value;
         } else {
           //Delete spaces in param names and add previous value
-          datum[key.replace(" ", "")] = changedData[i-1][key.replace(" ", "")];
+          datum[key.replace(" ", "")] = changedData[i - 1][key.replace(" ", "")];
         }
       }
     }
@@ -82,12 +84,12 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   x.domain(d3.extent(data, function (d) { return d.date; }));
   y.domain([0, d3.max(data, function (d) {
     let maxValue = []
-    let findMax = (key,value) => {
+    let findMax = (key, value) => {
       if (key !== "date") {
         maxValue.push(value)
       }
     }
-    useKeyAndValue(findMax,d)
+    useKeyAndValue(findMax, d)
     return 1.1 * (Math.max(...maxValue));
   })]);
 
@@ -97,18 +99,18 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   let newLines = (key, value) => {
     if (key !== "date") {
       valueline.push(d3.line()
-          .x(function (d) { return x(d.date); })
-          .y(function (d) { return y(d[key]); }))
+        .x(function (d) { return x(d.date); })
+        .y(function (d) { return y(d[key]); }))
     }
   }
   useKeyAndValue(newLines, data[0])
 
   // Drawing the lines from the valueline array
-  function drawNewLines(v,d) {
+  function drawNewLines(v, d) {
     if (v.length === 0) {
       return
     }
-      svg.append("path")
+    svg.append("path")
       .data([d])
       .attr("class", "line")
       .attr("d", v[0])
@@ -140,7 +142,7 @@ function getRandomColor() {
 
 function sortByDate(arr) {
   // Sorting the array based on date from earlier to later
-   arr.sort(function(a,b){
+  arr.sort(function (a, b) {
     return new Date(new Date(a.date)) - new Date(new Date(b.date));
   });
 }
