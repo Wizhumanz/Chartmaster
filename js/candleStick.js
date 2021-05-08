@@ -82,7 +82,7 @@ function drawChart() {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-    let dates = _.map(prices, 'Date');
+    let dates = _.map(prices, 'DateTime');
 
     var xmin = d3.min(prices.map(r => r.DateTime.getTime()));
     var xmax = d3.max(prices.map(r => r.DateTime.getTime()));
