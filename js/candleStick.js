@@ -49,6 +49,7 @@ function drawChart() {
     for (var i = 0; i < prices.length; i++) {
       prices[i].Date = dateFormat(prices[i].Date)
     }
+    // console.log(prices.map(p => p.StratEnterPrice))
 
     const margin = { top: 35, right: 65, bottom: 205, left: 70 },
       w = 1100,
@@ -239,8 +240,6 @@ function drawChart() {
       //         .attr("width", width)
       //         .attr("height", height);
       
-      console.log(stems)
-
       //Create and append rectangle element
       shapes.attr("x", (d, i) => xScaleZ(i) )
 
@@ -275,10 +274,10 @@ function drawChart() {
           .attr("y1", (d) => yScale(d.High))
           .attr("y2", (d) => yScale(d.Low))
 
-        shapes.transition()
-              .duration(100)
-              .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
-              .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
+        // shapes.transition()
+        //       .duration(100)
+        //       .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
+        //       .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
     
 
         gY.transition().duration(100).call(d3.axisLeft().scale(yScale));

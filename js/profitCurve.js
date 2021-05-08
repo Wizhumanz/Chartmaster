@@ -62,14 +62,16 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
     let fillNullData = (key, value) => {
       if (key !== "date") {
         if (value !== null) {
+          //Delete spaces in param names and add value if exists
           datum[key.replace(" ", "")] = value;
         } else {
+          //Delete spaces in param names and add previous value
           datum[key.replace(" ", "")] = changedData[i-1][key.replace(" ", "")];
         }
       }
     }
     useKeyAndValue(fillNullData, a)
-    
+
     changedData.push(datum)
   })
 
@@ -104,13 +106,18 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   useKeyAndValue(newLines, data[0])
 
   // Drawing the lines from the valueline array
-  valueline.forEach((v) => {
-    svg.append("path")
-      .data([data])
+  function drawNewLines(v,d) {
+    if (v.length === 0) {
+      return
+    }
+      svg.append("path")
+      .data([d])
       .attr("class", "line")
-      .attr("d", v)
+      .attr("d", v[0])
       .style("stroke", getRandomColor())
-  })
+    return drawNewLines(v.slice(1), d)
+  }
+  drawNewLines(valueline, data)
 
   // Add the X Axis
   svg.append("g")
