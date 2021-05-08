@@ -65,6 +65,20 @@ button {
   height: 100%;
 }
 
+label {
+  color: #fffdd0;
+  margin-left: 1rem;
+  margin-right: 0.5rem;
+}
+
+input[type=datetime-local] {
+  padding: 0.25rem;
+  background-color: #8a0000;
+  color: #fffdd0;
+  border: none;
+  border-radius: 5px;
+}
+
 .svg-container {
   display: inline-block;
   position: relative;

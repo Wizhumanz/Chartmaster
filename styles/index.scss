@@ -15,7 +15,20 @@ button {
 
 .container-fluid {
   height: 100%;
+}
 
+label {
+  color: $cream;
+  margin-left: 1rem;
+  margin-right: 0.5rem;
+}
+
+input[type=datetime-local] {
+  padding: 0.25rem;
+  background-color: $blood;
+  color: $cream;
+  border: none;
+  border-radius: 5px;
 }
 
 .svg-container {

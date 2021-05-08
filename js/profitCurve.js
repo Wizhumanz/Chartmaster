@@ -28,10 +28,10 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   // format the data. Change data from the backend to usuable form
   data.forEach(function (d) {
     d.Data.forEach(function (point) {
-      if (formattedData.map((a) => {return a.date}).includes(point.Date)) {
+      if (formattedData.map((a) => {return a.date}).includes(point.DateTime)) {
         //add point.Equity to existing obj
         formattedData.forEach((a) => {
-          if (a.date == point.Date) {
+          if (a.date == point.DateTime) {
             a[d.DataLabel] = point.Equity
           }
         })
@@ -39,7 +39,7 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
       } else {
         //make new obj
         let datum = {}
-        datum.date = point.Date
+        datum.date = point.DateTime
 
         data.forEach((d) => {
           datum[d.DataLabel] = null
@@ -82,15 +82,13 @@ d3.json("http://localhost:8000/profitCurve").then(function (data) {
   x.domain(d3.extent(data, function (d) { return d.date; }));
   y.domain([0, d3.max(data, function (d) {
     let maxValue = []
-
     let findMax = (key,value) => {
       if (key !== "date") {
         maxValue.push(value)
       }
     }
     useKeyAndValue(findMax,d)
-
-    return Math.max(...maxValue);
+    return 1.1 * (Math.max(...maxValue));
   })]);
 
   let valueline = []
