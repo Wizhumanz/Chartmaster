@@ -18,9 +18,19 @@ button {
 
 }
 
-.col-3 {
-  border-left: $blood 3px solid;
-  padding: 0.5rem;
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  vertical-align: top;
+  overflow: hidden;
+}
+.svg-content {
+  display: inline-block;
+  position: absolute;
+  top: 0.5%;
+  left: 1%;
 }
 
 div.stacked {
