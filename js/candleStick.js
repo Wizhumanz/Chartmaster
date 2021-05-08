@@ -67,7 +67,6 @@ function drawChart() {
     for (var i = 0; i < prices.length; i++) {
       prices[i].DateTime = dateFormat(prices[i].DateTime)
     }
-    // console.log(prices.map(p => p.StratEnterPrice))
 
     const margin = { top: 35, right: 65, bottom: 205, left: 70 },
       w = 1100,
@@ -153,15 +152,6 @@ function drawChart() {
       .attr("width", width)
       .attr("height", height);
 
-    //Create and append rectangle element
-    shapes.append("rect")
-      .data(prices)
-      .attr("x", 500)
-      .attr("y", 300)
-      .attr("width", 20)
-      .attr("height", 10)
-      .attr("fill", "blue")
-
     //creating a horizontal line to show when strategy is in trade-----------
     shapes.append("rect")
       .attr("x", 200)
@@ -174,6 +164,7 @@ function drawChart() {
     let labelXMove = 0
     let labelYMove = 10
     prices.map(p => p["index"] = prices.indexOf(p))
+    console.log(prices.map(p => p.StratEnterPrice))
 
     // let label = chartBody.selectAll("g.line")
     //   .data(prices.filter((p) => {return p.Label !== ""}))
@@ -185,7 +176,7 @@ function drawChart() {
     //   .attr("height", 80)
     //   .attr("stroke", "red")
 
-    let labelText = chartBody.selectAll("textBox")
+    let labelText = chartBody.selectAll("labelText")
       .data(prices.filter((p) => {return p.Label !== ""}))
       .enter()
       .append("text")
@@ -196,6 +187,27 @@ function drawChart() {
       .attr("font-size", "24px")
       .text(d => d.Label);
 
+    let pointerWidth = 10
+    // Enter and Exit Pointers
+    let enterPointer = chartBody.selectAll("enterPointer")
+      .data(prices.filter((p) => {return p.StratEnterPrice != 0}))
+      .enter()
+      .append("rect")
+      .attr("x", (d, i) => xScale(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.Low) + labelYMove)
+      .attr("width", pointerWidth)
+      .attr("height", 40)
+      .attr("fill", "pink")
+
+    let exitPointer = chartBody.selectAll("exitPointer")
+      .data(prices.filter((p) => {return p.StratExitPrice != 0}))
+      .enter()
+      .append("rect")
+      .attr("x", (d, i) => xScale(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.Low) + labelYMove)
+      .attr("width", pointerWidth)
+      .attr("height", 40)
+      .attr("fill", "purple")
 
     // draw high and low
     let stems = chartBody.selectAll("g.line")
@@ -263,7 +275,8 @@ function drawChart() {
       //Create and append rectangle element
       // label.attr("x", (d, i) => xScaleZ(d.index)-40 - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
       labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-
+      enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
 
       hideTicksWithoutLabel();
@@ -306,6 +319,10 @@ function drawChart() {
 
         labelText.transition().duration(100)
           .attr("y", (d) => yScale(d.High) - labelYMove)
+        enterPointer.transition().duration(100)
+          .attr("y", (d) => yScale(d.Low) + labelYMove)
+        exitPointer.transition().duration(100)
+          .attr("y", (d) => yScale(d.Low) + labelYMove)
 
         gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
 
