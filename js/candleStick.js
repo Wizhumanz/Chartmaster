@@ -1,10 +1,21 @@
 
+let baseURL = "http://localhost:8000"
 let candlestickData = []
-let startTime = "2021-05-01T02:00:00" //TODO: calculate from the candle data
 let addedData = []
+let wholeStartTime = getPickerDateTime("startDateTimePicker")
+let wholeEndTime = getPickerDateTime("endDateTimePicker")
+let newCandlesToFetch = 80
 
-function getRequest() {
-  let url = "http://localhost:8000"
+function getPickerDateTime(pickerID) {
+  return document.getElementById(pickerID).value + ":00"
+}
+
+function getMoreData() {
+  wholeStartTime = getPickerDateTime("startDateTimePicker")
+  wholeEndTime = getPickerDateTime("endDateTimePicker")
+  console.log(wholeStartTime)
+  console.log(wholeEndTime)
+
   let hd = {
     // "Content-Type": "application/json",
     // Authorization: user.password,
@@ -16,9 +27,14 @@ function getRequest() {
   let date1 = new Date(candlestickData[0].DateTime);
   let date2 = new Date(candlestickData[1].DateTime);
   let candleDuration = Math.abs(date2 - date1); //in ms
-  let newStartDate = new Date((new Date(startTime)).getTime() - (50 * candleDuration))
+
+  let currentStartTime = new Date(candlestickData[0].DateTime);
+  let newStartDate = new Date(Math.abs((new Date(currentStartTime)) - (newCandlesToFetch * candleDuration)))
   let endTime = new Date(candlestickData[candlestickData.length - 1].DateTime);
-  let getURL = url + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
+  console.log(currentStartTime)
+  console.log(endTime)
+
+  let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
   console.log(getURL)
 
   axios
@@ -39,8 +55,10 @@ function getRequest() {
 function drawChart() {
   d3.selectAll("#container > *").remove();
 
-  d3.json("http://localhost:8000/candlestick?time_start=" + startTime + "&time_end=2021-05-02T00:00:00").then(function (prices) {
+  let firstGetURL = baseURL + "/candlestick?time_start=" + wholeStartTime + "&time_end=" + wholeEndTime
+  d3.json(firstGetURL).then(function (prices) {
     candlestickData = prices
+    
     const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
     if (addedData.length !== 0) {
       prices = [...addedData, ...prices]
