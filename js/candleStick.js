@@ -140,7 +140,7 @@ function drawChart() {
       .attr('y', d => yScale(Math.max(d.Open, d.Close)))
       .attr('width', xBand.bandwidth())
       .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
-      .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "green")
+      .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
 
     //trying to make a rectangle------------
     var width = 1000;
@@ -153,12 +153,12 @@ function drawChart() {
       .attr("height", height);
 
     //creating a horizontal line to show when strategy is in trade-----------
-    shapes.append("rect")
-      .attr("x", 200)
-      .attr("y", 620)
-      .attr("width", 5000)
-      .attr("height", 10)
-      .attr("fill", "yellow")
+    // shapes.append("rect")
+    //   .attr("x", 200)
+    //   .attr("y", 620)
+    //   .attr("width", 5000)
+    //   .attr("height", 10)
+    //   .attr("fill", "yellow")
 
       
     // Add index to Price Array
@@ -173,15 +173,16 @@ function drawChart() {
       .append("text")
       .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
       .attr("y", d => yScale(d.High) - labelYMove)
-      .attr("stroke", "steelblue")
+      .attr("stroke", "white")
       .attr("font-family", "sans-serif")
-      .attr("font-size", "24px")
+      .attr("font-size", "14px")
       .text(d => d.Label);
 
     
     // Enter and Exit Pointers
-    let pointerWidth = 10
-    let pointerHeight = 40
+    let pointerWidth = 7
+    let pointerHeight = 30
+    // let rotateAngle = 5
 
     let enterPointer = chartBody.selectAll("enterPointer")
       .data(prices.filter((p) => {return p.StratEnterPrice != 0}))
@@ -191,7 +192,7 @@ function drawChart() {
       .attr("y", d => yScale(d.Low) + labelYMove)
       .attr("width", pointerWidth)
       .attr("height", pointerHeight)
-      .attr("fill", "pink")
+      .attr("fill", "chartreuse")
 
     let exitPointer = chartBody.selectAll("exitPointer")
       .data(prices.filter((p) => {return p.StratExitPrice != 0}))
@@ -201,7 +202,8 @@ function drawChart() {
       .attr("y", d => yScale(d.Low) + labelYMove)
       .attr("width", pointerWidth)
       .attr("height", pointerHeight)
-      .attr("fill", "purple")
+      .attr("fill", "hotpink")
+      // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
 
     // draw high and low
     let stems = chartBody.selectAll("g.line")
@@ -213,7 +215,7 @@ function drawChart() {
       .attr("x2", (d, i) => xScale(i) - xBand.bandwidth() / 2)
       .attr("y1", d => yScale(d.High))
       .attr("y2", d => yScale(d.Low))
-      .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "green");
+      .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "darkgreen");
 
     svg.append("defs")
       .append("clipPath")
@@ -352,4 +354,3 @@ function wrap(text, width) {
 }
 
 drawChart();
-
