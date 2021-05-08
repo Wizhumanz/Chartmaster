@@ -160,53 +160,47 @@ function drawChart() {
       .attr("height", 10)
       .attr("fill", "yellow")
 
+      
+    // Add index to Price Array
+    prices.map(p => p["index"] = prices.indexOf(p))
 
+    // Create Label
     let labelXMove = 0
     let labelYMove = 10
-    prices.map(p => p["index"] = prices.indexOf(p))
-    console.log(prices.map(p => p.StratEnterPrice))
-
-    // let label = chartBody.selectAll("g.line")
-    //   .data(prices.filter((p) => {return p.Label !== ""}))
-    //   .enter()
-    //   .append("rect")
-    //   .attr("x", (d, i) => xScale(d.index) -40 - xBand.bandwidth() / 2)
-    //   .attr("y", d => yScale(d.High) - 100)
-    //   .attr("width", 80)
-    //   .attr("height", 80)
-    //   .attr("stroke", "red")
-
     let labelText = chartBody.selectAll("labelText")
       .data(prices.filter((p) => {return p.Label !== ""}))
       .enter()
       .append("text")
-      .attr("x", (d, i) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
+      .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
       .attr("y", d => yScale(d.High) - labelYMove)
       .attr("stroke", "steelblue")
       .attr("font-family", "sans-serif")
       .attr("font-size", "24px")
       .text(d => d.Label);
 
-    let pointerWidth = 10
+    
     // Enter and Exit Pointers
+    let pointerWidth = 10
+    let pointerHeight = 40
+
     let enterPointer = chartBody.selectAll("enterPointer")
       .data(prices.filter((p) => {return p.StratEnterPrice != 0}))
       .enter()
       .append("rect")
-      .attr("x", (d, i) => xScale(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2)
+      .attr("x", (d) => xScale(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2)
       .attr("y", d => yScale(d.Low) + labelYMove)
       .attr("width", pointerWidth)
-      .attr("height", 40)
+      .attr("height", pointerHeight)
       .attr("fill", "pink")
 
     let exitPointer = chartBody.selectAll("exitPointer")
       .data(prices.filter((p) => {return p.StratExitPrice != 0}))
       .enter()
       .append("rect")
-      .attr("x", (d, i) => xScale(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2)
+      .attr("x", (d) => xScale(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2)
       .attr("y", d => yScale(d.Low) + labelYMove)
       .attr("width", pointerWidth)
-      .attr("height", 40)
+      .attr("height", pointerHeight)
       .attr("fill", "purple")
 
     // draw high and low
@@ -269,12 +263,10 @@ function drawChart() {
       stems.attr("x1", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
       stems.attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
 
-
-      
-
-      //Create and append rectangle element
-      // label.attr("x", (d, i) => xScaleZ(d.index)-40 - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      // Label X Zooming
       labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      
+      // Pointers X Zooming
       enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
       exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
@@ -317,8 +309,11 @@ function drawChart() {
         // label.transition().duration(100)
         //   .attr("y", (d) => yScale(d.High) - 100)
 
+        // Label Y Zooming
         labelText.transition().duration(100)
           .attr("y", (d) => yScale(d.High) - labelYMove)
+
+        // Pointers Y Zooming
         enterPointer.transition().duration(100)
           .attr("y", (d) => yScale(d.Low) + labelYMove)
         exitPointer.transition().duration(100)
