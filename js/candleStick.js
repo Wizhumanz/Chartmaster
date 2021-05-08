@@ -1,5 +1,6 @@
 
-let startTime = "2021-05-01T02:00:00"
+let candlestickData = []
+let startTime = "2021-05-01T02:00:00" //TODO: calculate from the candle data
 let addedData = []
 
 function getRequest() {
@@ -12,20 +13,26 @@ function getRequest() {
     Expires: "0",
   }
 
-  let newStartDate = (new Date(startTime)).getTime() - (50 * candleDuration)
-  console.log(newStartDate)
+  let date1 = new Date(candlestickData[0].DateTime);
+  let date2 = new Date(candlestickData[1].DateTime);
+  let candleDuration = Math.abs(date2 - date1); //in ms
+  let newStartDate = new Date((new Date(startTime)).getTime() - (50 * candleDuration))
+  let endTime = new Date(candlestickData[candlestickData.length - 1].DateTime);
+  let getURL = url + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
+  console.log(getURL)
 
   axios
-    .get(url + "/candlestick?time_start=2021-0" + newStartDate.toISOString() + "-01T00:00:00&time_end=2021-0" + (5 + 2).toString() + "-01T00:00:00", {
+    .get(getURL, {
       headers: hd,
       // mode: "cors",
     })
     .then((res) => {
+      console.log(res)
       addedData = [...res.data]
       drawChart()
     })
     .catch((error) => {
-      console.log(error.response);
+      console.log(error);
     });
 }
 
@@ -33,13 +40,14 @@ function drawChart() {
   d3.selectAll("#container > *").remove();
 
   d3.json("http://localhost:8000/candlestick?time_start=" + startTime + "&time_end=2021-05-02T00:00:00").then(function (prices) {
+    candlestickData = prices
     const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
     if (addedData.length !== 0) {
       prices = [...addedData, ...prices]
     }
     var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
     for (var i = 0; i < prices.length; i++) {
-      prices[i].Date = dateFormat(prices[i].Date)
+      prices[i].DateTime = dateFormat(prices[i].DateTime)
     }
 
     const margin = { top: 35, right: 65, bottom: 205, left: 70 },
@@ -58,8 +66,8 @@ function drawChart() {
 
     let dates = _.map(prices, 'Date');
 
-    var xmin = d3.min(prices.map(r => r.Date.getTime()));
-    var xmax = d3.max(prices.map(r => r.Date.getTime()));
+    var xmin = d3.min(prices.map(r => r.DateTime.getTime()));
+    var xmax = d3.max(prices.map(r => r.DateTime.getTime()));
     var xScale = d3.scaleLinear().domain([-1, dates.length])
       .range([0, w])
     var xDateScale = d3.scaleQuantize().domain([0, dates.length]).range(dates)
@@ -256,7 +264,7 @@ function drawChart() {
 
         var xmin = new Date(xDateScale(Math.floor(xScaleZ.domain()[0])))
         xmax = new Date(xDateScale(Math.floor(xScaleZ.domain()[1])))
-        filtered = _.filter(prices, d => ((d.Date >= xmin) && (d.Date <= xmax)))
+        filtered = _.filter(prices, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
         minP = +d3.min(filtered, d => d.Low)
         maxP = +d3.max(filtered, d => d.High)
         buffer = Math.floor((maxP - minP) * 0.1)
