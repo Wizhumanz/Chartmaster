@@ -122,11 +122,10 @@ function drawChart() {
     var height = 1000;
 
     //Create SVG element
-    var shapes = chartBody.selectAll("#container")
+    var shapes = d3.selectAll("#container")
       .append("svg")
       .attr("width", width)
       .attr("height", height);
-
 
     //Create and append rectangle element
     shapes.append("rect")
@@ -145,27 +144,32 @@ function drawChart() {
       .attr("height", 10)
       .attr("fill", "yellow")
 
-    //creating a label-------------
-    var x = 150
-    var y = 30
-    //Create and append rectangle element
-    var g = shapes.append("g")
 
-    g.append("rect")
-      .attr("x", x)
-      .attr("y", y)
-      .attr("width", 200)
-      .attr("height", 100)
-      .attr("fill", "white")
-      .attr("opacity", 0.7)
+    let labelXMove = 0
+    let labelYMove = 10
+    prices.map(p => p["index"] = prices.indexOf(p))
 
-    g.append("text")
-      .attr("x", x + 30)
-      .attr("y", y + 30)
+    // let label = chartBody.selectAll("g.line")
+    //   .data(prices.filter((p) => {return p.Label !== ""}))
+    //   .enter()
+    //   .append("rect")
+    //   .attr("x", (d, i) => xScale(d.index) -40 - xBand.bandwidth() / 2)
+    //   .attr("y", d => yScale(d.High) - 100)
+    //   .attr("width", 80)
+    //   .attr("height", 80)
+    //   .attr("stroke", "red")
+
+    let labelText = chartBody.selectAll("textBox")
+      .data(prices.filter((p) => {return p.Label !== ""}))
+      .enter()
+      .append("text")
+      .attr("x", (d, i) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.High) - labelYMove)
       .attr("stroke", "steelblue")
       .attr("font-family", "sans-serif")
       .attr("font-size", "24px")
-      .text("Mika is gay!");
+      .text(d => d.Label);
+
 
     // draw high and low
     let stems = chartBody.selectAll("g.line")
@@ -227,19 +231,13 @@ function drawChart() {
       stems.attr("x1", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
       stems.attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
 
-      // var width = 1000;
-      // var height = 1000;
 
-      // //Create SVG element
-      // var shapes = d3.select("#container")
-      //         .append("svg")
-      //         .attr("width", width)
-      //         .attr("height", height);
-
-      console.log(stems)
+      
 
       //Create and append rectangle element
-      shapes.attr("x", (d, i) => xScaleZ(i))
+      // label.attr("x", (d, i) => xScaleZ(d.index)-40 - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+
 
 
       hideTicksWithoutLabel();
@@ -272,11 +270,16 @@ function drawChart() {
           .attr("y1", (d) => yScale(d.High))
           .attr("y2", (d) => yScale(d.Low))
 
-        shapes.transition()
-          .duration(100)
-          .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
-          .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
+        // shapes.transition()
+        //   .duration(100)
+        //   .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
+        //   .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
 
+        // label.transition().duration(100)
+        //   .attr("y", (d) => yScale(d.High) - 100)
+
+        labelText.transition().duration(100)
+          .attr("y", (d) => yScale(d.High) - labelYMove)
 
         gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
 
