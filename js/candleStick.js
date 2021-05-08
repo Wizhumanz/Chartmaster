@@ -68,9 +68,9 @@ function drawChart() {
       prices[i].DateTime = dateFormat(prices[i].DateTime)
     }
 
-    const margin = { top: 35, right: 65, bottom: 205, left: 70 },
-      w = 1100,
-      h = 700;
+    const margin = { top: 20, right: 20, bottom: 205, left: 70 },
+      w = 1050,
+      h = 680;
 
     var svg = d3.select("#container")
       // .attr("width", "100%")
@@ -166,7 +166,7 @@ function drawChart() {
 
     // Create Label
     let labelXMove = 0
-    let labelYMove = 10
+    let labelYMove = 20
     let labelText = chartBody.selectAll("labelText")
       .data(prices.filter((p) => {return p.Label !== ""}))
       .enter()

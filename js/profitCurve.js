@@ -1,7 +1,7 @@
 // set the dimensions and margins of the graph
 var margin = { top: 20, right: 20, bottom: 30, left: 40 },
   width = 550 - margin.left - margin.right,
-  height = 400 - margin.top - margin.bottom;
+  height = 300 - margin.top - margin.bottom;
 
 // parse the date / time
 var parseTime = d3.timeParse("%d-%b-%y");
@@ -16,7 +16,6 @@ var y = d3.scaleLinear().range([height, 0]);
 var svg = d3.select("#profit").append("svg")
   // .attr("width", "550")
   // .attr("height", "400")
-  .attr("preserveAspectRatio", "xMinYMin meet")
   .attr("viewBox", "0 0 600 600")
   .append("g")
   .attr("transform",

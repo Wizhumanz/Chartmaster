@@ -25,21 +25,23 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12 col-lg-8">
-        <button onclick="getMoreData()" id="btn">Get More Data</button>
-
-        <label for="startDateTimePicker">Start date:</label>
-        <input type="datetime-local" id="startDateTimePicker" value="2021-05-01T03:40">
-        <label for="endDateTimePicker">End date:</label>
-        <input type="datetime-local" id="endDateTimePicker" value="2021-05-01T05:00">
+        <div class="controls">
+          <label for="startDateTimePicker">Start date:</label>
+          <input type="datetime-local" id="startDateTimePicker" value="2021-05-01T03:40">
+          <label for="endDateTimePicker">End date:</label>
+          <input type="datetime-local" id="endDateTimePicker" value="2021-05-01T05:00">
+          <button onclick="getMoreData()" id="getMoreDataBtn">Get More Data</button>
+        </div>
         <div class="svg-container">
           <svg id="container"></svg>
         </div>
       </div>
       <div class="col-12 col-lg-4">
-        <div class="stacked" style="overflow-y: hidden;">
+        <div class="stacked" id="profitCurveDiv">
+          <h1>Profit Curve</h1>
           <div id="profit"></div>
         </div>
-        <div class="stacked">
+        <div class="stacked" id="simTradesDiv">
           <h1>Strategy Trades</h1>
           <table id="history">
             <thead id="head">
@@ -65,7 +67,8 @@
 </html>
 
 <style>
-  table, td {
+  table,
+  td {
     border: 1px solid white;
   }
 </style>

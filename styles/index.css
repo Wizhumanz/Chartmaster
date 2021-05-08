@@ -17,7 +17,7 @@ form {
   font-size: medium;
 }
 
-.btn {
+button {
   font-family: "DM Serif Display", serif;
   padding: 0.5em 1em 0.5em 1em;
   margin: 0.4em 0.3em auto 0.3em;
@@ -52,6 +52,10 @@ body, .row, html {
   background-color: black;
 }
 
+.controls {
+  padding: 0.75rem;
+}
+
 button {
   font-family: "Alata", sans-serif;
   background-color: black;
@@ -59,6 +63,10 @@ button {
   border-radius: 5px !important;
   border: #fffdd0 2px solid;
   padding: 0.25rem 0.5rem;
+}
+
+#getMoreDataBtn {
+  margin-left: 0.75rem;
 }
 
 .container-fluid {
@@ -96,11 +104,15 @@ input[type=datetime-local] {
 }
 
 div.stacked {
-  height: 450px;
   margin-bottom: 0.5rem;
   overflow: scroll;
-  border-left: #8a0000 3px solid;
   padding: 0.75rem;
+}
+div.stacked h1 {
+  position: absolute;
+  margin-left: -9rem;
+  margin-top: 7rem;
+  transform: rotate(270deg);
 }
 
 div.stacked::-webkit-scrollbar {
@@ -117,6 +129,19 @@ div.stacked::-webkit-scrollbar-thumb {
   border-radius: 20px;
   /* roundness of the scroll thumb */
   border: 3px solid orange;
+}
+
+#profitCurveDiv {
+  height: 21rem;
+  overflow: hidden;
+}
+
+#simTradesDiv {
+  height: 37rem;
+  overflow-x: hidden;
+}
+#simTradesDiv h1 {
+  margin-left: -11rem;
 }
 
 .thead {
