@@ -174,16 +174,6 @@ function drawChart() {
       .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
       .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
 
-    //trying to make a rectangle------------
-    var width = 1000;
-    var height = 1000;
-
-    //Create SVG element
-    var shapes = d3.selectAll("#container")
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height);
-
     //creating a horizontal line to show when strategy is in trade-----------
     // shapes.append("rect")
     //   .attr("x", 200)
@@ -266,11 +256,12 @@ function drawChart() {
       .translateExtent(extent)
       .extent(extent)
       .on("zoom", zoomed)
-      .on('zoom.end', zoomend);
-
+      .on('zoom.end', zoomend)
     svg.call(zoom)
 
     function zoomed() {
+      // if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'wheel') { return; }
+      console.log(d3.event.sourceEvent.deltaX)
       var t = d3.event.transform;
       let xScaleZ = t.rescaleX(xScale);
 
