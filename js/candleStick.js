@@ -10,7 +10,7 @@ function getPickerDateTime(pickerID) {
 }
 
 function getLocalTimezone() {
-  return (new Date().getHours() - new Date().getUTCHours()) * 3600000
+  return (-new Date().getTimezoneOffset()/60) * 3600000
 }
 
 function getMoreData() {
@@ -34,7 +34,7 @@ function getMoreData() {
   let endTime = new Date(Math.abs(candlestickData[candlestickData.length - 1].DateTime) + getLocalTimezone());
   let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
   console.log(getURL)
-
+  console.log(-new Date().getTimezoneOffset()/60)
   axios
     .get(getURL, {
       headers: hd,
@@ -349,7 +349,7 @@ function wrap(text, width) {
       }
     }
   });
-horizontalScroll()
+// horizontalScroll()
 
 }
 
