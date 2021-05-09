@@ -36,9 +36,9 @@
 
         <div class="svg-container">
           <svg id="container"></svg>
-          <div id="scroll"> 
+          <!-- <div id="scroll">
 
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="col-12 col-lg-4">
@@ -50,6 +50,7 @@
           <h1>Strategy Trades</h1>
           <table id="history">
             <thead id="head">
+              <td class="thead">Index</td>
               <td class="thead">Parameter</td>
               <td class="thead">Date</td>
               <td class="thead">Direction</td>
@@ -77,56 +78,62 @@
     border: 1px solid white;
   }
 
-  body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
-    
-    /* width */
-    ::-webkit-scrollbar {
-        width: 8px;
-	      height:18px;
-    }
+  body {
+    margin: 0;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
 
-    /* Track */
-    ::-webkit-scrollbar-track {
-        box-shadow: inset 0 0 3px rgb(145,145,145); 
-        border-radius: 10px;
-    }
+  /* width */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 18px;
+  }
 
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-        background: rgb(0,130,101); 
-  	    border:1px solid black;
-	      border-radius: 10px;
-    }
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 3px rgb(145, 145, 145);
+    border-radius: 10px;
+  }
 
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-        background: #b30000; 
-    }
-    
-    #scroll { 
-    		height:auto;
-      	padding-bottom:5px;
-      	width:800px;
-	      display:block;
-      	overflow-x:scroll;
-	      overflow-y:hidden;
-      	white-space: nowrap;
-    }
-     
-    
-     #controls { 
-    		height:25px;
-       	margin-top:10px;
-       	margin-left:10px;
-    }
-        
-    select{
-      width:300px;
-    }
-    
-    .indicatorDivs{
-      display:table;
-      cursor: grab;
-    }
-    
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgb(0, 130, 101);
+    border: 1px solid black;
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b30000;
+  }
+
+  #scroll {
+    height: auto;
+    padding-bottom: 5px;
+    width: 800px;
+    display: block;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+  }
+
+
+  #controls {
+    height: 25px;
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+
+  select {
+    width: 300px;
+  }
+
+  .indicatorDivs {
+    display: table;
+    cursor: grab;
+  }
 </style>

@@ -4,6 +4,7 @@ let addedData = []
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
 let newCandlesToFetch = 80
+let xAxisDateExisting
 
 function getPickerDateTime(pickerID) {
   return document.getElementById(pickerID).value + ":00"
@@ -50,13 +51,49 @@ function getMoreData() {
     });
 }
 
+function processXAxisLabel(d, dates) {
+  d = new Date(dates[d])
+  //save date to make sure consecutive same dates don't show on axis label
+  if (!xAxisDateExisting) {
+    xAxisDateExisting = d
+  }
+
+  hours = d.getHours()
+  minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()
+  amPM = hours < 13 ? 'am' : 'pm'
+  if (parseInt(hours)) {
+    // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+    let retLabel = hours + ':' + minutes + amPM
+    //if date the same, don't show
+    let dateStr = ""
+    if (xAxisDateExisting.getDate() != d.getDate()) {
+      //always show date with month
+      dateStr = dateStr + ' ' + d.getDate() + ' ' + months[d.getMonth()]
+      xAxisDateExisting = d
+    }
+    if (xAxisDateExisting.getFullYear() != d.getFullYear()) {
+      dateStr = dateStr + ' ' + d.getFullYear()
+      xAxisDateExisting = d
+    }
+    return retLabel + dateStr
+    // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+  }
+}
+
 function drawChart() {
   d3.selectAll("#container > *").remove();
 
   let firstGetURL = baseURL + "/candlestick?time_start=" + wholeStartTime + "&time_end=" + wholeEndTime
   d3.json(firstGetURL).then(function (prices) {
+    // //debug
+    // prices.forEach(c => {
+    //   if ((c.Label != "") || (c.StratEnterPrice != "") || (c.StratExitPrice != "")) {
+    //     console.log(c)
+    //   }
+    // })
+
     candlestickData = prices
-    
+
     const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
     if (addedData.length !== 0) {
       prices = [...addedData, ...prices]
@@ -90,12 +127,9 @@ function drawChart() {
     let xBand = d3.scaleBand().domain(d3.range(-1, dates.length)).range([0, w]).padding(0.3)
     var xAxis = d3.axisBottom()
       .scale(xScale)
+      // .attr("font-size", "5px")
       .tickFormat(function (d) {
-        d = new Date(dates[d])
-        hours = d.getHours()
-        minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()
-        amPM = hours < 13 ? 'am' : 'pm'
-        return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+        return processXAxisLabel(d, dates)
       });
 
     svg.append("rect")
@@ -140,16 +174,6 @@ function drawChart() {
       .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
       .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
 
-    //trying to make a rectangle------------
-    var width = 1000;
-    var height = 1000;
-
-    //Create SVG element
-    var shapes = d3.selectAll("#container")
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height);
-
     //creating a horizontal line to show when strategy is in trade-----------
     // shapes.append("rect")
     //   .attr("x", 200)
@@ -163,45 +187,47 @@ function drawChart() {
     prices.map(p => p["index"] = prices.indexOf(p))
 
     // Create Label
-    let labelXMove = 0
+    let labelXMove = 4
     let labelYMove = 10
     let labelText = chartBody.selectAll("labelText")
-      .data(prices.filter((p) => {return p.Label !== ""}))
+      .data(prices.filter((p) => { return p.Label !== "" }))
       .enter()
       .append("text")
       .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
       .attr("y", d => yScale(d.High) - labelYMove)
       .attr("stroke", "white")
       .attr("font-family", "Courier")
-      .attr("font-size", "10px")
+      .attr("font-size", "11px")
+      .attr("z-index", "100")
       .text(d => d.Label);
 
-    
     // Enter and Exit Pointers
     let pointerWidth = 7
-    let pointerHeight = 30
+    let pointerHeight = 15
     // let rotateAngle = 5
+    let pointerXMove = 0
+    let pointerYMove = 25
 
     let enterPointer = chartBody.selectAll("enterPointer")
-      .data(prices.filter((p) => {return p.StratEnterPrice != 0}))
+      .data(prices.filter((p) => { return p.StratEnterPrice != 0 }))
       .enter()
       .append("rect")
-      .attr("x", (d) => xScale(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2)
-      .attr("y", d => yScale(d.Low) + labelYMove)
+      .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.Low) + pointerYMove)
       .attr("width", pointerWidth)
       .attr("height", pointerHeight)
       .attr("fill", "chartreuse")
 
     let exitPointer = chartBody.selectAll("exitPointer")
-      .data(prices.filter((p) => {return p.StratExitPrice != 0}))
+      .data(prices.filter((p) => { return p.StratExitPrice != 0 }))
       .enter()
       .append("rect")
-      .attr("x", (d) => xScale(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2)
-      .attr("y", d => yScale(d.Low) + labelYMove)
+      .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.Low) + pointerYMove)
       .attr("width", pointerWidth)
       .attr("height", pointerHeight)
       .attr("fill", "hotpink")
-      // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
+    // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
 
     // draw high and low
     let stems = chartBody.selectAll("g.line")
@@ -230,11 +256,12 @@ function drawChart() {
       .translateExtent(extent)
       .extent(extent)
       .on("zoom", zoomed)
-      .on('zoom.end', zoomend);
-
+      .on('zoom.end', zoomend)
     svg.call(zoom)
 
     function zoomed() {
+      // if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'wheel') { return; }
+      console.log(d3.event.sourceEvent.deltaX)
       var t = d3.event.transform;
       let xScaleZ = t.rescaleX(xScale);
 
@@ -249,11 +276,7 @@ function drawChart() {
       gX.call(
         d3.axisBottom(xScaleZ).tickFormat((d, e, target) => {
           if (d >= 0 && d <= dates.length - 1) {
-            d = new Date(dates[d])
-            hours = d.getHours()
-            minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()
-            amPM = hours < 13 ? 'am' : 'pm'
-            return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+            return processXAxisLabel(d, dates)
           }
         })
       )
@@ -265,10 +288,10 @@ function drawChart() {
 
       // Label X Zooming
       labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-      
+
       // Pointers X Zooming
-      enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-      exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
 
       hideTicksWithoutLabel();
@@ -324,6 +347,95 @@ function drawChart() {
       }, 50)
 
     }
+
+    //crosshairs
+    var mouseG = svg.append("g")
+      .attr("class", "mouse-over-effects");
+
+    mouseG.append("path") // this is the black vertical line to follow mouse
+      .attr("class", "mouse-line")
+      .style("stroke", "yellow")
+      .style("stroke-width", "1px")
+      .style("opacity", "0");
+
+    var lines = document.getElementsByClassName('line');
+
+    var mousePerLine = mouseG.selectAll('.mouse-per-line')
+      // .data(cities)
+      .enter()
+      .append("g")
+      .attr("class", "mouse-per-line");
+
+    mousePerLine.append("circle")
+      .attr("r", 7)
+      .style("stroke", function (d) {
+        return color(d.name);
+      })
+      .style("fill", "none")
+      .style("stroke-width", "1px")
+      .style("opacity", "0");
+
+    mousePerLine.append("text")
+      .attr("transform", "translate(10,3)");
+
+    mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+      .attr('width', w) // can't catch mouse events on a g element
+      .attr('height', h)
+      .attr('fill', 'none')
+      .attr('pointer-events', 'all')
+      .on('mouseout', function () { // on mouse out hide line, circles and text
+        d3.select(".mouse-line")
+          .style("opacity", "0");
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "0");
+        d3.selectAll(".mouse-per-line text")
+          .style("opacity", "0");
+      })
+      .on('mouseover', function () { // on mouse in show line, circles and text
+        d3.select(".mouse-line")
+          .style("opacity", "1");
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "1");
+        d3.selectAll(".mouse-per-line text")
+          .style("opacity", "1");
+      })
+      .on('mousemove', function () { // mouse moving over canvas
+        var mouse = d3.mouse(this);
+        d3.select(".mouse-line")
+          .attr("d", function () {
+            var d = "M" + mouse[0] + "," + h;
+            d += " " + mouse[0] + "," + 0;
+            return d;
+          });
+
+        d3.selectAll(".mouse-per-line")
+          .attr("transform", function (d, i) {
+            console.log(width / mouse[0])
+            var xDate = x.invert(mouse[0]),
+              bisect = d3.bisector(function (d) { return d.date; }).right;
+            idx = bisect(d.values, xDate);
+
+            var beginning = 0,
+              end = lines[i].getTotalLength(),
+              target = null;
+
+            while (true) {
+              target = Math.floor((beginning + end) / 2);
+              pos = lines[i].getPointAtLength(target);
+              if ((target === end || target === beginning) && pos.x !== mouse[0]) {
+                break;
+              }
+              if (pos.x > mouse[0]) end = target;
+              else if (pos.x < mouse[0]) beginning = target;
+              else break; //position found
+            }
+
+            d3.select(this).select('text')
+              .text(y.invert(pos.y).toFixed(2));
+
+            return "translate(" + mouse[0] + "," + pos.y + ")";
+          });
+      });
   });
 }
 
@@ -350,11 +462,9 @@ function wrap(text, width) {
     }
   });
 // horizontalScroll()
-
 }
 
 drawChart();
-
 
 function horizontalScroll() {
   var indicators = ["a","b","c","d","e","f","g","h","i"]

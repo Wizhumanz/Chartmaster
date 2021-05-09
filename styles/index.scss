@@ -1,7 +1,27 @@
 @import "./_all";
 
-body, .row, html {
-    background-color: black;
+body,
+.row,
+html {
+  background-color: black;
+  overflow: hidden;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: yellow;
+  stroke-width: 1.5px;
 }
 
 .controls {
@@ -31,7 +51,7 @@ label {
   margin-right: 0.5rem;
 }
 
-input[type=datetime-local] {
+input[type="datetime-local"] {
   padding: 0.25rem;
   background-color: $blood;
   color: $cream;
@@ -77,8 +97,8 @@ div.stacked::-webkit-scrollbar-track {
 }
 
 div.stacked::-webkit-scrollbar-thumb {
-  background-color: $blood;    /* color of the scroll thumb */
-  border-radius: 20px;       /* roundness of the scroll thumb */
+  background-color: $blood; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
   border: 3px solid orange;
 }
 
@@ -97,9 +117,9 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 .thead {
-    background-color: $blue;
-    color: $cream;
-    padding: auto 0.25rem;
+  background-color: $blue;
+  color: $cream;
+  padding: auto 0.25rem;
 }
 
 td {
@@ -114,72 +134,72 @@ tr:hover {
 /* d3 */
 
 .upGreenArrow {
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 4.5px 12px 4.5px;
-    border-color: transparent transparent $green transparent;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 4.5px 12px 4.5px;
+  border-color: transparent transparent $green transparent;
 }
 
 .downRedArrow {
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 12px 4.5px 0 4.5px;
-    border-color: $blood transparent transparent transparent;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 12px 4.5px 0 4.5px;
+  border-color: $blood transparent transparent transparent;
 }
 
 .upArrow {
-    position: relative;
-    top: -15px;
-    left: -10px;
-    width: 0;
-    height: 0;
-    border: 6px solid transparent;
-    border-bottom-color: $green;
+  position: relative;
+  top: -15px;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-bottom-color: $green;
 }
 .upArrow:after {
-    position: absolute;
-    content: "";
-    top: 20px;
-    left: -3px;
-    width: 6px;
-    height: 10px;
-    background: $green;
+  position: absolute;
+  content: "";
+  top: 20px;
+  left: -3px;
+  width: 6px;
+  height: 10px;
+  background: $green;
 }
 
 .downArrow {
-    position: relative;
-    top: 18px;
-    left: -10px;
-    width: 0;
-    height: 0;
-    border: 6px solid transparent;
-    border-top-color: $blood;
+  position: relative;
+  top: 18px;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-top-color: $blood;
 }
 .downArrow:after {
-    position: absolute;
-    content: "";
-    top: -15px;
-    left: -3px;
-    width: 6px;
-    height: 10px;
-    background: $blood;
+  position: absolute;
+  content: "";
+  top: -15px;
+  left: -3px;
+  width: 6px;
+  height: 10px;
+  background: $blood;
 }
 
 /* d3 candle stick start */
 
 .axis path,
 .axis line {
-    fill: none;
-    stroke: white;
-    shape-rendering: crispEdges;
+  fill: none;
+  stroke: white;
+  shape-rendering: crispEdges;
 }
 
 .axis text {
-    font-family: $body-font;
-    font-size: 11px;
-    fill: white;
+  font-family: $body-font;
+  font-size: 11px;
+  fill: white;
 }
 
 .line {
