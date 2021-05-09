@@ -4,6 +4,7 @@ let addedData = []
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
 let newCandlesToFetch = 80
+let xAxisDateExisting
 
 function getPickerDateTime(pickerID) {
   return document.getElementById(pickerID).value + ":00"
@@ -97,12 +98,34 @@ function drawChart() {
     let xBand = d3.scaleBand().domain(d3.range(-1, dates.length)).range([0, w]).padding(0.3)
     var xAxis = d3.axisBottom()
       .scale(xScale)
+      // .attr("font-size", "5px")
       .tickFormat(function (d) {
         d = new Date(dates[d])
+        //save date to make sure consecutive same dates don't show on axis label
+        if (!xAxisDateExisting) {
+          xAxisDateExisting = d
+        }
+
         hours = d.getHours()
         minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()
         amPM = hours < 13 ? 'am' : 'pm'
-        return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+        if (parseInt(hours)) {
+          // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+          let retLabel = hours + ':' + minutes + amPM
+          //if date the same, don't show
+          let dateStr = ""
+          if (xAxisDateExisting.getDate() != d.getDate()) {
+            //always show date with month
+            dateStr = dateStr + ' ' + d.getDate() + ' ' + months[d.getMonth()]
+            xAxisDateExisting = d
+          }
+          if (xAxisDateExisting.getFullYear() != d.getFullYear()) {
+            dateStr = dateStr + ' ' + d.getFullYear()
+            xAxisDateExisting = d
+          }
+          return retLabel + dateStr
+          // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+        }
       });
 
     svg.append("rect")
