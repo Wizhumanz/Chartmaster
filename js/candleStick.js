@@ -55,12 +55,12 @@ function drawChart() {
 
   let firstGetURL = baseURL + "/candlestick?time_start=" + wholeStartTime + "&time_end=" + wholeEndTime
   d3.json(firstGetURL).then(function (prices) {
-    //debug
-    prices.forEach(c => {
-      if ((c.Label != "") || (c.StratEnterPrice != "") || (c.StratExitPrice != "")) {
-        console.log(c)
-      }
-    })
+    // //debug
+    // prices.forEach(c => {
+    //   if ((c.Label != "") || (c.StratEnterPrice != "") || (c.StratExitPrice != "")) {
+    //     console.log(c)
+    //   }
+    // })
 
     candlestickData = prices
     
