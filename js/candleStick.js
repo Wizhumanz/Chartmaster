@@ -55,6 +55,13 @@ function drawChart() {
 
   let firstGetURL = baseURL + "/candlestick?time_start=" + wholeStartTime + "&time_end=" + wholeEndTime
   d3.json(firstGetURL).then(function (prices) {
+    //debug
+    prices.forEach(c => {
+      if ((c.Label != "") || (c.StratEnterPrice != "") || (c.StratExitPrice != "")) {
+        console.log(c)
+      }
+    })
+
     candlestickData = prices
     
     const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
@@ -163,7 +170,7 @@ function drawChart() {
     prices.map(p => p["index"] = prices.indexOf(p))
 
     // Create Label
-    let labelXMove = 0
+    let labelXMove = 4
     let labelYMove = 10
     let labelText = chartBody.selectAll("labelText")
       .data(prices.filter((p) => {return p.Label !== ""}))
@@ -179,15 +186,17 @@ function drawChart() {
     
     // Enter and Exit Pointers
     let pointerWidth = 7
-    let pointerHeight = 30
+    let pointerHeight = 15
     // let rotateAngle = 5
+    let pointerXMove = 0
+    let pointerYMove = 25
 
     let enterPointer = chartBody.selectAll("enterPointer")
       .data(prices.filter((p) => {return p.StratEnterPrice != 0}))
       .enter()
       .append("rect")
-      .attr("x", (d) => xScale(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2)
-      .attr("y", d => yScale(d.Low) + labelYMove)
+      .attr("x", (d) => xScale(d.index) - pointerWidth/2 - pointerXMove - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.Low) + pointerYMove)
       .attr("width", pointerWidth)
       .attr("height", pointerHeight)
       .attr("fill", "chartreuse")
@@ -196,8 +205,8 @@ function drawChart() {
       .data(prices.filter((p) => {return p.StratExitPrice != 0}))
       .enter()
       .append("rect")
-      .attr("x", (d) => xScale(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2)
-      .attr("y", d => yScale(d.Low) + labelYMove)
+      .attr("x", (d) => xScale(d.index) - pointerWidth/2 - pointerXMove - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.Low) + pointerYMove)
       .attr("width", pointerWidth)
       .attr("height", pointerHeight)
       .attr("fill", "hotpink")
@@ -267,8 +276,8 @@ function drawChart() {
       labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
       
       // Pointers X Zooming
-      enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-      exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth/2 - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth/2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth/2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
 
       hideTicksWithoutLabel();
