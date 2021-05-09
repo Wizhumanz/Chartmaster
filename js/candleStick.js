@@ -1,4 +1,3 @@
-
 let baseURL = "http://localhost:8000"
 let candlestickData = []
 let addedData = []
@@ -10,11 +9,13 @@ function getPickerDateTime(pickerID) {
   return document.getElementById(pickerID).value + ":00"
 }
 
+function getLocalTimezone() {
+  return (new Date().getHours() - new Date().getUTCHours()) * 3600000
+}
+
 function getMoreData() {
   wholeStartTime = getPickerDateTime("startDateTimePicker")
   wholeEndTime = getPickerDateTime("endDateTimePicker")
-  console.log(wholeStartTime)
-  console.log(wholeEndTime)
 
   let hd = {
     // "Content-Type": "application/json",
@@ -29,11 +30,8 @@ function getMoreData() {
   let candleDuration = Math.abs(date2 - date1); //in ms
 
   let currentStartTime = new Date(candlestickData[0].DateTime);
-  let newStartDate = new Date(Math.abs((new Date(currentStartTime)) - (newCandlesToFetch * candleDuration)))
-  let endTime = new Date(candlestickData[candlestickData.length - 1].DateTime);
-  console.log(currentStartTime)
-  console.log(endTime)
-
+  let newStartDate = new Date(Math.abs((new Date(currentStartTime)) - (newCandlesToFetch * candleDuration)) + getLocalTimezone())
+  let endTime = new Date(Math.abs(candlestickData[candlestickData.length - 1].DateTime) + getLocalTimezone());
   let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
   console.log(getURL)
 
@@ -160,7 +158,7 @@ function drawChart() {
     //   .attr("height", 10)
     //   .attr("fill", "yellow")
 
-      
+
     // Add index to Price Array
     prices.map(p => p["index"] = prices.indexOf(p))
 
@@ -354,3 +352,69 @@ function wrap(text, width) {
 }
 
 drawChart();
+
+
+function horizontalScroll() {
+  var indicators = ["a","b","c","d","e","f","g","h","i"]
+
+    d3.select("#scroll")
+      .call(d3.zoom().scaleExtent([0,1])
+            .interpolate(d3.interpolateLinear)
+            .on("zoom", zoomed))
+    	
+    console.log(candlestickData)
+  	var divs = d3.select("#scroll").selectAll(".indicatorDivs").data(candlestickData)
+    
+    divs.enter()
+      .append("svg")
+    	.attr("class","indicatorDivs")
+    	.style("display","inline-block")
+      .style("width", 150 + "px")
+      .style("height", 150 + "px")
+    	.style("border","1px solid yellow")
+  	  .call(d3.drag().on("start", dragstarted)
+    		.on("drag", dragged)
+       	.on("end", dragended));
+
+
+
+    var headers = d3.selectAll(".indicatorDivs").selectAll(".headers").data(function(d){return [d]})
+    headers.enter()
+      .append("h2")
+    	.attr("class","headers")
+    	.style("color","yellow")
+    	.style("margin-left","20px")
+      .text(function(d){return d})
+		
+    var x0 = 0
+    var x1 = 0
+    var deltax = 0
+    var scroll0 = 0;
+    var maxScroll = d3.select("#scroll").node().scrollWidth
+}
+    function dragstarted(){
+      //get initial x position
+      x0 = d3.event.x
+      scroll0 = d3.select("#scroll").node().scrollLeft
+    }
+
+    function dragged(d) {
+      //calculate change in x, and the associated change in scrolling
+    	x1 = d3.event.x
+      deltax = x1-x0;
+      
+      //move scroller to starting scroll value + change in x
+      //the Math.min is probably unneccesary since it will automatically
+      //stop the scroller at the end of the div
+      d3.select("#scroll").property("scrollLeft",Math.min(scroll0 + deltax,maxScroll))
+    }
+
+    function dragended(d) {
+      d3.select(this).classed("active", false);
+    }
+
+    function zoomed(){
+//      	console.log(d3.event)
+        d3.select("#scroll").property("scrollLeft",maxScroll*(1-d3.event.transform.k))
+        
+    }
