@@ -42,7 +42,7 @@ function getMoreData() {
       // mode: "cors",
     })
     .then((res) => {
-      console.log(res)
+      // console.log(res)
       drawChart(res.data)
     })
     .catch((error) => {
@@ -87,8 +87,11 @@ function drawChart(prices) {
   //   }
   // })
 
+  //reset chart
+  d3.selectAll("#container > *").remove();
+
   candlestickData = prices
-  console.log(candlestickData)
+  // console.log(candlestickData)
 
   const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
   // if (addedData.length !== 0) {
@@ -435,8 +438,6 @@ function drawChart(prices) {
 }
 
 function drawChartInit() {
-  d3.selectAll("#container > *").remove();
-
   let firstGetURL = baseURL + "/candlestick?time_start=" + wholeStartTime + "&time_end=" + wholeEndTime
   d3.json(firstGetURL).then(function (prices) {
     drawChart(prices)
