@@ -403,7 +403,7 @@ function drawChart() {
         var mouse = d3.mouse(this);
         d3.select(".mouse-line")
           .attr("d", function () {
-            var d = "M" + mouse[0] + "," + height;
+            var d = "M" + mouse[0] + "," + h;
             d += " " + mouse[0] + "," + 0;
             return d;
           });
