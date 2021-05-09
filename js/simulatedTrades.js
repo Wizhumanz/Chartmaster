@@ -6,9 +6,12 @@ async function getText() {
 
 function addHistory(data) {
   var table = document.getElementById("history")
+  //for each param
   data.forEach((d) => {
-    d.Data.forEach((s) => {
+    //for each trade history item in that param
+    d.Data.forEach((s, i) => {
       let row = table.insertRow()
+      row.insertCell().innerHTML = parseInt(JSON.stringify(i)) + 1
 
       let param = row.insertCell()
       param.innerHTML = d.DataLabel
