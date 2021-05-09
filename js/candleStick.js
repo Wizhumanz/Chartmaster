@@ -164,7 +164,7 @@ function drawChart() {
 
     // Create Label
     let labelXMove = 0
-    let labelYMove = 20
+    let labelYMove = 10
     let labelText = chartBody.selectAll("labelText")
       .data(prices.filter((p) => {return p.Label !== ""}))
       .enter()
@@ -172,8 +172,8 @@ function drawChart() {
       .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
       .attr("y", d => yScale(d.High) - labelYMove)
       .attr("stroke", "white")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", "14px")
+      .attr("font-family", "Courier")
+      .attr("font-size", "10px")
       .text(d => d.Label);
 
     
