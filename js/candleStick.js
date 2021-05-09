@@ -43,8 +43,7 @@ function getMoreData() {
     })
     .then((res) => {
       console.log(res)
-      addedData = [...res.data]
-      drawChart()
+      drawChart(res.data)
     })
     .catch((error) => {
       console.log(error);
@@ -80,364 +79,370 @@ function processXAxisLabel(d, dates) {
   }
 }
 
-function drawChart() {
-  d3.selectAll("#container > *").remove();
+function drawChart(prices) {
+  // //debug
+  // prices.forEach(c => {
+  //   if ((c.Label != "") || (c.StratEnterPrice != "") || (c.StratExitPrice != "")) {
+  //     console.log(c)
+  //   }
+  // })
 
-  let firstGetURL = baseURL + "/candlestick?time_start=" + wholeStartTime + "&time_end=" + wholeEndTime
-  d3.json(firstGetURL).then(function (prices) {
-    // //debug
-    // prices.forEach(c => {
-    //   if ((c.Label != "") || (c.StratEnterPrice != "") || (c.StratExitPrice != "")) {
-    //     console.log(c)
-    //   }
-    // })
+  candlestickData = prices
+  console.log(candlestickData)
 
-    candlestickData = prices
+  const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
+  // if (addedData.length !== 0) {
+  //   candlestickData = [...addedData, ...candlestickData]
+  // }
+  var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
+  for (var i = 0; i < candlestickData.length; i++) {
+    candlestickData[i].DateTime = dateFormat(candlestickData[i].DateTime)
+  }
 
-    const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
-    if (addedData.length !== 0) {
-      prices = [...addedData, ...prices]
+  const margin = { top: 20, right: 20, bottom: 205, left: 70 },
+    w = 1050,
+    h = 680;
+
+  var svg = d3.select("#container")
+    // .attr("width", "100%")
+    // .attr("height", "110%")
+    // .attr("padding-bottom", "3rem")
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", "0 0 1200 1200")
+    .classed("svg-content", true)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+  let dates = _.map(candlestickData, 'DateTime');
+
+  var xmin = d3.min(candlestickData.map(r => r.DateTime.getTime()));
+  var xmax = d3.max(candlestickData.map(r => r.DateTime.getTime()));
+  var xScale = d3.scaleLinear().domain([-1, dates.length])
+    .range([0, w])
+  var xDateScale = d3.scaleQuantize().domain([0, dates.length]).range(dates)
+  let xBand = d3.scaleBand().domain(d3.range(-1, dates.length)).range([0, w]).padding(0.3)
+  var xAxis = d3.axisBottom()
+    .scale(xScale)
+    // .attr("font-size", "5px")
+    .tickFormat(function (d) {
+      return processXAxisLabel(d, dates)
+    });
+
+  svg.append("rect")
+    .attr("id", "rect")
+    .attr("width", w)
+    .attr("height", h)
+    .style("fill", "none")
+    .style("pointer-events", "all")
+    .attr("clip-path", "url(#clip)")
+
+  var gX = svg.append("g")
+    .attr("class", "axis x-axis") //Assign "axis" class
+    .attr("transform", "translate(0," + h + ")")
+    .call(xAxis)
+
+  gX.selectAll(".tick text")
+    .call(wrap, xBand.bandwidth())
+
+  var ymin = d3.min(candlestickData.map(r => r.Low));
+  var ymax = d3.max(candlestickData.map(r => r.High));
+  var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h, 0]).nice();
+  var yAxis = d3.axisLeft()
+    .scale(yScale)
+
+  var gY = svg.append("g")
+    .attr("class", "axis y-axis")
+    .call(yAxis);
+
+  var chartBody = svg.append("g")
+    .attr("class", "chartBody")
+    .attr("clip-path", "url(#clip)");
+
+  // draw rectangles
+  let candles = chartBody.selectAll(".candle")
+    .data(candlestickData)
+    .enter()
+    .append("rect")
+    .attr('x', (d, i) => xScale(i) - xBand.bandwidth())
+    .attr("class", "candle")
+    .attr('y', d => yScale(Math.max(d.Open, d.Close)))
+    .attr('width', xBand.bandwidth())
+    .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
+    .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
+
+  //creating a horizontal line to show when strategy is in trade-----------
+  // shapes.append("rect")
+  //   .attr("x", 200)
+  //   .attr("y", 620)
+  //   .attr("width", 5000)
+  //   .attr("height", 10)
+  //   .attr("fill", "yellow")
+
+
+  // Add index to Price Array
+  candlestickData.map(p => p["index"] = candlestickData.indexOf(p))
+
+  // Create Label
+  let labelXMove = 4
+  let labelYMove = 10
+  let labelText = chartBody.selectAll("labelText")
+    .data(candlestickData.filter((p) => { return p.Label !== "" }))
+    .enter()
+    .append("text")
+    .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
+    .attr("y", d => yScale(d.High) - labelYMove)
+    .attr("stroke", "white")
+    .attr("font-family", "Courier")
+    .attr("font-size", "11px")
+    .attr("z-index", "100")
+    .text(d => d.Label);
+
+  // Enter and Exit Pointers
+  let pointerWidth = 7
+  let pointerHeight = 15
+  // let rotateAngle = 5
+  let pointerXMove = 0
+  let pointerYMove = 25
+
+  let enterPointer = chartBody.selectAll("enterPointer")
+    .data(candlestickData.filter((p) => { return p.StratEnterPrice != 0 }))
+    .enter()
+    .append("rect")
+    .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+    .attr("y", d => yScale(d.Low) + pointerYMove)
+    .attr("width", pointerWidth)
+    .attr("height", pointerHeight)
+    .attr("fill", "chartreuse")
+
+  let exitPointer = chartBody.selectAll("exitPointer")
+    .data(candlestickData.filter((p) => { return p.StratExitPrice != 0 }))
+    .enter()
+    .append("rect")
+    .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+    .attr("y", d => yScale(d.Low) + pointerYMove)
+    .attr("width", pointerWidth)
+    .attr("height", pointerHeight)
+    .attr("fill", "hotpink")
+  // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
+
+  // draw high and low
+  let stems = chartBody.selectAll("g.line")
+    .data(candlestickData)
+    .enter()
+    .append("line")
+    .attr("class", "stem")
+    .attr("x1", (d, i) => xScale(i) - xBand.bandwidth() / 2)
+    .attr("x2", (d, i) => xScale(i) - xBand.bandwidth() / 2)
+    .attr("y1", d => yScale(d.High))
+    .attr("y2", d => yScale(d.Low))
+    .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "darkgreen");
+
+  svg.append("defs")
+    .append("clipPath")
+    .attr("id", "clip")
+    .append("rect")
+    .attr("width", w)
+    .attr("height", h)
+
+  const extent = [[0, 0], [w, h]];
+
+  var resizeTimer;
+  var zoom = d3.zoom()
+    .scaleExtent([1, 100])
+    .translateExtent(extent)
+    .extent(extent)
+    .on("zoom", zoomed)
+    .on('zoom.end', zoomend)
+  svg.call(zoom)
+
+  function zoomed() {
+    // if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'wheel') { return; }
+    console.log(d3.event.sourceEvent.deltaX)
+    var t = d3.event.transform;
+    let xScaleZ = t.rescaleX(xScale);
+
+    let hideTicksWithoutLabel = function () {
+      d3.selectAll('.xAxis .tick text').each(function (d) {
+        if (this.innerHTML === '') {
+          this.parentNode.style.display = 'none'
+        }
+      })
     }
-    var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
-    for (var i = 0; i < prices.length; i++) {
-      prices[i].DateTime = dateFormat(prices[i].DateTime)
-    }
 
-    const margin = { top: 20, right: 20, bottom: 205, left: 70 },
-      w = 1050,
-      h = 680;
+    gX.call(
+      d3.axisBottom(xScaleZ).tickFormat((d, e, target) => {
+        if (d >= 0 && d <= dates.length - 1) {
+          return processXAxisLabel(d, dates)
+        }
+      })
+    )
 
-    var svg = d3.select("#container")
-      // .attr("width", "100%")
-      // .attr("height", "110%")
-      // .attr("padding-bottom", "3rem")
-      .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", "0 0 1200 1200")
-      .classed("svg-content", true)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    candles.attr("x", (d, i) => xScaleZ(i) - (xBand.bandwidth() * t.k) / 2)
+      .attr("width", xBand.bandwidth() * t.k);
+    stems.attr("x1", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
+    stems.attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
 
-    let dates = _.map(prices, 'DateTime');
+    // Label X Zooming
+    labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
-    var xmin = d3.min(prices.map(r => r.DateTime.getTime()));
-    var xmax = d3.max(prices.map(r => r.DateTime.getTime()));
-    var xScale = d3.scaleLinear().domain([-1, dates.length])
-      .range([0, w])
-    var xDateScale = d3.scaleQuantize().domain([0, dates.length]).range(dates)
-    let xBand = d3.scaleBand().domain(d3.range(-1, dates.length)).range([0, w]).padding(0.3)
-    var xAxis = d3.axisBottom()
-      .scale(xScale)
-      // .attr("font-size", "5px")
-      .tickFormat(function (d) {
-        return processXAxisLabel(d, dates)
-      });
+    // Pointers X Zooming
+    enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+    exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
-    svg.append("rect")
-      .attr("id", "rect")
-      .attr("width", w)
-      .attr("height", h)
-      .style("fill", "none")
-      .style("pointer-events", "all")
-      .attr("clip-path", "url(#clip)")
 
-    var gX = svg.append("g")
-      .attr("class", "axis x-axis") //Assign "axis" class
-      .attr("transform", "translate(0," + h + ")")
-      .call(xAxis)
+    hideTicksWithoutLabel();
 
     gX.selectAll(".tick text")
       .call(wrap, xBand.bandwidth())
 
-    var ymin = d3.min(prices.map(r => r.Low));
-    var ymax = d3.max(prices.map(r => r.High));
-    var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h, 0]).nice();
-    var yAxis = d3.axisLeft()
-      .scale(yScale)
+  }
 
-    var gY = svg.append("g")
-      .attr("class", "axis y-axis")
-      .call(yAxis);
+  function zoomend() {
+    var t = d3.event.transform;
+    let xScaleZ = t.rescaleX(xScale);
+    clearTimeout(resizeTimer)
+    resizeTimer = setTimeout(function () {
 
-    var chartBody = svg.append("g")
-      .attr("class", "chartBody")
-      .attr("clip-path", "url(#clip)");
+      var xmin = new Date(xDateScale(Math.floor(xScaleZ.domain()[0])))
+      xmax = new Date(xDateScale(Math.floor(xScaleZ.domain()[1])))
+      filtered = _.filter(candlestickData, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
+      minP = +d3.min(filtered, d => d.Low)
+      maxP = +d3.max(filtered, d => d.High)
+      buffer = Math.floor((maxP - minP) * 0.1)
 
-    // draw rectangles
-    let candles = chartBody.selectAll(".candle")
-      .data(prices)
-      .enter()
-      .append("rect")
-      .attr('x', (d, i) => xScale(i) - xBand.bandwidth())
-      .attr("class", "candle")
-      .attr('y', d => yScale(Math.max(d.Open, d.Close)))
-      .attr('width', xBand.bandwidth())
-      .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
-      .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
+      yScale.domain([minP - buffer, maxP + buffer])
+      candles.transition()
+        .duration(100)
+        .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
+        .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
 
-    //creating a horizontal line to show when strategy is in trade-----------
-    // shapes.append("rect")
-    //   .attr("x", 200)
-    //   .attr("y", 620)
-    //   .attr("width", 5000)
-    //   .attr("height", 10)
-    //   .attr("fill", "yellow")
+      stems.transition().duration(100)
+        .attr("y1", (d) => yScale(d.High))
+        .attr("y2", (d) => yScale(d.Low))
 
+      // shapes.transition()
+      //   .duration(100)
+      //   .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
+      //   .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
 
-    // Add index to Price Array
-    prices.map(p => p["index"] = prices.indexOf(p))
+      // label.transition().duration(100)
+      //   .attr("y", (d) => yScale(d.High) - 100)
 
-    // Create Label
-    let labelXMove = 4
-    let labelYMove = 10
-    let labelText = chartBody.selectAll("labelText")
-      .data(prices.filter((p) => { return p.Label !== "" }))
-      .enter()
-      .append("text")
-      .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
-      .attr("y", d => yScale(d.High) - labelYMove)
-      .attr("stroke", "white")
-      .attr("font-family", "Courier")
-      .attr("font-size", "11px")
-      .attr("z-index", "100")
-      .text(d => d.Label);
+      // Label Y Zooming
+      labelText.transition().duration(100)
+        .attr("y", (d) => yScale(d.High) - labelYMove)
 
-    // Enter and Exit Pointers
-    let pointerWidth = 7
-    let pointerHeight = 15
-    // let rotateAngle = 5
-    let pointerXMove = 0
-    let pointerYMove = 25
+      // Pointers Y Zooming
+      enterPointer.transition().duration(100)
+        .attr("y", (d) => yScale(d.Low) + labelYMove)
+      exitPointer.transition().duration(100)
+        .attr("y", (d) => yScale(d.Low) + labelYMove)
 
-    let enterPointer = chartBody.selectAll("enterPointer")
-      .data(prices.filter((p) => { return p.StratEnterPrice != 0 }))
-      .enter()
-      .append("rect")
-      .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-      .attr("y", d => yScale(d.Low) + pointerYMove)
-      .attr("width", pointerWidth)
-      .attr("height", pointerHeight)
-      .attr("fill", "chartreuse")
+      gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
 
-    let exitPointer = chartBody.selectAll("exitPointer")
-      .data(prices.filter((p) => { return p.StratExitPrice != 0 }))
-      .enter()
-      .append("rect")
-      .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-      .attr("y", d => yScale(d.Low) + pointerYMove)
-      .attr("width", pointerWidth)
-      .attr("height", pointerHeight)
-      .attr("fill", "hotpink")
-    // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
+    }, 50)
 
-    // draw high and low
-    let stems = chartBody.selectAll("g.line")
-      .data(prices)
-      .enter()
-      .append("line")
-      .attr("class", "stem")
-      .attr("x1", (d, i) => xScale(i) - xBand.bandwidth() / 2)
-      .attr("x2", (d, i) => xScale(i) - xBand.bandwidth() / 2)
-      .attr("y1", d => yScale(d.High))
-      .attr("y2", d => yScale(d.Low))
-      .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "darkgreen");
+  }
 
-    svg.append("defs")
-      .append("clipPath")
-      .attr("id", "clip")
-      .append("rect")
-      .attr("width", w)
-      .attr("height", h)
+  //crosshairs
+  var mouseG = svg.append("g")
+    .attr("class", "mouse-over-effects");
 
-    const extent = [[0, 0], [w, h]];
+  mouseG.append("path") // this is the black vertical line to follow mouse
+    .attr("class", "mouse-line")
+    .style("stroke", "yellow")
+    .style("stroke-width", "1px")
+    .style("opacity", "0");
 
-    var resizeTimer;
-    var zoom = d3.zoom()
-      .scaleExtent([1, 100])
-      .translateExtent(extent)
-      .extent(extent)
-      .on("zoom", zoomed)
-      .on('zoom.end', zoomend)
-    svg.call(zoom)
+  var lines = document.getElementsByClassName('line');
 
-    function zoomed() {
-      // if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'wheel') { return; }
-      console.log(d3.event.sourceEvent.deltaX)
-      var t = d3.event.transform;
-      let xScaleZ = t.rescaleX(xScale);
+  var mousePerLine = mouseG.selectAll('.mouse-per-line')
+    // .data(cities)
+    .enter()
+    .append("g")
+    .attr("class", "mouse-per-line");
 
-      let hideTicksWithoutLabel = function () {
-        d3.selectAll('.xAxis .tick text').each(function (d) {
-          if (this.innerHTML === '') {
-            this.parentNode.style.display = 'none'
-          }
-        })
-      }
+  mousePerLine.append("circle")
+    .attr("r", 7)
+    .style("stroke", function (d) {
+      return color(d.name);
+    })
+    .style("fill", "none")
+    .style("stroke-width", "1px")
+    .style("opacity", "0");
 
-      gX.call(
-        d3.axisBottom(xScaleZ).tickFormat((d, e, target) => {
-          if (d >= 0 && d <= dates.length - 1) {
-            return processXAxisLabel(d, dates)
-          }
-        })
-      )
+  mousePerLine.append("text")
+    .attr("transform", "translate(10,3)");
 
-      candles.attr("x", (d, i) => xScaleZ(i) - (xBand.bandwidth() * t.k) / 2)
-        .attr("width", xBand.bandwidth() * t.k);
-      stems.attr("x1", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
-      stems.attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
+  mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+    .attr('width', w) // can't catch mouse events on a g element
+    .attr('height', h)
+    .attr('fill', 'none')
+    .attr('pointer-events', 'all')
+    .on('mouseout', function () { // on mouse out hide line, circles and text
+      d3.select(".mouse-line")
+        .style("opacity", "0");
+      d3.selectAll(".mouse-per-line circle")
+        .style("opacity", "0");
+      d3.selectAll(".mouse-per-line text")
+        .style("opacity", "0");
+    })
+    .on('mouseover', function () { // on mouse in show line, circles and text
+      d3.select(".mouse-line")
+        .style("opacity", "1");
+      d3.selectAll(".mouse-per-line circle")
+        .style("opacity", "1");
+      d3.selectAll(".mouse-per-line text")
+        .style("opacity", "1");
+    })
+    .on('mousemove', function () { // mouse moving over canvas
+      var mouse = d3.mouse(this);
+      d3.select(".mouse-line")
+        .attr("d", function () {
+          var d = "M" + mouse[0] + "," + h;
+          d += " " + mouse[0] + "," + 0;
+          return d;
+        });
 
-      // Label X Zooming
-      labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      d3.selectAll(".mouse-per-line")
+        .attr("transform", function (d, i) {
+          console.log(width / mouse[0])
+          var xDate = x.invert(mouse[0]),
+            bisect = d3.bisector(function (d) { return d.date; }).right;
+          idx = bisect(d.values, xDate);
 
-      // Pointers X Zooming
-      enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-      exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+          var beginning = 0,
+            end = lines[i].getTotalLength(),
+            target = null;
 
-
-      hideTicksWithoutLabel();
-
-      gX.selectAll(".tick text")
-        .call(wrap, xBand.bandwidth())
-
-    }
-
-    function zoomend() {
-      var t = d3.event.transform;
-      let xScaleZ = t.rescaleX(xScale);
-      clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(function () {
-
-        var xmin = new Date(xDateScale(Math.floor(xScaleZ.domain()[0])))
-        xmax = new Date(xDateScale(Math.floor(xScaleZ.domain()[1])))
-        filtered = _.filter(prices, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
-        minP = +d3.min(filtered, d => d.Low)
-        maxP = +d3.max(filtered, d => d.High)
-        buffer = Math.floor((maxP - minP) * 0.1)
-
-        yScale.domain([minP - buffer, maxP + buffer])
-        candles.transition()
-          .duration(100)
-          .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
-          .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
-
-        stems.transition().duration(100)
-          .attr("y1", (d) => yScale(d.High))
-          .attr("y2", (d) => yScale(d.Low))
-
-        // shapes.transition()
-        //   .duration(100)
-        //   .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
-        //   .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
-
-        // label.transition().duration(100)
-        //   .attr("y", (d) => yScale(d.High) - 100)
-
-        // Label Y Zooming
-        labelText.transition().duration(100)
-          .attr("y", (d) => yScale(d.High) - labelYMove)
-
-        // Pointers Y Zooming
-        enterPointer.transition().duration(100)
-          .attr("y", (d) => yScale(d.Low) + labelYMove)
-        exitPointer.transition().duration(100)
-          .attr("y", (d) => yScale(d.Low) + labelYMove)
-
-        gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
-
-      }, 50)
-
-    }
-
-    //crosshairs
-    var mouseG = svg.append("g")
-      .attr("class", "mouse-over-effects");
-
-    mouseG.append("path") // this is the black vertical line to follow mouse
-      .attr("class", "mouse-line")
-      .style("stroke", "yellow")
-      .style("stroke-width", "1px")
-      .style("opacity", "0");
-
-    var lines = document.getElementsByClassName('line');
-
-    var mousePerLine = mouseG.selectAll('.mouse-per-line')
-      // .data(cities)
-      .enter()
-      .append("g")
-      .attr("class", "mouse-per-line");
-
-    mousePerLine.append("circle")
-      .attr("r", 7)
-      .style("stroke", function (d) {
-        return color(d.name);
-      })
-      .style("fill", "none")
-      .style("stroke-width", "1px")
-      .style("opacity", "0");
-
-    mousePerLine.append("text")
-      .attr("transform", "translate(10,3)");
-
-    mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
-      .attr('width', w) // can't catch mouse events on a g element
-      .attr('height', h)
-      .attr('fill', 'none')
-      .attr('pointer-events', 'all')
-      .on('mouseout', function () { // on mouse out hide line, circles and text
-        d3.select(".mouse-line")
-          .style("opacity", "0");
-        d3.selectAll(".mouse-per-line circle")
-          .style("opacity", "0");
-        d3.selectAll(".mouse-per-line text")
-          .style("opacity", "0");
-      })
-      .on('mouseover', function () { // on mouse in show line, circles and text
-        d3.select(".mouse-line")
-          .style("opacity", "1");
-        d3.selectAll(".mouse-per-line circle")
-          .style("opacity", "1");
-        d3.selectAll(".mouse-per-line text")
-          .style("opacity", "1");
-      })
-      .on('mousemove', function () { // mouse moving over canvas
-        var mouse = d3.mouse(this);
-        d3.select(".mouse-line")
-          .attr("d", function () {
-            var d = "M" + mouse[0] + "," + h;
-            d += " " + mouse[0] + "," + 0;
-            return d;
-          });
-
-        d3.selectAll(".mouse-per-line")
-          .attr("transform", function (d, i) {
-            console.log(width / mouse[0])
-            var xDate = x.invert(mouse[0]),
-              bisect = d3.bisector(function (d) { return d.date; }).right;
-            idx = bisect(d.values, xDate);
-
-            var beginning = 0,
-              end = lines[i].getTotalLength(),
-              target = null;
-
-            while (true) {
-              target = Math.floor((beginning + end) / 2);
-              pos = lines[i].getPointAtLength(target);
-              if ((target === end || target === beginning) && pos.x !== mouse[0]) {
-                break;
-              }
-              if (pos.x > mouse[0]) end = target;
-              else if (pos.x < mouse[0]) beginning = target;
-              else break; //position found
+          while (true) {
+            target = Math.floor((beginning + end) / 2);
+            pos = lines[i].getPointAtLength(target);
+            if ((target === end || target === beginning) && pos.x !== mouse[0]) {
+              break;
             }
+            if (pos.x > mouse[0]) end = target;
+            else if (pos.x < mouse[0]) beginning = target;
+            else break; //position found
+          }
 
-            d3.select(this).select('text')
-              .text(y.invert(pos.y).toFixed(2));
+          d3.select(this).select('text')
+            .text(y.invert(pos.y).toFixed(2));
 
-            return "translate(" + mouse[0] + "," + pos.y + ")";
-          });
-      });
+          return "translate(" + mouse[0] + "," + pos.y + ")";
+        });
+    });
+}
+
+function drawChartInit() {
+  d3.selectAll("#container > *").remove();
+
+  let firstGetURL = baseURL + "/candlestick?time_start=" + wholeStartTime + "&time_end=" + wholeEndTime
+  d3.json(firstGetURL).then(function (prices) {
+    drawChart(prices)
   });
 }
+drawChartInit();
 
 function wrap(text, width) {
   text.each(function () {
@@ -461,51 +466,49 @@ function wrap(text, width) {
       }
     }
   });
-// horizontalScroll()
+  // horizontalScroll()
 }
-
-drawChart();
 
 function horizontalScroll() {
-  var indicators = ["a","b","c","d","e","f","g","h","i"]
+  var indicators = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
 
-    d3.select("#scroll")
-      .call(d3.zoom().scaleExtent([0,1])
-            .interpolate(d3.interpolateLinear)
-            .on("zoom", zoomed))
-    	
-    console.log(candlestickData)
-  	var divs = d3.select("#scroll").selectAll(".indicatorDivs").data(candlestickData)
-    
-    divs.enter()
-      .append("div")
-    	.attr("class","indicatorDivs")
-    	.style("display","inline-block")
-      .style("width", 150 + "px")
-      .style("height", 150 + "px")
-    	.style("border","1px solid green")
-  	  .call(d3.drag().on("start", dragstarted)
-    		.on("drag", dragged)
-       	.on("end", dragended));
+  d3.select("#scroll")
+    .call(d3.zoom().scaleExtent([0, 1])
+      .interpolate(d3.interpolateLinear)
+      .on("zoom", zoomed))
+
+  console.log(candlestickData)
+  var divs = d3.select("#scroll").selectAll(".indicatorDivs").data(candlestickData)
+
+  divs.enter()
+    .append("div")
+    .attr("class", "indicatorDivs")
+    .style("display", "inline-block")
+    .style("width", 150 + "px")
+    .style("height", 150 + "px")
+    .style("border", "1px solid green")
+    .call(d3.drag().on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended));
 
 
 
-    var headers = d3.selectAll(".indicatorDivs").selectAll(".headers").data(function(d){return [d]})
-    headers.enter()
-      .append("h2")
-    	.attr("class","headers")
-    	.style("color","yellow")
-    	.style("margin-left","20px")
-      .text(function(d){return d})
-		
-    var x0 = 0
-    var x1 = 0
-    var deltax = 0
-    var scroll0 = 0;
-    var maxScroll = d3.select("#scroll").node().scrollWidth
+  var headers = d3.selectAll(".indicatorDivs").selectAll(".headers").data(function (d) { return [d] })
+  headers.enter()
+    .append("h2")
+    .attr("class", "headers")
+    .style("color", "yellow")
+    .style("margin-left", "20px")
+    .text(function (d) { return d })
+
+  var x0 = 0
+  var x1 = 0
+  var deltax = 0
+  var scroll0 = 0;
+  var maxScroll = d3.select("#scroll").node().scrollWidth
 }
 
-function dragstarted(){
+function dragstarted() {
   //get initial x position
   x0 = d3.event.x
   scroll0 = d3.select("#scroll").node().scrollLeft
@@ -514,20 +517,20 @@ function dragstarted(){
 function dragged(d) {
   //calculate change in x, and the associated change in scrolling
   x1 = d3.event.x
-  deltax = x1-x0;
-  
+  deltax = x1 - x0;
+
   //move scroller to starting scroll value + change in x
   //the Math.min is probably unneccesary since it will automatically
   //stop the scroller at the end of the div
-  d3.select("#scroll").property("scrollLeft",Math.min(scroll0 + deltax,maxScroll))
+  d3.select("#scroll").property("scrollLeft", Math.min(scroll0 + deltax, maxScroll))
 }
 
 function dragended(d) {
   d3.select(this).classed("active", false);
 }
 
-function zoomed(){
-//      	console.log(d3.event)
-    d3.select("#scroll").property("scrollLeft",maxScroll*(1-d3.event.transform.k))
-    
+function zoomed() {
+  //      	console.log(d3.event)
+  d3.select("#scroll").property("scrollLeft", maxScroll * (1 - d3.event.transform.k))
+
 }
