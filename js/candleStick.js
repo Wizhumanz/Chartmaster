@@ -172,7 +172,7 @@ function drawChart() {
       .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
       .attr("y", d => yScale(d.High) - labelYMove)
       .attr("stroke", "white")
-      .attr("font-family", "sans-serif")
+      .attr("font-family", "Courier")
       .attr("font-size", "10px")
       .text(d => d.Label);
 
