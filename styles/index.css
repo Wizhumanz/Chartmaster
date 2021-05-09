@@ -48,9 +48,28 @@ a:hover {
   color: #001b6b;
 }
 
-body, .row, html {
+body,
+.row,
+html {
   background-color: black;
   overflow: hidden;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: yellow;
+  stroke-width: 1.5px;
 }
 
 .controls {
