@@ -7,21 +7,27 @@ let newCandlesToFetch = 80
 let xAxisDateExisting
 
 function computeBacktest() {
-  let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
+  let ticker = document.getElementById("tickerSelect").value
+  let period = document.getElementById("periodSelect").value
+  let startTime = new Date(Math.abs(
+    (new Date(getPickerDateTime("startDateTimePicker"))) 
+    + getLocalTimezone()))
+  console.log(startTime)
+  let startTimeStr = startTime.toISOString().split(".")[0]
+  let getURL = baseURL + "/candlestick?time_start=" + startTimeStr + "&time_end=" + (new Date(getPickerDateTime("endDateTimePicker"))).toISOString().split(".")[0] + "&ticker=" + ticker + "&period=" + period
   console.log(getURL)
-  console.log(-new Date().getTimezoneOffset() / 60)
-  axios
-    .get(getURL, {
-      headers: hd,
-      // mode: "cors",
-    })
-    .then((res) => {
-      // console.log(res)
-      drawChart(res.data)
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  // axios
+  //   .get(getURL, {
+  //     headers: hd,
+  //     // mode: "cors",
+  //   })
+  //   .then((res) => {
+  //     // console.log(res)
+  //     drawChart(res.data)
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
 }
 
 function getPickerDateTime(pickerID) {
