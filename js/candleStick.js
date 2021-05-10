@@ -6,12 +6,30 @@ let wholeEndTime = getPickerDateTime("endDateTimePicker")
 let newCandlesToFetch = 80
 let xAxisDateExisting
 
+function computeBacktest() {
+  let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
+  console.log(getURL)
+  console.log(-new Date().getTimezoneOffset() / 60)
+  axios
+    .get(getURL, {
+      headers: hd,
+      // mode: "cors",
+    })
+    .then((res) => {
+      // console.log(res)
+      drawChart(res.data)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 function getPickerDateTime(pickerID) {
   return document.getElementById(pickerID).value + ":00"
 }
 
 function getLocalTimezone() {
-  return (-new Date().getTimezoneOffset()/60) * 3600000
+  return (-new Date().getTimezoneOffset() / 60) * 3600000
 }
 
 function getMoreData() {
@@ -35,7 +53,7 @@ function getMoreData() {
   let endTime = new Date(Math.abs(candlestickData[candlestickData.length - 1].DateTime) + getLocalTimezone());
   let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
   console.log(getURL)
-  console.log(-new Date().getTimezoneOffset()/60)
+  console.log(-new Date().getTimezoneOffset() / 60)
   axios
     .get(getURL, {
       headers: hd,
@@ -491,8 +509,6 @@ function horizontalScroll() {
     .call(d3.drag().on("start", dragstarted)
       .on("drag", dragged)
       .on("end", dragended));
-
-
 
   var headers = d3.selectAll(".indicatorDivs").selectAll(".headers").data(function (d) { return [d] })
   headers.enter()
