@@ -53,6 +53,11 @@ html {
     border: $blood 2px solid;
     border-radius: 5px;
   }
+
+  #periodSelect {
+    width: 80px;
+    border: $blue 2px solid;
+  }
 }
 
 button {

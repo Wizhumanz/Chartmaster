@@ -99,6 +99,10 @@ html {
   border: #8a0000 2px solid;
   border-radius: 5px;
 }
+.controls #periodSelect {
+  width: 80px;
+  border: #001b6b 2px solid;
+}
 
 button {
   font-family: "Alata", sans-serif;
