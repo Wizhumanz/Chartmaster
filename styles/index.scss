@@ -60,6 +60,12 @@ html {
   }
 }
 
+div.right {
+  position: absolute;
+  top: 1%;
+  right: 37%
+}
+
 button {
   font-family: $body-font;
   background-color: black;
