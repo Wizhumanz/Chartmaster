@@ -310,9 +310,22 @@ function drawChart(prices) {
 
     candles.attr("x", (d, i) => xScaleZ(i) - (xBand.bandwidth() * t.k) / 2)
       .attr("width", xBand.bandwidth() * t.k);
+
     stems.attr("x1", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
     stems.attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
-
+      
+    console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
+    
+    function changeStemsX() {
+      let substituteX = []
+      stems.selectAll(".stem")._parents.forEach(e => {
+        // console.log(e.x1.baseVal.value)
+        substituteX.push(e.x1.baseVal.value)
+      });
+      stemsXArray = substituteX
+    }
+    changeStemsX()
+      
     // Label X Zooming
     labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
@@ -350,6 +363,7 @@ function drawChart(prices) {
       stems.transition().duration(100)
         .attr("y1", (d) => yScale(d.High))
         .attr("y2", (d) => yScale(d.Low))
+        console.log(stemsXArray[0])
 
       // shapes.transition()
       //   .duration(100)
@@ -442,8 +456,6 @@ function drawChart(prices) {
       // });
 
       // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
-      let hmu = stems.selectAll(".stem")._parents[0].x1.baseVal.value
-
       stemsXArray.forEach(x => {
         if ((mouse[0] > (x - 2)) && (mouse[0] < (x + 2))) {
           // console.log("KMS" + mouse[0])
