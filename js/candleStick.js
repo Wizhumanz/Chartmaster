@@ -11,7 +11,9 @@ function computeBacktest() {
   let period = document.getElementById("periodSelect").value
   let startTime = new Date(Math.abs((new Date(getPickerDateTime("startDateTimePicker")))) + getLocalTimezone())
   let startTimeStr = startTime.toISOString().split(".")[0]
-  let getURL = baseURL + "/candlestick?time_start=" + startTimeStr + "&time_end=" + (new Date(getPickerDateTime("endDateTimePicker"))).toISOString().split(".")[0] + "&ticker=" + ticker + "&period=" + period
+  let endTime = new Date(Math.abs((new Date(getPickerDateTime("endDateTimePicker")))) + getLocalTimezone())
+  let endTimeStr = endTime.toISOString().split(".")[0]
+  let getURL = baseURL + "/candlestick?time_start=" + startTimeStr + "&time_end=" + endTimeStr + "&ticker=" + ticker + "&period=" + period
   console.log(getURL)
   // axios
   //   .get(getURL, {
