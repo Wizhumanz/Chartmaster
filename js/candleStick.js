@@ -134,6 +134,24 @@ function drawChart(prices) {
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
+  var width = 500;
+  var height = 500;
+
+  // var kms = d3.select("#container")
+  //   .append("svg")
+  //   .attr("width", width)
+  //   .attr("height", height);
+  // //Create and append rectangle element
+
+  // svg.append("rect")
+  //   .attr("x", 0)
+  //   .attr("y", 0)
+  //   .attr("width", 200)
+  //   .attr("height", 100)
+  //   .attr("fill", "yellow")
+  //   .attr("id", "doge")
+
+
   let dates = _.map(candlestickData, 'DateTime');
 
   var xmin = d3.min(candlestickData.map(r => r.DateTime.getTime()));
@@ -199,7 +217,6 @@ function drawChart(prices) {
   //   .attr("height", 10)
   //   .attr("fill", "yellow")
 
-
   // Add index to Price Array
   candlestickData.map(p => p["index"] = candlestickData.indexOf(p))
 
@@ -258,6 +275,16 @@ function drawChart(prices) {
     .attr("y2", d => yScale(d.Low))
     .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "darkgreen");
 
+  // console.log(stems.selectAll("g.line").select(".stem"))
+  // console.log(stems.selectAll(".stem"))
+
+  let stemsXArray = []
+  stems.selectAll(".stem")._parents.forEach(e => {
+    stemsXArray.push(e.x1.baseVal.value)
+  });
+  // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
+  // console.log(parseInt(kms.select("#doge").attr("x")))
+
   svg.append("defs")
     .append("clipPath")
     .attr("id", "clip")
@@ -278,7 +305,7 @@ function drawChart(prices) {
 
   function zoomed() {
     // if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'wheel') { return; }
-    console.log(d3.event.sourceEvent.deltaX)
+    // console.log(d3.event.sourceEvent.deltaX)
     var t = d3.event.transform;
     let xScaleZ = t.rescaleX(xScale);
 
@@ -300,9 +327,22 @@ function drawChart(prices) {
 
     candles.attr("x", (d, i) => xScaleZ(i) - (xBand.bandwidth() * t.k) / 2)
       .attr("width", xBand.bandwidth() * t.k);
+
     stems.attr("x1", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
     stems.attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
-
+      
+    console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
+    
+    function changeStemsX() {
+      let substituteX = []
+      stems.selectAll(".stem")._parents.forEach(e => {
+        // console.log(e.x1.baseVal.value)
+        substituteX.push(e.x1.baseVal.value)
+      });
+      stemsXArray = substituteX
+    }
+    changeStemsX()
+      
     // Label X Zooming
     labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
@@ -340,6 +380,7 @@ function drawChart(prices) {
       stems.transition().duration(100)
         .attr("y1", (d) => yScale(d.High))
         .attr("y2", (d) => yScale(d.Low))
+        console.log(stemsXArray[0])
 
       // shapes.transition()
       //   .duration(100)
@@ -375,25 +416,25 @@ function drawChart(prices) {
     .style("stroke-width", "1px")
     .style("opacity", "0");
 
-  var lines = document.getElementsByClassName('line');
+  // var lines = document.getElementsByClassName('line');
 
-  var mousePerLine = mouseG.selectAll('.mouse-per-line')
-    // .data(cities)
-    .enter()
-    .append("g")
-    .attr("class", "mouse-per-line");
+  // var mousePerLine = mouseG.selectAll('.mouse-per-line')
+  //   // .data(cities)
+  //   .enter()
+  //   .append("g")
+  //   .attr("class", "mouse-per-line");
 
-  mousePerLine.append("circle")
-    .attr("r", 7)
-    .style("stroke", function (d) {
-      return color(d.name);
-    })
-    .style("fill", "none")
-    .style("stroke-width", "1px")
-    .style("opacity", "0");
+  // mousePerLine.append("circle")
+  //   .attr("r", 7)
+  //   .style("stroke", function (d) {
+  //     return color(d.name);
+  //   })
+  //   .style("fill", "none")
+  //   .style("stroke-width", "1px")
+  //   .style("opacity", "0");
 
-  mousePerLine.append("text")
-    .attr("transform", "translate(10,3)");
+  // mousePerLine.append("text")
+  //   .attr("transform", "translate(10,3)");
 
   mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
     .attr('width', w) // can't catch mouse events on a g element
@@ -425,33 +466,45 @@ function drawChart(prices) {
           return d;
         });
 
-      d3.selectAll(".mouse-per-line")
-        .attr("transform", function (d, i) {
-          console.log(width / mouse[0])
-          var xDate = x.invert(mouse[0]),
-            bisect = d3.bisector(function (d) { return d.date; }).right;
-          idx = bisect(d.values, xDate);
+      //  console.log(parseInt(kms.select("#doge").attr("x"))+300)
+      //  console.log(kms.select(".gg").attr("x"))
+      // stems.selectAll(".stem")._parents.forEach(e => {
+      //   console.log(e.x1.baseVal.value)
+      // });
+      // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
+      stemsXArray.forEach((x,i) => {
+        if ((mouse[0] > (x - 2)) && (mouse[0] < (x + 2))) {
+          document.getElementById("ohlcDisplay").innerHTML = `Open: ${prices[i].Open} High: ${prices[i].High} Low: ${prices[i].Low} Close: ${prices[i].Close}`
+        } 
+      })
 
-          var beginning = 0,
-            end = lines[i].getTotalLength(),
-            target = null;
+      // d3.selectAll(".mouse-per-line")
+      //   .attr("transform", function (d, i) {
+      //     console.log(width / mouse[0])
+      //     var xDate = x.invert(mouse[0]),
+      //       bisect = d3.bisector(function (d) { return d.date; }).right;
+      //     idx = bisect(d.values, xDate);
 
-          while (true) {
-            target = Math.floor((beginning + end) / 2);
-            pos = lines[i].getPointAtLength(target);
-            if ((target === end || target === beginning) && pos.x !== mouse[0]) {
-              break;
-            }
-            if (pos.x > mouse[0]) end = target;
-            else if (pos.x < mouse[0]) beginning = target;
-            else break; //position found
-          }
+      //     var beginning = 0,
+      //       end = lines[i].getTotalLength(),
+      //       target = null;
 
-          d3.select(this).select('text')
-            .text(y.invert(pos.y).toFixed(2));
+      //     while (true) {
+      //       target = Math.floor((beginning + end) / 2);
+      //       pos = lines[i].getPointAtLength(target);
+      //       if ((target === end || target === beginning) && pos.x !== mouse[0]) {
+      //         break;
+      //       }
+      //       if (pos.x > mouse[0]) end = target;
+      //       else if (pos.x < mouse[0]) beginning = target;
+      //       else break; //position found
+      //     }
 
-          return "translate(" + mouse[0] + "," + pos.y + ")";
-        });
+      //     d3.select(this).select('text')
+      //       .text(y.invert(pos.y).toFixed(2));
+
+      //     return "translate(" + mouse[0] + "," + pos.y + ")";
+      //   });
     });
 }
 
@@ -487,6 +540,10 @@ function wrap(text, width) {
   });
   // horizontalScroll()
 }
+
+
+
+
 
 function horizontalScroll() {
   var indicators = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]

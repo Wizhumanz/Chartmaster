@@ -110,6 +110,10 @@ div.right {
   right: 37%;
 }
 
+#ohlcDisplay {
+  color: #fffdd0;
+}
+
 button {
   font-family: "Alata", sans-serif;
   background-color: black;
