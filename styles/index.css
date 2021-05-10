@@ -76,6 +76,10 @@ html {
   padding: 0.75rem;
 }
 
+#ohlcDisplay {
+  color: #fffdd0;
+}
+
 button {
   font-family: "Alata", sans-serif;
   background-color: black;

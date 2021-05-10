@@ -11,7 +11,7 @@ function getPickerDateTime(pickerID) {
 }
 
 function getLocalTimezone() {
-  return (-new Date().getTimezoneOffset()/60) * 3600000
+  return (-new Date().getTimezoneOffset() / 60) * 3600000
 }
 
 function getMoreData() {
@@ -35,7 +35,7 @@ function getMoreData() {
   let endTime = new Date(Math.abs(candlestickData[candlestickData.length - 1].DateTime) + getLocalTimezone());
   let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
   console.log(getURL)
-  console.log(-new Date().getTimezoneOffset()/60)
+  console.log(-new Date().getTimezoneOffset() / 60)
   axios
     .get(getURL, {
       headers: hd,
@@ -118,20 +118,20 @@ function drawChart(prices) {
 
   var width = 500;
   var height = 500;
-  
+
   var kms = d3.select("#container")
-          .append("svg")
-          .attr("width", width)
-          .attr("height", height);
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
   //Create and append rectangle element
 
   svg.append("rect")
-          .attr("x", 0)
-          .attr("y", 0)
-          .attr("width", 200)
-          .attr("height", 100)
-          .attr("fill", "yellow")
-          .attr("id", "doge")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", 200)
+    .attr("height", 100)
+    .attr("fill", "yellow")
+    .attr("id", "doge")
 
 
   let dates = _.map(candlestickData, 'DateTime');
@@ -434,40 +434,40 @@ function drawChart(prices) {
           d += " " + mouse[0] + "," + 0;
           return d;
         });
-        console.log(mouse[0])
 
       //  console.log(parseInt(kms.select("#doge").attr("x"))+300)
       //  console.log(kms.select(".gg").attr("x"))
       // stems.selectAll(".stem")._parents.forEach(e => {
       //   console.log(e.x1.baseVal.value)
       // });
-      
-  // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
+
+      // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
       let hmu = stems.selectAll(".stem")._parents[0].x1.baseVal.value
-      
-        if(mouse[0] > stemsXArray[0]-2 && mouse[0] < stemsXArray[0]+2) {
-          console.log("KMS")
-          kms.append("rect")
-          .attr("x", 400)
-          .attr("y", 400)
-          .attr("width", 200)
-          .attr("height", 100)
-          .attr("fill", "white")
-          .attr("class", "gg")
 
-
+      stemsXArray.forEach(x => {
+        if ((mouse[0] > (x - 2)) && (mouse[0] < (x + 2))) {
+          // console.log("KMS" + mouse[0])
+          document.getElementById("ohlcDisplay").innerHTML = mouse[0]
+          // kms.append("rect")
+          //   .attr("x", 400)
+          //   .attr("y", 400)
+          //   .attr("width", 200)
+          //   .attr("height", 100)
+          //   .attr("fill", "white")
+          //   .attr("class", "gg")
         } else {
-          console.log("PPP")
-          // console.log(kms.select(".gg"))
-          kms.append("rect")
-          .attr("x", 400)
-          .attr("y", 400)
-          .attr("width", 200)
-          .attr("height", 100)
-          .attr("fill", "black")
-          .attr("class", "gg")
-        }
+          // console.log("PPP")
 
+          // console.log(kms.select(".gg"))
+          // kms.append("rect")
+          //   .attr("x", 400)
+          //   .attr("y", 400)
+          //   .attr("width", 200)
+          //   .attr("height", 100)
+          //   .attr("fill", "black")
+          //   .attr("class", "gg")
+        }
+      })
 
       // d3.selectAll(".mouse-per-line")
       //   .attr("transform", function (d, i) {
