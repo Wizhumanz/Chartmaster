@@ -119,19 +119,19 @@ function drawChart(prices) {
   var width = 500;
   var height = 500;
 
-  var kms = d3.select("#container")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-  //Create and append rectangle element
+  // var kms = d3.select("#container")
+  //   .append("svg")
+  //   .attr("width", width)
+  //   .attr("height", height);
+  // //Create and append rectangle element
 
-  svg.append("rect")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", 200)
-    .attr("height", 100)
-    .attr("fill", "yellow")
-    .attr("id", "doge")
+  // svg.append("rect")
+  //   .attr("x", 0)
+  //   .attr("y", 0)
+  //   .attr("width", 200)
+  //   .attr("height", 100)
+  //   .attr("fill", "yellow")
+  //   .attr("id", "doge")
 
 
   let dates = _.map(candlestickData, 'DateTime');
@@ -454,31 +454,11 @@ function drawChart(prices) {
       // stems.selectAll(".stem")._parents.forEach(e => {
       //   console.log(e.x1.baseVal.value)
       // });
-
       // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
-      stemsXArray.forEach(x => {
+      stemsXArray.forEach((x,i) => {
         if ((mouse[0] > (x - 2)) && (mouse[0] < (x + 2))) {
-          // console.log("KMS" + mouse[0])
-          document.getElementById("ohlcDisplay").innerHTML = mouse[0]
-          // kms.append("rect")
-          //   .attr("x", 400)
-          //   .attr("y", 400)
-          //   .attr("width", 200)
-          //   .attr("height", 100)
-          //   .attr("fill", "white")
-          //   .attr("class", "gg")
-        } else {
-          // console.log("PPP")
-
-          // console.log(kms.select(".gg"))
-          // kms.append("rect")
-          //   .attr("x", 400)
-          //   .attr("y", 400)
-          //   .attr("width", 200)
-          //   .attr("height", 100)
-          //   .attr("fill", "black")
-          //   .attr("class", "gg")
-        }
+          document.getElementById("ohlcDisplay").innerHTML = `Open: ${prices[i].Open} High: ${prices[i].High} Low: ${prices[i].Low} Close: ${prices[i].Close}`
+        } 
       })
 
       // d3.selectAll(".mouse-per-line")
