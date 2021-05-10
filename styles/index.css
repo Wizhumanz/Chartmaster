@@ -73,7 +73,21 @@ html {
 }
 
 .controls {
-  padding: 0.75rem;
+  font-size: small;
+  padding: 0.5rem;
+}
+.controls label {
+  font-size: small;
+  margin-left: 0.5rem;
+}
+.controls input[type=datetime-local] {
+  width: 190px;
+  padding: 0.25rem;
+  margin-left: -0.25rem;
+  background-color: #8a0000;
+  color: #fffdd0;
+  border: none;
+  border-radius: 5px;
 }
 
 button {
@@ -97,14 +111,6 @@ label {
   color: #fffdd0;
   margin-left: 1rem;
   margin-right: 0.5rem;
-}
-
-input[type=datetime-local] {
-  padding: 0.25rem;
-  background-color: #8a0000;
-  color: #fffdd0;
-  border: none;
-  border-radius: 5px;
 }
 
 .svg-container {
