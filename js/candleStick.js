@@ -199,7 +199,6 @@ function drawChart(prices) {
   //   .attr("height", 10)
   //   .attr("fill", "yellow")
 
-
   // Add index to Price Array
   candlestickData.map(p => p["index"] = candlestickData.indexOf(p))
 
