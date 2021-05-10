@@ -73,20 +73,30 @@ html {
 }
 
 .controls {
-  font-size: small;
   padding: 0.5rem;
+  font-size: small;
+  font-family: "Alata", sans-serif;
 }
 .controls label {
   font-size: small;
   margin-left: 0.5rem;
 }
 .controls input[type=datetime-local] {
-  width: 190px;
+  width: 200px;
   padding: 0.25rem;
   margin-left: -0.25rem;
   background-color: #8a0000;
   color: #fffdd0;
   border: none;
+  border-radius: 5px;
+}
+.controls select {
+  width: 120px;
+  padding: 0.25rem;
+  margin-left: 0.25rem;
+  background-color: black;
+  color: #fffdd0;
+  border: #8a0000 2px solid;
   border-radius: 5px;
 }
 

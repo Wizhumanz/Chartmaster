@@ -25,8 +25,9 @@ html {
 }
 
 .controls {
-  font-size: small;
   padding: 0.5rem;
+  font-size: small;
+  font-family: $body-font;
 
   label {
     font-size: small;
@@ -34,12 +35,22 @@ html {
   }
 
   input[type="datetime-local"] {
-    width: 190px;
+    width: 200px;
     padding: 0.25rem;
     margin-left: -0.25rem;
     background-color: $blood;
     color: $cream;
     border: none;
+    border-radius: 5px;
+  }
+
+  select {
+    width: 120px;
+    padding: 0.25rem;
+    margin-left: 0.25rem;
+    background-color: black;
+    color: $cream;
+    border: $blood 2px solid;
     border-radius: 5px;
   }
 }
