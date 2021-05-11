@@ -6,6 +6,76 @@ let wholeEndTime = getPickerDateTime("endDateTimePicker")
 let newCandlesToFetch = 80
 let xAxisDateExisting
 
+
+function connectWs() {
+  wsConnLoading = true;
+  if (true) {
+    try {
+      socket = new WebSocket("wss://ana-api.myika.co/ws/" + "5632499082330112");
+      console.log("Attempting Connection...");
+      setTimeout(() => (wsConnLoading = false), 1000);
+    } catch (err) {
+      console.log(err);
+      setTimeout(() => (wsConnLoading = false), 1000);
+    }
+  } else {
+    setTimeout(() => (wsConnLoading = false), 1000);
+  }
+
+  if (socket) {
+    socket.onopen = () => {
+      console.log("Successfully Connected");
+      socket.send("Client connected");
+      displaySocketIsClosed = false;
+
+      //get request for TradeAction/trade histories
+      const hds = {
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        Expires: "0",
+        Authorization: "trader",
+      };
+      axios
+        .get("https://ana-api.myika.co/trades" + "?user=" + "5632499082330112", {
+          headers: hds,
+          mode: "cors",
+        })
+        .then((res) => {
+          user.trades = res.data;
+          storeUser.set(JSON.stringify(user));
+          // console.log(res.status + " -- " + JSON.stringify(res.data));
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+    };
+
+    socket.onclose = (event) => {
+      console.log("Socket CLOSED Connection: ", event);
+      displaySocketIsClosed = true;
+    };
+
+    socket.onerror = (error) => {
+      console.log("Socket Error: ", error);
+      displaySocketIsClosed = true;
+    };
+
+    socket.onmessage = (msg) => {
+      console.log("WS server msg: " + msg.data);
+      displaySocketIsClosed = false;
+      //TODO: getting stringified trade action object, parse and put in store.js
+      if (msg.data.includes("{")) {
+        if (user.trades) {
+          
+          console.log(user.trades);
+        }
+      }
+    };
+  }
+}
+
+connectWs()
+
 function computeBacktest() {
   let ticker = document.getElementById("tickerSelect").value
   let period = document.getElementById("periodSelect").value
@@ -609,5 +679,4 @@ function dragended(d) {
 function zoomed() {
   //      	console.log(d3.event)
   d3.select("#scroll").property("scrollLeft", maxScroll * (1 - d3.event.transform.k))
-
 }
