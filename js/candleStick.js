@@ -98,7 +98,6 @@ function getExchanges() {
       // mode: "cors",
     })
     .then((res) => {
-      console.log(res.data)
       //sort alphabetically
       res.data.sort(function (a, b) {
         if (a.symbol_id_exchange < b.symbol_id_exchange) { return -1; }
@@ -156,7 +155,6 @@ function getMoreData() {
       // mode: "cors",
     })
     .then((res) => {
-      // console.log(res)
       drawChart(res.data)
     })
     .catch((error) => {
@@ -194,18 +192,10 @@ function processXAxisLabel(d, dates) {
 }
 
 function drawChart(prices) {
-  // //debug
-  // prices.forEach(c => {
-  //   if ((c.Label != "") || (c.StratEnterPrice != "") || (c.StratExitPrice != "")) {
-  //     console.log(c)
-  //   }
-  // })
-
   //reset chart
   d3.selectAll("#container > *").remove();
 
   candlestickData = prices
-  // console.log(candlestickData)
 
   const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
   // if (addedData.length !== 0) {
@@ -426,7 +416,7 @@ function drawChart(prices) {
     stems.attr("x1", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
     stems.attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
 
-    console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
+    // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
 
     function changeStemsX() {
       let substituteX = []
@@ -473,7 +463,7 @@ function drawChart(prices) {
       stems.transition().duration(100)
         .attr("y1", (d) => yScale(d.High))
         .attr("y2", (d) => yScale(d.Low))
-      console.log(stemsXArray[0])
+      // console.log(stemsXArray[0])
 
       // shapes.transition()
       //   .duration(100)
@@ -559,45 +549,11 @@ function drawChart(prices) {
           return d;
         });
 
-      //  console.log(parseInt(kms.select("#doge").attr("x"))+300)
-      //  console.log(kms.select(".gg").attr("x"))
-      // stems.selectAll(".stem")._parents.forEach(e => {
-      //   console.log(e.x1.baseVal.value)
-      // });
-      // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
       stemsXArray.forEach((x, i) => {
         if ((mouse[0] > (x - 2)) && (mouse[0] < (x + 2))) {
           document.getElementById("ohlcDisplay").innerHTML = `Open: ${prices[i].Open} High: ${prices[i].High} Low: ${prices[i].Low} Close: ${prices[i].Close}`
         }
       })
-
-      // d3.selectAll(".mouse-per-line")
-      //   .attr("transform", function (d, i) {
-      //     console.log(width / mouse[0])
-      //     var xDate = x.invert(mouse[0]),
-      //       bisect = d3.bisector(function (d) { return d.date; }).right;
-      //     idx = bisect(d.values, xDate);
-
-      //     var beginning = 0,
-      //       end = lines[i].getTotalLength(),
-      //       target = null;
-
-      //     while (true) {
-      //       target = Math.floor((beginning + end) / 2);
-      //       pos = lines[i].getPointAtLength(target);
-      //       if ((target === end || target === beginning) && pos.x !== mouse[0]) {
-      //         break;
-      //       }
-      //       if (pos.x > mouse[0]) end = target;
-      //       else if (pos.x < mouse[0]) beginning = target;
-      //       else break; //position found
-      //     }
-
-      //     d3.select(this).select('text')
-      //       .text(y.invert(pos.y).toFixed(2));
-
-      //     return "translate(" + mouse[0] + "," + pos.y + ")";
-      //   });
     });
 }
 
@@ -643,7 +599,7 @@ function horizontalScroll() {
       .interpolate(d3.interpolateLinear)
       .on("zoom", zoomed))
 
-  console.log(candlestickData)
+  // console.log(candlestickData)
   var divs = d3.select("#scroll").selectAll(".indicatorDivs").data(candlestickData)
 
   divs.enter()
@@ -694,6 +650,6 @@ function dragended(d) {
 }
 
 function zoomed() {
-  //      	console.log(d3.event)
+  // console.log(d3.event)
   d3.select("#scroll").property("scrollLeft", maxScroll * (1 - d3.event.transform.k))
 }
