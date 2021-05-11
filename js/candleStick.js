@@ -6,7 +6,6 @@ let wholeEndTime = getPickerDateTime("endDateTimePicker")
 let newCandlesToFetch = 80
 let xAxisDateExisting
 
-
 function connectWs() {
   wsConnLoading = true;
   if (true) {
@@ -21,8 +20,6 @@ function connectWs() {
   } else {
     setTimeout(() => (wsConnLoading = false), 1000);
   }
-
-
 
   if (socket) {
     socket.onopen = () => {
@@ -53,8 +50,7 @@ function connectWs() {
     };
   }
 }
-
-
+connectWs()
 
 function computeBacktest() {
   let ticker = document.getElementById("tickerSelect").value
@@ -211,7 +207,6 @@ function drawChart(prices) {
   //   .attr("height", 100)
   //   .attr("fill", "yellow")
   //   .attr("id", "doge")
-
 
   let dates = _.map(candlestickData, 'DateTime');
 
@@ -411,12 +406,10 @@ function drawChart(prices) {
     enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
     exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
-
     hideTicksWithoutLabel();
 
     gX.selectAll(".tick text")
       .call(wrap, xBand.bandwidth())
-
   }
 
   function zoomend() {
@@ -569,7 +562,6 @@ function drawChart(prices) {
     });
 }
 
-connectWs()
 // function drawChartInit() {
 //   let firstGetURL = baseURL + "/candlestick?time_start=" + wholeStartTime + "&time_end=" + wholeEndTime
 //   d3.json(firstGetURL).then(function (prices) {
@@ -603,10 +595,7 @@ function wrap(text, width) {
   // horizontalScroll()
 }
 
-
-
-
-
+//unused 
 function horizontalScroll() {
   var indicators = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
 
