@@ -14,6 +14,7 @@ var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
 const margin = { top: 30, right: 20, bottom: 205, left: 70 },
   w = 1050,
   h = 680;
+let existingCandlesWSResID
 
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
@@ -49,11 +50,20 @@ function connectWs() {
       var dataObj = JSON.parse(msg.data)
 
       //update chart data based on data type
-      if (parseFloat(dataObj[0].Open) > 0) {
-        drawChart(dataObj)
-      } else if (parseFloat(dataObj[0].Data[0].Equity) > 0) {
+      if (dataObj.Data[0].Open != undefined && parseFloat(dataObj.Data[0].Open) > 0) {
+        //check if concat needed, or new data
+        if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
+          //replace entire candlestick chart
+          drawChart(dataObj.Data)
+          //save res id so next messages with same ID will be concatenated with existing data
+          existingCandlesWSResID = dataObj.ResultID
+        } else {
+          var newA = candlestickData.concat(dataObj.Data)
+          drawChart(newA)
+        }
+      } else if (dataObj[0].Data[0].Equity != undefined && parseFloat(dataObj[0].Data[0].Equity) > 0) {
         drawPC(dataObj)
-      } else if (parseFloat(dataObj[0].Data[0].EntryPrice) > 0) {
+      } else if (dataObj[0].Data[0].EntryPrice != undefined && parseFloat(dataObj[0].Data[0].EntryPrice) > 0) {
         plotHistory(dataObj)
       } else {
         console.log("WS server msg: " + msg.data);
@@ -210,6 +220,7 @@ function drawChart(prices) {
   //reset chart
   d3.selectAll("#container > *").remove();
   candlestickData = prices
+  console.log(candlestickData)
 
   for (var i = 0; i < candlestickData.length; i++) {
     candlestickData[i].DateTime = dateFormat(candlestickData[i].DateTime)
