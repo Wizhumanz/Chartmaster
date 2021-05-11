@@ -1,3 +1,6 @@
+
+/// CANDLESTICKS
+
 let baseURL = "http://localhost:8000"
 let candlestickData = []
 let addedData = []
@@ -5,6 +8,10 @@ let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
 let newCandlesToFetch = 80
 let xAxisDateExisting
+var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
+const margin = { top: 20, right: 20, bottom: 205, left: 70 },
+  w = 1050,
+  h = 680;
 
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
@@ -39,8 +46,11 @@ function connectWs() {
     socket.onmessage = (msg) => {
       displaySocketIsClosed = false;
       var dataObj = JSON.parse(msg.data)
+
       if (parseFloat(dataObj[0].Open) > 0) {
         drawChart(dataObj)
+      } else if (parseFloat(dataObj[0].Data[0].Equity) > 0) {
+        drawPC(dataObj)
       } else {
         console.log("WS server msg: " + msg.data);
       }
@@ -192,11 +202,6 @@ function drawChart(prices) {
   if (!prices) {
     return
   }
-
-  var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
-  const margin = { top: 20, right: 20, bottom: 205, left: 70 },
-    w = 1050,
-    h = 680;
 
   //reset chart
   d3.selectAll("#container > *").remove();
@@ -568,6 +573,163 @@ function wrap(text, width) {
   });
   // horizontalScroll()
 }
+
+/// PROFIT CURVE
+
+var profitCurveData
+var pcMargin = { top: 20, right: 20, bottom: 30, left: 40 },
+  width = 550 - pcMargin.left - pcMargin.right,
+  height = 300 - pcMargin.top - pcMargin.bottom;
+
+// parse the date / time
+var parseTime = d3.timeParse("%d-%b-%y");
+
+// set the ranges
+var x = d3.scaleTime().range([0, width]);
+var y = d3.scaleLinear().range([height, 0]);
+
+// append the svg obgect to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+var pcSvg = d3.select("#profit").append("svg")
+  // .attr("width", "550")
+  // .attr("height", "400")
+  .attr("viewBox", "0 0 600 600")
+  .append("g")
+  .attr("transform",
+    "translate(" + pcMargin.left + "," + pcMargin.top + ")");
+
+function drawPC(data) {
+  let formattedData = []
+  let changedData = []
+
+  // format the data. Change data from the backend to usuable form
+  data.forEach(function (d) {
+    d.Data.forEach(function (point) {
+      if (formattedData.map((a) => { return a.date }).includes(point.DateTime)) {
+        //add point.Equity to existing obj
+        formattedData.forEach((a) => {
+          if (a.date == point.DateTime) {
+            a[d.DataLabel] = point.Equity
+          }
+        })
+
+      } else {
+        //make new obj
+        let datum = {}
+        datum.date = point.DateTime
+
+        data.forEach((d) => {
+          datum[d.DataLabel] = null
+        })
+
+        datum[d.DataLabel] = point.Equity
+        formattedData.push(datum)
+      }
+    })
+  });
+
+  // sorting the array before copying the data if null
+  sortByDate(formattedData)
+
+  // If data is null, it uses the previous data
+  formattedData.forEach((a, i) => {
+    let datum = {}
+    datum["date"] = new Date(a.date)
+
+    let fillNullData = (key, value) => {
+      if (key !== "date") {
+        if (value !== null) {
+          //Delete spaces in param names and add value if exists
+          datum[key.replace(" ", "")] = value;
+        } else {
+          //Delete spaces in param names and add previous value
+          datum[key.replace(" ", "")] = changedData[i - 1][key.replace(" ", "")];
+        }
+      }
+    }
+    useKeyAndValue(fillNullData, a)
+
+    changedData.push(datum)
+  })
+
+  // assign to data, which is used by all d3
+  data = changedData
+
+  // Scale the range of the data
+  x.domain(d3.extent(data, function (d) { return d.date; }));
+  y.domain([0, d3.max(data, function (d) {
+    let maxValue = []
+    let findMax = (key, value) => {
+      if (key !== "date") {
+        maxValue.push(value)
+      }
+    }
+    useKeyAndValue(findMax, d)
+    return 1.1 * (Math.max(...maxValue));
+  })]);
+
+  let valueline = []
+
+  // Creating lines and adding it to an array
+  let newLines = (key, value) => {
+    if (key !== "date") {
+      valueline.push(d3.line()
+        .x(function (d) { return x(d.date); })
+        .y(function (d) { return y(d[key]); }))
+    }
+  }
+  useKeyAndValue(newLines, data[0])
+
+  // Drawing the lines from the valueline array
+  function drawNewLines(v, d) {
+    if (v.length === 0) {
+      return
+    }
+    pcSvg.append("path")
+      .data([d])
+      .attr("class", "line")
+      .attr("d", v[0])
+      .style("stroke", getRandomColor())
+    return drawNewLines(v.slice(1), d)
+  }
+  drawNewLines(valueline, data)
+
+  // Add the X Axis
+  pcSvg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .style("color", "white")
+
+  // Add the Y Axis
+  pcSvg.append("g")
+    .call(d3.axisLeft(y))
+    .style("color", "white")
+}
+
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+function sortByDate(arr) {
+  // Sorting the array based on date from earlier to later
+  arr.sort(function (a, b) {
+    return new Date(new Date(a.date)) - new Date(new Date(b.date));
+  });
+}
+
+function useKeyAndValue(func, obj) {
+  for (const [key, value] of Object.entries(obj)) {
+    func(key, value)
+  }
+}
+
+/// SIMULATED TRADES
 
 //unused 
 function horizontalScroll() {
