@@ -6,6 +6,56 @@ let wholeEndTime = getPickerDateTime("endDateTimePicker")
 let newCandlesToFetch = 80
 let xAxisDateExisting
 
+
+function connectWs() {
+  wsConnLoading = true;
+  if (true) {
+    try {
+      socket = new WebSocket("ws://localhost:8000/ws-cm/" + "5632499082330112");
+      console.log("Attempting Connection...");
+      setTimeout(() => (wsConnLoading = false), 1000);
+    } catch (err) {
+      console.log(err);
+      setTimeout(() => (wsConnLoading = false), 1000);
+    }
+  } else {
+    setTimeout(() => (wsConnLoading = false), 1000);
+  }
+
+
+
+  if (socket) {
+    socket.onopen = () => {
+      console.log("Successfully Connected");
+      socket.send("Client connected");
+      displaySocketIsClosed = false;
+
+    };
+
+    socket.onclose = (event) => {
+      console.log("Socket CLOSED Connection: ", event);
+      displaySocketIsClosed = true;
+    };
+
+    socket.onerror = (error) => {
+      console.log("Socket Error: ", error);
+      displaySocketIsClosed = true;
+    };
+
+    socket.onmessage = (msg) => {
+      console.log("WS server msg: " + msg.data);
+      displaySocketIsClosed = false;
+      //TODO: getting stringified trade action object, parse and put in store.js
+      console.log(msg.data)
+      // if (Object.keys(msg.data[0]).includes("")) {
+      //   drawChart(msg)
+      // }
+    };
+  }
+}
+
+
+
 function computeBacktest() {
   let ticker = document.getElementById("tickerSelect").value
   let period = document.getElementById("periodSelect").value
@@ -13,7 +63,7 @@ function computeBacktest() {
   let startTimeStr = startTime.toISOString().split(".")[0]
   let endTime = new Date(Math.abs((new Date(getPickerDateTime("endDateTimePicker")))) + getLocalTimezone())
   let endTimeStr = endTime.toISOString().split(".")[0]
-  let getURL = baseURL + "/backtest?time_start=" + startTimeStr + "&time_end=" + endTimeStr + "&ticker=" + ticker + "&period=" + period + "&user=69696969696969420"
+  let getURL = baseURL + "/backtest?time_start=" + startTimeStr + "&time_end=" + endTimeStr + "&ticker=" + ticker + "&period=" + period + "&user=5632499082330112"
 
   let hd = {
     // "Content-Type": "application/json",
@@ -519,13 +569,14 @@ function drawChart(prices) {
     });
 }
 
-function drawChartInit() {
-  let firstGetURL = baseURL + "/candlestick?time_start=" + wholeStartTime + "&time_end=" + wholeEndTime
-  d3.json(firstGetURL).then(function (prices) {
-    drawChart(prices)
-  });
-}
-drawChartInit();
+connectWs()
+// function drawChartInit() {
+//   let firstGetURL = baseURL + "/candlestick?time_start=" + wholeStartTime + "&time_end=" + wholeEndTime
+//   d3.json(firstGetURL).then(function (prices) {
+//     drawChart(prices)
+//   });
+// }
+// drawChartInit();
 
 function wrap(text, width) {
   text.each(function () {
@@ -617,5 +668,4 @@ function dragended(d) {
 function zoomed() {
   //      	console.log(d3.event)
   d3.select("#scroll").property("scrollLeft", maxScroll * (1 - d3.event.transform.k))
-
 }
