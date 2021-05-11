@@ -13,20 +13,27 @@ function computeBacktest() {
   let startTimeStr = startTime.toISOString().split(".")[0]
   let endTime = new Date(Math.abs((new Date(getPickerDateTime("endDateTimePicker")))) + getLocalTimezone())
   let endTimeStr = endTime.toISOString().split(".")[0]
-  let getURL = baseURL + "/candlestick?time_start=" + startTimeStr + "&time_end=" + endTimeStr + "&ticker=" + ticker + "&period=" + period
-  console.log(getURL)
-  // axios
-  //   .get(getURL, {
-  //     headers: hd,
-  //     // mode: "cors",
-  //   })
-  //   .then((res) => {
-  //     // console.log(res)
-  //     drawChart(res.data)
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //   });
+  let getURL = baseURL + "/backtest?time_start=" + startTimeStr + "&time_end=" + endTimeStr + "&ticker=" + ticker + "&period=" + period
+
+  let hd = {
+    // "Content-Type": "application/json",
+    // Authorization: user.password,
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+    Expires: "0",
+  }
+  axios
+    .get(getURL, {
+      headers: hd,
+      // mode: "cors",
+    })
+    .then((res) => {
+      // console.log(res)
+      drawChart(res.data)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
 function getPickerDateTime(pickerID) {
@@ -41,14 +48,6 @@ function getMoreData() {
   wholeStartTime = getPickerDateTime("startDateTimePicker")
   wholeEndTime = getPickerDateTime("endDateTimePicker")
 
-  let hd = {
-    // "Content-Type": "application/json",
-    // Authorization: user.password,
-    "Cache-Control": "no-cache",
-    Pragma: "no-cache",
-    Expires: "0",
-  }
-
   let date1 = new Date(candlestickData[0].DateTime);
   let date2 = new Date(candlestickData[1].DateTime);
   let candleDuration = Math.abs(date2 - date1); //in ms
@@ -57,8 +56,15 @@ function getMoreData() {
   let newStartDate = new Date(Math.abs((new Date(currentStartTime)) - (newCandlesToFetch * candleDuration)) + getLocalTimezone())
   let endTime = new Date(Math.abs(candlestickData[candlestickData.length - 1].DateTime) + getLocalTimezone());
   let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
-  console.log(getURL)
-  console.log(-new Date().getTimezoneOffset() / 60)
+
+  let hd = {
+    // "Content-Type": "application/json",
+    // Authorization: user.password,
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+    Expires: "0",
+  }
+
   axios
     .get(getURL, {
       headers: hd,
