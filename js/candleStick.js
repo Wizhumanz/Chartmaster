@@ -37,11 +37,12 @@ function connectWs() {
     };
 
     socket.onmessage = (msg) => {
-      console.log("WS server msg: " + msg.data);
       displaySocketIsClosed = false;
       var dataObj = JSON.parse(msg.data)
       if (parseFloat(dataObj[0].Open) > 0) {
         drawChart(dataObj)
+      } else {
+        console.log("WS server msg: " + msg.data);
       }
     };
   }
@@ -191,16 +192,15 @@ function drawChart(prices) {
   if (!prices) {
     return
   }
-  
+
   var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
   const margin = { top: 20, right: 20, bottom: 205, left: 70 },
-  w = 1050,
-  h = 680;
+    w = 1050,
+    h = 680;
 
   //reset chart
   d3.selectAll("#container > *").remove();
   candlestickData = prices
-  console.log(prices)
 
   for (var i = 0; i < candlestickData.length; i++) {
     candlestickData[i].DateTime = dateFormat(candlestickData[i].DateTime)
