@@ -11,7 +11,7 @@ let wholeEndTime = getPickerDateTime("endDateTimePicker")
 let newCandlesToFetch = 80
 let xAxisDateExisting
 var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
-const margin = { top: 20, right: 20, bottom: 205, left: 70 },
+const margin = { top: 30, right: 20, bottom: 205, left: 70 },
   w = 1050,
   h = 680;
 
@@ -538,8 +538,8 @@ function drawChart(prices) {
         });
 
       stemsXArray.forEach((x, i) => {
-        if ((mouse[0] > (x - 2)) && (mouse[0] < (x + 2))) {
-          document.getElementById("ohlcDisplay").innerHTML = `Open: ${prices[i].Open} High: ${prices[i].High} Low: ${prices[i].Low} Close: ${prices[i].Close}`
+        if ((mouse[0] > (x - 3)) && (mouse[0] < (x + 3))) {
+          document.getElementById("ohlcDisplay").innerHTML = `O <span>${prices[i].Open}</span> <br>H <span>${prices[i].High}</span> <br>L <span>${prices[i].Low}</span> <br>C <span>${prices[i].Close}</span>`
         }
       })
     });

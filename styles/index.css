@@ -142,7 +142,16 @@ div.right {
   }
 }
 #ohlcDisplay {
+  margin: 0.5rem 6.5rem;
+  padding: 0.35rem;
+  width: fit-content;
+  font-size: small;
+  background-color: #120011;
   color: #fffdd0;
+}
+#ohlcDisplay span {
+  color: cyan;
+  margin-left: 0.25rem;
 }
 
 button {

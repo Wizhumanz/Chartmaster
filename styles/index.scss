@@ -99,7 +99,17 @@ div.right {
 }
 
 #ohlcDisplay {
+  margin: 0.5rem 6.5rem;
+  padding: 0.35rem;
+  width: fit-content;
+  font-size: small;
+  background-color: #120011;
   color: $cream;
+
+  span {
+    color:cyan;
+    margin-left: 0.25rem;
+  }
 }
 
 button {
