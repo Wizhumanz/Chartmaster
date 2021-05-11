@@ -6,18 +6,16 @@ let wholeEndTime = getPickerDateTime("endDateTimePicker")
 let newCandlesToFetch = 80
 let xAxisDateExisting
 
+const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
+
 function connectWs() {
   wsConnLoading = true;
-  if (true) {
-    try {
-      socket = new WebSocket("ws://localhost:8000/ws-cm/" + "5632499082330112");
-      console.log("Attempting Connection...");
-      setTimeout(() => (wsConnLoading = false), 1000);
-    } catch (err) {
-      console.log(err);
-      setTimeout(() => (wsConnLoading = false), 1000);
-    }
-  } else {
+  try {
+    socket = new WebSocket("ws://localhost:8000/ws-cm/" + "5632499082330112");
+    console.log("Attempting Connection...");
+    setTimeout(() => (wsConnLoading = false), 1000);
+  } catch (err) {
+    console.log(err);
     setTimeout(() => (wsConnLoading = false), 1000);
   }
 
@@ -26,7 +24,6 @@ function connectWs() {
       console.log("Successfully Connected");
       socket.send("Client connected");
       displaySocketIsClosed = false;
-
     };
 
     socket.onclose = (event) => {
@@ -42,11 +39,10 @@ function connectWs() {
     socket.onmessage = (msg) => {
       console.log("WS server msg: " + msg.data);
       displaySocketIsClosed = false;
-      //TODO: getting stringified trade action object, parse and put in store.js
-      console.log(msg.data)
-      // if (Object.keys(msg.data[0]).includes("")) {
-      //   drawChart(msg)
-      // }
+      var dataObj = JSON.parse(msg.data)
+      if (parseFloat(dataObj[0].Open) > 0) {
+        drawChart(dataObj)
+      }
     };
   }
 }
@@ -192,23 +188,23 @@ function processXAxisLabel(d, dates) {
 }
 
 function drawChart(prices) {
+  if (!prices) {
+    return
+  }
+  
+  var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
+  const margin = { top: 20, right: 20, bottom: 205, left: 70 },
+  w = 1050,
+  h = 680;
+
   //reset chart
   d3.selectAll("#container > *").remove();
-
   candlestickData = prices
+  console.log(prices)
 
-  const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
-  // if (addedData.length !== 0) {
-  //   candlestickData = [...addedData, ...candlestickData]
-  // }
-  var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
   for (var i = 0; i < candlestickData.length; i++) {
     candlestickData[i].DateTime = dateFormat(candlestickData[i].DateTime)
   }
-
-  const margin = { top: 20, right: 20, bottom: 205, left: 70 },
-    w = 1050,
-    h = 680;
 
   var svg = d3.select("#container")
     // .attr("width", "100%")
@@ -219,23 +215,6 @@ function drawChart(prices) {
     .classed("svg-content", true)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-
-  var width = 500;
-  var height = 500;
-
-  // var kms = d3.select("#container")
-  //   .append("svg")
-  //   .attr("width", width)
-  //   .attr("height", height);
-  // //Create and append rectangle element
-
-  // svg.append("rect")
-  //   .attr("x", 0)
-  //   .attr("y", 0)
-  //   .attr("width", 200)
-  //   .attr("height", 100)
-  //   .attr("fill", "yellow")
-  //   .attr("id", "doge")
 
   let dates = _.map(candlestickData, 'DateTime');
 
