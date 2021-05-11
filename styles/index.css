@@ -237,7 +237,7 @@ td {
 }
 
 tr:hover {
-  background-color: #8a0000;
+  background-color: #8a0000 !important;
 }
 
 /* d3 */

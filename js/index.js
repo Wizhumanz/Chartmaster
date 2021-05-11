@@ -744,13 +744,27 @@ function plotHistory(data) {
       let row = table.insertRow()
       row.insertCell().innerHTML = parseInt(JSON.stringify(i)) + 1
 
+      row.insertCell().innerHTML = s.RawProfitPerc
+      row.insertCell().innerHTML = s.EntryPrice.toFixed(2)
+      row.insertCell().innerHTML = s.ExitPrice.toFixed(2)
+      row.insertCell().innerHTML = s.RiskedEquity.toFixed(2)
+      dateStrs = s.DateTime.split("T")
+      row.insertCell().innerHTML = dateStrs[0] + "\n" + dateStrs[1]
+      row.insertCell().innerHTML = s.PosSize.toFixed(2)
+      row.insertCell().innerHTML = s.Direction
+      row.style.color = "white"
+      //param name
       let param = row.insertCell()
       param.innerHTML = d.DataLabel
       param.style.color = "white"
 
-      for (const [key, value] of Object.entries(s)) {
-        row.insertCell().innerHTML = value
-        row.style.color = "white"
+      //color row based on profitability
+      var entry = parseFloat(s.EntryPrice)
+      var exit = parseFloat(s.ExitPrice)
+      if ((s.Direction == "LONG") && (exit > entry)) {
+        row.style.backgroundColor = "#002405"
+      } else if ((s.Direction == "LONG") && (exit < entry)) {
+        row.style.backgroundColor = "#240000"
       }
     })
   })
