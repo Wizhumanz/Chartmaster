@@ -1,4 +1,6 @@
 
+var wsStatus = document.getElementById("wsStatus")
+
 /// CANDLESTICKS
 
 let baseURL = "http://localhost:8000"
@@ -16,35 +18,34 @@ const margin = { top: 20, right: 20, bottom: 205, left: 70 },
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
 function connectWs() {
-  wsConnLoading = true;
+  wsStatus.innerText = "Loading websockets..."
+  var socket
   try {
     socket = new WebSocket("ws://localhost:8000/ws-cm/" + "5632499082330112");
-    console.log("Attempting Connection...");
-    setTimeout(() => (wsConnLoading = false), 1000);
   } catch (err) {
     console.log(err);
-    setTimeout(() => (wsConnLoading = false), 1000);
   }
 
   if (socket) {
     socket.onopen = () => {
-      console.log("Successfully Connected");
       socket.send("Client connected");
-      displaySocketIsClosed = false;
+      wsStatus.innerText = "Connected"
+      wsStatus.className = "connected"
     };
 
     socket.onclose = (event) => {
+      wsStatus.innerText = "Disconnected"
+      wsStatus.className = "disconnected"
       console.log("Socket CLOSED Connection: ", event);
-      displaySocketIsClosed = true;
     };
 
     socket.onerror = (error) => {
+      wsStatus.innerText = "Disconnected"
+      wsStatus.className = "disconnected"
       console.log("Socket Error: ", error);
-      displaySocketIsClosed = true;
     };
 
     socket.onmessage = (msg) => {
-      displaySocketIsClosed = false;
       var dataObj = JSON.parse(msg.data)
 
       //update chart data based on data type

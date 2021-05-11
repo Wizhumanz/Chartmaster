@@ -106,10 +106,41 @@ html {
 
 div.right {
   position: absolute;
-  top: 1%;
+  top: 1.5%;
   right: 37%;
 }
 
+#wsStatus {
+  display: inline;
+  margin-left: 0.5rem;
+  color: #fffdd0;
+}
+
+#wsStatus.connected {
+  animation: blinkingText 5s infinite;
+}
+
+#wsStatus.disconnected {
+  color: orange;
+}
+
+@keyframes blinkingText {
+  0% {
+    color: yellowgreen;
+  }
+  49% {
+    color: yellowgreen;
+  }
+  60% {
+    color: green;
+  }
+  99% {
+    color: green;
+  }
+  100% {
+    color: yellowgreen;
+  }
+}
 #ohlcDisplay {
   color: #fffdd0;
 }
