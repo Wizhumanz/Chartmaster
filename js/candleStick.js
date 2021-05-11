@@ -82,6 +82,10 @@ function computeBacktest() {
     });
 }
 
+function getExchanges() {
+  
+}
+
 function getPickerDateTime(pickerID) {
   return document.getElementById(pickerID).value + ":00"
 }
