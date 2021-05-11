@@ -13,7 +13,7 @@ function computeBacktest() {
   let startTimeStr = startTime.toISOString().split(".")[0]
   let endTime = new Date(Math.abs((new Date(getPickerDateTime("endDateTimePicker")))) + getLocalTimezone())
   let endTimeStr = endTime.toISOString().split(".")[0]
-  let getURL = baseURL + "/backtest?time_start=" + startTimeStr + "&time_end=" + endTimeStr + "&ticker=" + ticker + "&period=" + period
+  let getURL = baseURL + "/backtest?time_start=" + startTimeStr + "&time_end=" + endTimeStr + "&ticker=" + ticker + "&period=" + period + "&user=69696969696969420"
 
   let hd = {
     // "Content-Type": "application/json",
