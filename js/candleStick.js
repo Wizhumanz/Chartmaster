@@ -47,10 +47,13 @@ function connectWs() {
       displaySocketIsClosed = false;
       var dataObj = JSON.parse(msg.data)
 
+      //update chart data based on data type
       if (parseFloat(dataObj[0].Open) > 0) {
         drawChart(dataObj)
       } else if (parseFloat(dataObj[0].Data[0].Equity) > 0) {
         drawPC(dataObj)
+      } else if (parseFloat(dataObj[0].Data[0].EntryPrice) > 0) {
+        plotHistory(dataObj)
       } else {
         console.log("WS server msg: " + msg.data);
       }
@@ -730,6 +733,27 @@ function useKeyAndValue(func, obj) {
 }
 
 /// SIMULATED TRADES
+
+function plotHistory(data) {
+  var table = document.getElementById("history")
+  //for each param
+  data.forEach((d) => {
+    //for each trade history item in that param
+    d.Data.forEach((s, i) => {
+      let row = table.insertRow()
+      row.insertCell().innerHTML = parseInt(JSON.stringify(i)) + 1
+
+      let param = row.insertCell()
+      param.innerHTML = d.DataLabel
+      param.style.color = "white"
+
+      for (const [key, value] of Object.entries(s)) {
+        row.insertCell().innerHTML = value
+        row.style.color = "white"
+      }
+    })
+  })
+}
 
 //unused 
 function horizontalScroll() {
