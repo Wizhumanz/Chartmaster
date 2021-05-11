@@ -83,8 +83,43 @@ function computeBacktest() {
 }
 
 function getExchanges() {
-  
+  let getURL = baseURL + "/getChartmasterTickers"
+
+  let hd = {
+    // "Content-Type": "application/json",
+    // Authorization: user.password,
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+    Expires: "0",
+  }
+  axios
+    .get(getURL, {
+      headers: hd,
+      // mode: "cors",
+    })
+    .then((res) => {
+      console.log(res.data)
+      //sort alphabetically
+      res.data.sort(function (a, b) {
+        if (a.symbol_id_exchange < b.symbol_id_exchange) { return -1; }
+        if (a.symbol_id_exchange > b.symbol_id_exchange) { return 1; }
+        return 0;
+      })
+      //fill ticker select with all options
+      tickerSelect = document.getElementById("tickerSelect");
+      res.data.forEach(t => {
+        tickerSelect.options[tickerSelect.options.length] = new Option(
+          t.symbol_id_exchange + "  (" + t.symbol_id + ")",
+          t.symbol_id);
+      })
+      //default val
+      tickerSelect.value = "BINANCEFTS_PERP_BTC_USDT"
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
+getExchanges()
 
 function getPickerDateTime(pickerID) {
   return document.getElementById(pickerID).value + ":00"
@@ -390,9 +425,9 @@ function drawChart(prices) {
 
     stems.attr("x1", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
     stems.attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
-      
+
     console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
-    
+
     function changeStemsX() {
       let substituteX = []
       stems.selectAll(".stem")._parents.forEach(e => {
@@ -402,7 +437,7 @@ function drawChart(prices) {
       stemsXArray = substituteX
     }
     changeStemsX()
-      
+
     // Label X Zooming
     labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
@@ -438,7 +473,7 @@ function drawChart(prices) {
       stems.transition().duration(100)
         .attr("y1", (d) => yScale(d.High))
         .attr("y2", (d) => yScale(d.Low))
-        console.log(stemsXArray[0])
+      console.log(stemsXArray[0])
 
       // shapes.transition()
       //   .duration(100)
@@ -530,10 +565,10 @@ function drawChart(prices) {
       //   console.log(e.x1.baseVal.value)
       // });
       // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
-      stemsXArray.forEach((x,i) => {
+      stemsXArray.forEach((x, i) => {
         if ((mouse[0] > (x - 2)) && (mouse[0] < (x + 2))) {
           document.getElementById("ohlcDisplay").innerHTML = `Open: ${prices[i].Open} High: ${prices[i].High} Low: ${prices[i].Low} Close: ${prices[i].Close}`
-        } 
+        }
       })
 
       // d3.selectAll(".mouse-per-line")
