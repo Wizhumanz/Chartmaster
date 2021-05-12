@@ -231,8 +231,7 @@ function drawChart(prices) {
 
   //reset chart
   d3.selectAll("#container > *").remove();
-  let candlestickData = prices
-  let candlestickDataNewDateFormat = candlestickData
+  let candlestickData = Array.from(prices)
   
   candlestickData.forEach(d => {
     if ((d.StratEnterPrice != 0) || (d.StratExitPrice != 0) || (d.Label != "")) {
@@ -241,7 +240,7 @@ function drawChart(prices) {
   })
 
   for (var i = 0; i < candlestickData.length; i++) {
-    candlestickDataNewDateFormat[i].DateTime = dateFormat(candlestickData[i].DateTime)
+    candlestickData[i].DateTime = dateFormat(candlestickData[i].DateTime)
   }
 
   var svg = d3.select("#container")
@@ -254,10 +253,10 @@ function drawChart(prices) {
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-  let dates = _.map(candlestickDataNewDateFormat, 'DateTime');
+  let dates = _.map(candlestickData, 'DateTime');
 
-  var xmin = d3.min(candlestickDataNewDateFormat.map(r => r.DateTime.getTime()));
-  var xmax = d3.max(candlestickDataNewDateFormat.map(r => r.DateTime.getTime()));
+  var xmin = d3.min(candlestickData.map(r => r.DateTime.getTime()));
+  var xmax = d3.max(candlestickData.map(r => r.DateTime.getTime()));
   var xScale = d3.scaleLinear().domain([-1, dates.length])
     .range([0, w])
   var xDateScale = d3.scaleQuantize().domain([0, dates.length]).range(dates)
@@ -285,8 +284,8 @@ function drawChart(prices) {
   gX.selectAll(".tick text")
     .call(wrap, xBand.bandwidth())
 
-  var ymin = d3.min(candlestickDataNewDateFormat.map(r => r.Low));
-  var ymax = d3.max(candlestickDataNewDateFormat.map(r => r.High));
+  var ymin = d3.min(candlestickData.map(r => r.Low));
+  var ymax = d3.max(candlestickData.map(r => r.High));
   var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h, 0]).nice();
   var yAxis = d3.axisLeft()
     .scale(yScale)
@@ -301,7 +300,7 @@ function drawChart(prices) {
 
   // draw rectangles
   let candles = chartBody.selectAll(".candle")
-    .data(candlestickDataNewDateFormat)
+    .data(candlestickData)
     .enter()
     .append("rect")
     .attr('x', (d, i) => xScale(i) - xBand.bandwidth())
@@ -320,13 +319,13 @@ function drawChart(prices) {
   //   .attr("fill", "yellow")
 
   // Add index to Price Array
-  candlestickDataNewDateFormat.map(p => p["index"] = candlestickDataNewDateFormat.indexOf(p))
+  candlestickData.map(p => p["index"] = candlestickData.indexOf(p))
 
   // Create Label
   let labelXMove = 4
   let labelYMove = 10
   let labelText = chartBody.selectAll("labelText")
-    .data(candlestickDataNewDateFormat.filter((p) => { return p.Label !== "" }))
+    .data(candlestickData.filter((p) => { return p.Label !== "" }))
     .enter()
     .append("text")
     .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
@@ -345,7 +344,7 @@ function drawChart(prices) {
   let pointerYMove = 25
 
   let enterPointer = chartBody.selectAll("enterPointer")
-    .data(candlestickDataNewDateFormat.filter((p) => { return p.StratEnterPrice != 0 }))
+    .data(candlestickData.filter((p) => { return p.StratEnterPrice != 0 }))
     .enter()
     .append("rect")
     .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
@@ -355,7 +354,7 @@ function drawChart(prices) {
     .attr("fill", "chartreuse")
 
   let exitPointer = chartBody.selectAll("exitPointer")
-    .data(candlestickDataNewDateFormat.filter((p) => { return p.StratExitPrice != 0 }))
+    .data(candlestickData.filter((p) => { return p.StratExitPrice != 0 }))
     .enter()
     .append("rect")
     .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
@@ -367,7 +366,7 @@ function drawChart(prices) {
 
   // draw high and low
   let stems = chartBody.selectAll("g.line")
-    .data(candlestickDataNewDateFormat)
+    .data(candlestickData)
     .enter()
     .append("line")
     .attr("class", "stem")
@@ -466,7 +465,7 @@ function drawChart(prices) {
 
       var xmin = new Date(xDateScale(Math.floor(xScaleZ.domain()[0])))
       xmax = new Date(xDateScale(Math.floor(xScaleZ.domain()[1])))
-      filtered = _.filter(candlestickDataNewDateFormat, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
+      filtered = _.filter(candlestickData, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
       minP = +d3.min(filtered, d => d.Low)
       maxP = +d3.max(filtered, d => d.High)
       buffer = Math.floor((maxP - minP) * 0.1)
