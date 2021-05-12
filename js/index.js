@@ -64,13 +64,12 @@ function connectWs() {
           //add new data to front of existing array
           var newA = []
           dataObj.Data.forEach(newData => {
-            newData.Label = "NEW"
             newA.push(newData)
           })
           candlestickDisplayData.forEach(oldData => {
             oldData.DateTime = new Date(Math.abs(oldData.DateTime) + getLocalTimezone()).toISOString().split(".")[0]
-            // newA.push(oldData)
-            console.log(oldData)
+            newA.push(oldData)
+            // console.log(oldData)
           })
           drawChart(newA)
         }
