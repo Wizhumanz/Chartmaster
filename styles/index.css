@@ -204,9 +204,9 @@ div.stacked {
   overflow: scroll;
   padding: 0.75rem;
 }
-div.stacked h1 {
+div.stacked h4 {
   position: absolute;
-  margin-left: -9rem;
+  margin-left: -6rem;
   margin-top: 7rem;
   transform: rotate(270deg);
 }
@@ -236,8 +236,8 @@ div.stacked::-webkit-scrollbar-thumb {
   height: 37rem;
   overflow-x: hidden;
 }
-#simTradesDiv h1 {
-  margin-left: -11rem;
+#simTradesDiv h4 {
+  margin-left: -7rem;
 }
 
 .thead {
