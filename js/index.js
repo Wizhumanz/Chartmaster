@@ -68,7 +68,7 @@ function connectWs() {
             newA.push(newData)
           })
           candlestickDisplayData.forEach(oldData => {
-            oldDate.DateTime = new Date(Math.abs(oldData.DateTime) + getLocalTimezone()).toISOString().split(".")[0]
+            oldData.DateTime = new Date(Math.abs(oldData.DateTime) + getLocalTimezone()).toISOString().split(".")[0]
             // newA.push(oldData)
             console.log(oldData)
           })
