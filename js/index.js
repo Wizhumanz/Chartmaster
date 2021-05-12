@@ -47,12 +47,14 @@ function connectWs() {
     };
 
     socket.onmessage = (msg) => {
-      var dataObj = JSON.parse(msg.data)
+      var dataObj
+      if (msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}")) {
+        dataObj = JSON.parse(msg.data)
+      }
 
       //update chart data based on data type
-      if (dataObj.Data[0].Open != undefined && parseFloat(dataObj.Data[0].Open) > 0) {
-        console.log("WS server msg: " + JSON.stringify(dataObj));
-
+      //candlestick
+      if (dataObj.Data != undefined && parseFloat(dataObj.Data[0].Open) > 0) {
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
           candlestickDisplayData = dataObj.Data
@@ -73,12 +75,16 @@ function connectWs() {
           })
           drawChart(newA)
         }
-      } else if (dataObj[0].Data[0].Equity != undefined && parseFloat(dataObj[0].Data[0].Equity) > 0) {
+      }
+
+      //profit curve
+      if (dataObj[0].Data != undefined && parseFloat(dataObj[0].Data[0].Equity) > 0) {
         drawPC(dataObj)
-      } else if (dataObj[0].Data[0].EntryPrice != undefined && parseFloat(dataObj[0].Data[0].EntryPrice) > 0) {
+      }
+
+      //sim trades
+      if (dataObj[0].Data != undefined && parseFloat(dataObj[0].Data[0].EntryPrice) > 0) {
         plotHistory(dataObj)
-      } else {
-        console.log("WS server msg: " + msg.data);
       }
     };
   }
