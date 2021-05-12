@@ -247,11 +247,11 @@ function drawChart(prices) {
   d3.selectAll("#container > *").remove();
   let candlestickData = Array.from(prices)
   
-  candlestickData.forEach(d => {
-    if ((d.StratEnterPrice != 0) || (d.StratExitPrice != 0) || (d.Label != "")) {
-      console.log(d)
-    }
-  })
+  // candlestickData.forEach(d => {
+  //   if ((d.StratEnterPrice != 0) || (d.StratExitPrice != 0) || (d.Label != "")) {
+  //     console.log(d)
+  //   }
+  // })
 
   for (var i = 0; i < candlestickData.length; i++) {
     candlestickData[i].DateTime = dateFormat(candlestickData[i].DateTime)
