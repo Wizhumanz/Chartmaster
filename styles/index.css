@@ -104,15 +104,21 @@ html {
   border: #001b6b 2px solid;
 }
 
-div.right {
-  position: absolute;
-  top: 1.5%;
-  right: 37%;
+#resSelect {
+  width: 130px;
+  margin-right: 0.5rem;
+}
+
+#computeBtn {
+  background-color: #8a0000;
+  color: #fffdd0;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
 #wsStatus {
   display: inline;
-  margin-left: 0.5rem;
+  margin-right: 0.5rem;
   color: #fffdd0;
 }
 

@@ -30,18 +30,18 @@ function connectWs() {
   if (socket) {
     socket.onopen = () => {
       socket.send("Client connected");
-      wsStatus.innerText = "Connected"
+      wsStatus.innerText = "OK"
       wsStatus.className = "connected"
     };
 
     socket.onclose = (event) => {
-      wsStatus.innerText = "Disconnected"
+      wsStatus.innerText = "Offline"
       wsStatus.className = "disconnected"
       console.log("Socket CLOSED Connection: ", event);
     };
 
     socket.onerror = (error) => {
-      wsStatus.innerText = "Disconnected"
+      wsStatus.innerText = "Offline"
       wsStatus.className = "disconnected"
       console.log("Socket Error: ", error);
     };
