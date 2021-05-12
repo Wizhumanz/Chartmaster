@@ -4,7 +4,7 @@ var wsStatus = document.getElementById("wsStatus")
 /// CANDLESTICKS
 
 let baseURL = "http://localhost:8000"
-let candlestickData = []
+let candlestickDisplayData
 let addedData = []
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
@@ -51,14 +51,26 @@ function connectWs() {
 
       //update chart data based on data type
       if (dataObj.Data[0].Open != undefined && parseFloat(dataObj.Data[0].Open) > 0) {
+        console.log("WS server msg: " + JSON.stringify(dataObj));
+
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
+          candlestickDisplayData = dataObj.Data
           //replace entire candlestick chart
-          drawChart(dataObj.Data)
+          drawChart(candlestickDisplayData)
           //save res id so next messages with same ID will be concatenated with existing data
           existingCandlesWSResID = dataObj.ResultID
         } else {
-          var newA = candlestickData.concat(dataObj.Data)
+          //add new data to front of existing array
+          var newA = []
+          dataObj.Data.forEach(newData => {
+            newData.Label = "NEW"
+            newA.push(newData)
+          })
+          candlestickDisplayData.forEach(oldData => {
+            // newA.push(oldData)
+            console.log(oldData)
+          })
           drawChart(newA)
         }
       } else if (dataObj[0].Data[0].Equity != undefined && parseFloat(dataObj[0].Data[0].Equity) > 0) {
@@ -219,8 +231,13 @@ function drawChart(prices) {
 
   //reset chart
   d3.selectAll("#container > *").remove();
-  candlestickData = prices
-  console.log(candlestickData)
+  let candlestickData = prices
+  
+  candlestickData.forEach(d => {
+    if ((d.StratEnterPrice != 0) || (d.StratExitPrice != 0) || (d.Label != "")) {
+      console.log(d)
+    }
+  })
 
   for (var i = 0; i < candlestickData.length; i++) {
     candlestickData[i].DateTime = dateFormat(candlestickData[i].DateTime)
