@@ -54,7 +54,9 @@ function connectWs() {
 
       //update chart data based on data type
       //candlestick
-      if (dataObj.Data != undefined && parseFloat(dataObj.Data[0].Open) > 0) {
+      if (dataObj != undefined 
+        && dataObj.Data != undefined 
+        && parseFloat(dataObj.Data[0].Open) > 0) {
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
           candlestickDisplayData = dataObj.Data
@@ -78,12 +80,18 @@ function connectWs() {
       }
 
       //profit curve
-      if (dataObj[0].Data != undefined && parseFloat(dataObj[0].Data[0].Equity) > 0) {
+      if (dataObj != undefined 
+        && dataObj[0] 
+        && dataObj[0].Data != undefined 
+        && parseFloat(dataObj[0].Data[0].Equity) > 0) {
         drawPC(dataObj)
       }
 
       //sim trades
-      if (dataObj[0].Data != undefined && parseFloat(dataObj[0].Data[0].EntryPrice) > 0) {
+      if (dataObj != undefined 
+        && dataObj[0] 
+        && dataObj[0].Data != undefined 
+        && parseFloat(dataObj[0].Data[0].EntryPrice) > 0) {
         plotHistory(dataObj)
       }
     };
