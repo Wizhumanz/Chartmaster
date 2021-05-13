@@ -5,8 +5,8 @@ var wsStatus = document.getElementById("wsStatus")
 /// CANDLESTICKS
 
 let candleDisplayIndex = 0
-let allCandles = []
-var displayCandlesChunks = []
+let allCandles = [] // all individual candles
+var displayCandlesChunks = [] // chunks of candles for display
 
 let addedData = []
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
@@ -107,7 +107,7 @@ function connectWs() {
           //if canldestick chart empty
           if (!displayCandlesChunks || displayCandlesChunks.length == 0) {
             //create display data and draw chart
-            displayCandlesChunks = splitDisplayData(allCandles)[0]
+            displayCandlesChunks = splitDisplayData(allCandles)
             drawChart()
           }
           //save res id so next messages with same ID will be concatenated with existing data
@@ -318,7 +318,6 @@ function processXAxisLabel(d, dates) {
 }
 
 function drawChart() {
-  console.log(displayCandlesChunks)
   let candlesToShow = displayCandlesChunks[candleDisplayIndex]
   if (!candlesToShow || candlesToShow.length == 0) {
     return
@@ -327,7 +326,6 @@ function drawChart() {
   //reset chart
   d3.selectAll("#container > *").remove();
 
-  console.log(candlesToShow)
   let candlestickData = []
   for (const p of candlesToShow) {
     candlestickData.push(p)
@@ -667,7 +665,7 @@ function drawChart() {
 
       stemsXArray.forEach((x, i) => {
         if ((mouse[0] > (x - 3)) && (mouse[0] < (x + 3))) {
-          document.getElementById("ohlcDisplay").innerHTML = `O <span>${prices[i].Open}</span> <br>H <span>${prices[i].High}</span> <br>L <span>${prices[i].Low}</span> <br>C <span>${prices[i].Close}</span>`
+          document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlestickData[i].Open}</span> <br>H <span>${candlestickData[i].High}</span> <br>L <span>${candlestickData[i].Low}</span> <br>C <span>${candlestickData[i].Close}</span>`
         }
       })
     });
