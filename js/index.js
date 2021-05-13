@@ -1,5 +1,7 @@
 
 var wsStatus = document.getElementById("wsStatus")
+let index = 2
+var splitData = []
 
 /// CANDLESTICKS
 
@@ -88,7 +90,7 @@ function connectWs() {
       if (msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}")) {
         dataObj = JSON.parse(msg.data)
       }
-
+      
       //update chart data based on data type
       //candlestick
       if (dataObj != undefined 
@@ -97,6 +99,7 @@ function connectWs() {
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
           candlestickDisplayData = dataObj.Data
+          // console.log(dataObj.Data)
           //replace entire candlestick chart
           drawChart(candlestickDisplayData)
           //save res id so next messages with same ID will be concatenated with existing data
@@ -104,6 +107,7 @@ function connectWs() {
         } else {
           //add new data to front of existing array
           var newA = []
+          // console.log(dataObj.Data)
           dataObj.Data.forEach(newData => {
             newA.push(newData)
           })
@@ -112,7 +116,21 @@ function connectWs() {
             newA.push(oldData)
             // console.log(oldData)
           })
-          drawChart(newA)
+          splitData = separateData(newA)
+          // console.log(newA)
+          // newA.forEach(d => {
+          //   if (typeof(d.DateTime) === "string"){
+          //     console.log(d)
+          //   }
+          // })
+          // console.log(newA.map(d => {
+          //   if (typeof(d.DateTime) !== "string"){
+          //     console.log(d)
+          //     return d.DateTime = new Date(Math.abs(d.DateTime) + getLocalTimezone()).toISOString().split(".")[0]
+          //   }
+          // }))
+          console.log(splitData)
+          drawChart(splitData[index])
         }
       }
 
@@ -136,6 +154,30 @@ function connectWs() {
 }
 connectWs()
 
+function separateData(data) {
+  let splitData = []
+  let chunkSize = 150
+    for (var i = 0; i < data.length; i += chunkSize) {
+      splitData.push(data.slice(i, i + chunkSize));
+    }
+    return splitData;
+}
+function moveLeft() {
+  // console.log(splitData)
+  if (index > 0) {
+    index -= 1
+    console.log(splitData[index])
+    drawChart(splitData[index])
+  }
+}
+function moveRight() {
+  // console.log(splitData)
+  if (index < splitData.length) {
+    index += 1
+    drawChart(splitData[index])
+  }
+}
+
 function computeBacktest() {
   let ticker = document.getElementById("tickerSelect").value
   let period = document.getElementById("periodSelect").value
@@ -158,7 +200,7 @@ function computeBacktest() {
       // mode: "cors",
     })
     .then((res) => {
-      // console.log(res)
+      console.log(res.data)
       drawChart(res.data)
     })
     .catch((error) => {
@@ -296,21 +338,18 @@ function drawChart(prices) {
   if (!prices) {
     return
   }
-
   //reset chart
   d3.selectAll("#container > *").remove();
-  let candlestickData = Array.from(prices)
+  let candlestickData = prices.slice()
   
   // candlestickData.forEach(d => {
   //   if ((d.StratEnterPrice != 0) || (d.StratExitPrice != 0) || (d.Label != "")) {
   //     console.log(d)
   //   }
   // })
-
   for (var i = 0; i < candlestickData.length; i++) {
     candlestickData[i].DateTime = dateFormat(candlestickData[i].DateTime)
   }
-
   var svg = d3.select("#container")
     // .attr("width", "100%")
     // .attr("height", "110%")
@@ -322,7 +361,7 @@ function drawChart(prices) {
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
   let dates = _.map(candlestickData, 'DateTime');
-
+  console.log(candlestickData)
   var xmin = d3.min(candlestickData.map(r => r.DateTime.getTime()));
   var xmax = d3.max(candlestickData.map(r => r.DateTime.getTime()));
   var xScale = d3.scaleLinear().domain([-1, dates.length])
