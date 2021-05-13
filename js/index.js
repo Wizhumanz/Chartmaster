@@ -100,14 +100,30 @@ function connectWs() {
         && parseFloat(dataObj.Data[0].Open) > 0) {
 
         // console.log(msg.data)
+        // dataObj.Data.forEach(c => {
+        //   if (c.DateTime === "") {
+        //     console.log(c.DateTime)
+        //   }
+        // })
+        console.log(dataObj.Data.length)
 
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
           allCandles = dataObj.Data
+
           //if canldestick chart empty
           if (!displayCandlesChunks || displayCandlesChunks.length == 0) {
-            //create display data and draw chart
-            displayCandlesChunks = splitDisplayData(allCandles)
+            displayCandlesChunks = splitDisplayData(dataObj.Data)
+
+            // displayCandlesChunks.forEach(chunk => {
+            //   chunk.forEach(c => {
+            //     if (c.DateTime === "") {
+            //       console.log(c.DateTime)
+            //     }
+            //   })
+            // })
+            // console.log(displayCandlesChunks)
+
             drawChart()
           }
           //save res id so next messages with same ID will be concatenated with existing data
@@ -119,6 +135,12 @@ function connectWs() {
           })
         }
       }
+
+      // displayCandlesChunks.forEach(chunk => {
+      //   chunk.forEach(c => {
+      //     console.log(c.DateTime)
+      //   })
+      // });
 
       //profit curve
       if (dataObj != undefined
@@ -141,6 +163,7 @@ function connectWs() {
 connectWs()
 
 function splitDisplayData(data) {
+  //split candles into display chunks
   let retChunks = []
   let newChunk = []
   let desiredChunkSize = 50
@@ -148,7 +171,7 @@ function splitDisplayData(data) {
   for (var i = 0; i < data.length; i += 1) {
     currentChunkSz += 1
 
-    if (currentChunkSz >= desiredChunkSize) {
+    if ((currentChunkSz >= desiredChunkSize) || (i === (data.length - 1))) {
       // console.log("pushing chunk" + newChunk)
       retChunks.push(newChunk)
       currentChunkSz = 0
@@ -158,22 +181,19 @@ function splitDisplayData(data) {
     // console.log("pushing data" + data)
     newChunk.push(data[i])
   }
-
   // console.log(retChunks)
   return retChunks;
 }
 
 function moveLeft() {
-  if (candleDisplayIndex > 0) {
-    candleDisplayIndex -= 1
-    drawChart()
-  }
+  candleDisplayIndex -= 1
+  console.log(candleDisplayIndex)
+  drawChart()
 }
 function moveRight() {
-  if (candleDisplayIndex < displayCandlesChunks.length) {
-    candleDisplayIndex += 1
-    drawChart()
-  }
+  candleDisplayIndex += 1
+  console.log(candleDisplayIndex)
+  drawChart()
 }
 
 function computeBacktest() {
@@ -319,6 +339,8 @@ function processXAxisLabel(d, dates) {
 
 function drawChart() {
   let candlesToShow = displayCandlesChunks[candleDisplayIndex]
+  console.log(displayCandlesChunks)
+  console.log(candlesToShow[0])
   if (!candlesToShow || candlesToShow.length == 0) {
     return
   }
