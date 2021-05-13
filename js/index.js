@@ -21,7 +21,7 @@ let result =[]
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
 function loadResult() {
-  let getURL = "http://localhost:8000/loadResult?user=5632499082330112"
+  let getURL = "http://localhost:8000/backtestHistory?user=5632499082330112"
   let hd = {
     // "Content-Type": "application/json",
     // Authorization: user.password,
@@ -222,6 +222,12 @@ function tickerSelectChanged() {
   }
 }
 tickerSelectChanged()
+
+function loadBacktestRes() {
+  var s = document.getElementById("resSelect")
+  var selectedRes = s.value
+
+}
  
 function getMoreData() {
   wholeStartTime = getPickerDateTime("startDateTimePicker")
