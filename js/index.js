@@ -98,15 +98,6 @@ function connectWs() {
       if (dataObj != undefined
         && dataObj.Data != undefined
         && parseFloat(dataObj.Data[0].Open) > 0) {
-
-        // console.log(msg.data)
-        // dataObj.Data.forEach(c => {
-        //   if (c.DateTime === "") {
-        //     console.log(c.DateTime)
-        //   }
-        // })
-        console.log(dataObj.Data.length)
-
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
           allCandles = dataObj.Data
@@ -114,16 +105,6 @@ function connectWs() {
           //if canldestick chart empty
           if (!displayCandlesChunks || displayCandlesChunks.length == 0) {
             displayCandlesChunks = splitDisplayData(dataObj.Data)
-
-            // displayCandlesChunks.forEach(chunk => {
-            //   chunk.forEach(c => {
-            //     if (c.DateTime === "") {
-            //       console.log(c.DateTime)
-            //     }
-            //   })
-            // })
-            // console.log(displayCandlesChunks)
-
             drawChart()
           }
           //save res id so next messages with same ID will be concatenated with existing data
@@ -135,13 +116,7 @@ function connectWs() {
           })
         }
       }
-
-      // displayCandlesChunks.forEach(chunk => {
-      //   chunk.forEach(c => {
-      //     console.log(c.DateTime)
-      //   })
-      // });
-
+      
       //profit curve
       if (dataObj != undefined
         && dataObj[0]
