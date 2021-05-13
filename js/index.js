@@ -340,30 +340,28 @@ function processXAxisLabel(d, dates) {
 
 function drawChart() {
   let candlesToShow = displayCandlesChunks[candleDisplayIndex]
-  console.log(displayCandlesChunks)
-  console.log(candlesToShow[0])
   if (!candlesToShow || candlesToShow.length == 0) {
     return
   }
-
-  //reset chart
-  d3.selectAll("#container > *").remove();
-
   let candlestickData = []
   for (const p of candlesToShow) {
     candlestickData.push(p)
   }
-
-  // candlestickData.forEach(d => {
-  //   if ((d.StratEnterPrice != 0) || (d.StratExitPrice != 0) || (d.Label != "")) {
-  //     console.log(d)
-  //   }
+  // displayCandlesChunks.forEach(chunk => {
+  //   chunk.forEach(c => {
+  //     console.log(typeof(c.DateTime))
+  //   })
   // })
+
+  //reset chart
+  d3.selectAll("#container > *").remove();
+
+  //build datetime array
+  let dateTimes = []
   for (var i = 0; i < candlestickData.length; i++) {
-    candlestickData[i].DateTime = dateFormat(candlestickData[i].DateTime)
-    // console.log(candlestickData[i])
+    let add = dateFormat(candlestickData[i].DateTime)
+    dateTimes.push(add)
   }
-  // console.log(candlestickData)
 
   var svg = d3.select("#container")
     // .attr("width", "100%")
@@ -375,18 +373,17 @@ function drawChart() {
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-  let dates = _.map(candlestickData, 'DateTime');
-  var xmin = d3.min(candlestickData.map(r => r.DateTime.getTime()));
-  var xmax = d3.max(candlestickData.map(r => r.DateTime.getTime()));
-  var xScale = d3.scaleLinear().domain([-1, dates.length])
+  var xmin = d3.min(dateTimes);
+  var xmax = d3.max(dateTimes);
+  var xScale = d3.scaleLinear().domain([-1, dateTimes.length])
     .range([0, w])
-  var xDateScale = d3.scaleQuantize().domain([0, dates.length]).range(dates)
-  let xBand = d3.scaleBand().domain(d3.range(-1, dates.length)).range([0, w]).padding(0.3)
+  var xDateScale = d3.scaleQuantize().domain([0, dateTimes.length]).range(dateTimes)
+  let xBand = d3.scaleBand().domain(d3.range(-1, dateTimes.length)).range([0, w]).padding(0.3)
   var xAxis = d3.axisBottom()
     .scale(xScale)
     // .attr("font-size", "5px")
     .tickFormat(function (d) {
-      return processXAxisLabel(d, dates)
+      return processXAxisLabel(d, dateTimes)
     });
 
   svg.append("rect")
