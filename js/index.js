@@ -1,6 +1,6 @@
 
 var wsStatus = document.getElementById("wsStatus")
-let index = 2
+let index = 0
 var splitData = []
 
 /// CANDLESTICKS
@@ -45,7 +45,7 @@ function loadResult() {
         // create text node to add to option element (opt)
         opt.appendChild( document.createTextNode(l) );
         // set value property of opt
-        opt.value = 'option value'; 
+        opt.value = l.split(".")[0]; 
         // add opt to end of select box (sel)
         sel.appendChild(opt);
         })
@@ -107,12 +107,11 @@ function connectWs() {
         } else {
           //add new data to front of existing array
           var newA = []
-          // console.log(dataObj.Data)
+          // console.log(candlestickDisplayData)
           dataObj.Data.forEach(newData => {
             newA.push(newData)
           })
           candlestickDisplayData.forEach(oldData => {
-            oldData.DateTime = new Date(Math.abs(oldData.DateTime) + getLocalTimezone()).toISOString().split(".")[0]
             newA.push(oldData)
             // console.log(oldData)
           })
@@ -129,8 +128,8 @@ function connectWs() {
           //     return d.DateTime = new Date(Math.abs(d.DateTime) + getLocalTimezone()).toISOString().split(".")[0]
           //   }
           // }))
-          console.log(splitData)
-          drawChart(splitData[index])
+          // console.log(splitData)
+          drawChart(newA)
         }
       }
 
@@ -166,7 +165,7 @@ function moveLeft() {
   // console.log(splitData)
   if (index > 0) {
     index -= 1
-    console.log(splitData[index])
+    // console.log(splitData[index])
     drawChart(splitData[index])
   }
 }
@@ -268,7 +267,28 @@ tickerSelectChanged()
 function loadBacktestRes() {
   var s = document.getElementById("resSelect")
   var selectedRes = s.value
+  let getURL = baseURL + `/backtestHistory/${selectedRes}?user=5632499082330112&candlePacketSize=19`
 
+  let hd = {
+    // "Content-Type": "application/json",
+    // Authorization: user.password,
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+    Expires: "0",
+  }
+  axios
+    .get(getURL, {
+      headers: hd,
+      // mode: "cors",
+    })
+    .then((res) => {
+      let gay = res.data.ModifiedCandlesticks
+      console.log(gay)
+      drawChart(res.data.ModifiedCandlesticks)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
  
 function getMoreData() {
@@ -338,6 +358,7 @@ function drawChart(prices) {
   if (!prices) {
     return
   }
+  console.log(prices)
   //reset chart
   d3.selectAll("#container > *").remove();
   let candlestickData = prices.slice()
@@ -349,7 +370,10 @@ function drawChart(prices) {
   // })
   for (var i = 0; i < candlestickData.length; i++) {
     candlestickData[i].DateTime = dateFormat(candlestickData[i].DateTime)
+    // console.log(candlestickData[i])
   }
+  // console.log(candlestickData)
+
   var svg = d3.select("#container")
     // .attr("width", "100%")
     // .attr("height", "110%")
@@ -361,7 +385,6 @@ function drawChart(prices) {
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
   let dates = _.map(candlestickData, 'DateTime');
-  console.log(candlestickData)
   var xmin = d3.min(candlestickData.map(r => r.DateTime.getTime()));
   var xmax = d3.max(candlestickData.map(r => r.DateTime.getTime()));
   var xScale = d3.scaleLinear().domain([-1, dates.length])
