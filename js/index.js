@@ -5,6 +5,8 @@ var wsStatus = document.getElementById("wsStatus")
 /// CANDLESTICKS
 
 let candleDisplayIndex = 0
+let lBtn = document.getElementById("panCandlesLeftBtn")
+lBtn.style.display = "none"
 let allCandles = [] // all individual candles
 var displayCandlesChunks = [] // chunks of candles for display
 
@@ -116,7 +118,7 @@ function connectWs() {
           })
         }
       }
-      
+
       //profit curve
       if (dataObj != undefined
         && dataObj[0]
@@ -161,13 +163,37 @@ function splitDisplayData(data) {
 }
 
 function moveLeft() {
-  candleDisplayIndex -= 1
-  console.log(candleDisplayIndex)
+  let lBtn = document.getElementById("panCandlesLeftBtn")
+  let rBtn = document.getElementById("panCandlesRightBtn")
+
+  if (candleDisplayIndex - 1 < 0) {
+    //update left btn style
+    lBtn.style.display = "none"
+  } else {
+    lBtn.style.display = "inline"
+    candleDisplayIndex -= 1
+  }
+
+  if (candleDisplayIndex < displayCandlesChunks.length) {
+    rBtn.style.display = "inline"
+  }
   drawChart()
 }
 function moveRight() {
-  candleDisplayIndex += 1
-  console.log(candleDisplayIndex)
+  let lBtn = document.getElementById("panCandlesLeftBtn")
+  let rBtn = document.getElementById("panCandlesRightBtn")
+  
+  if (candleDisplayIndex + 1 >= displayCandlesChunks.length) {
+    rBtn.style.display = "none"
+  } else {
+    rBtn.style.display = "inline"
+    candleDisplayIndex += 1
+  }
+
+  if (candleDisplayIndex >= 1) {
+    lBtn.style.display = "inline"
+  }
+
   drawChart()
 }
 
