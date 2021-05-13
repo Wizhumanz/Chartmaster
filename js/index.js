@@ -212,6 +212,17 @@ function getLocalTimezone() {
   return (-new Date().getTimezoneOffset() / 60) * 3600000
 }
 
+function tickerSelectChanged() {
+  var s = document.getElementById("resSelect")
+  var btn = document.getElementById("loadResBtn")
+  if (s.value !== "") {
+    btn.style.display = "inline"
+  } else {
+    btn.style.display = "none"
+  }
+}
+tickerSelectChanged()
+ 
 function getMoreData() {
   wholeStartTime = getPickerDateTime("startDateTimePicker")
   wholeEndTime = getPickerDateTime("endDateTimePicker")
