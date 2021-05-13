@@ -104,6 +104,19 @@ html {
   border: #001b6b 2px solid;
 }
 
+.arrows {
+  margin: 0.5rem;
+  color: #fffdd0;
+}
+.arrows button {
+  all: unset;
+  width: fit-content;
+  margin-right: 0.75rem;
+}
+.arrows h2 {
+  display: inline;
+}
+
 .controls-sub {
   text-align: right;
   margin-bottom: 0.35rem;

@@ -29,35 +29,42 @@
         <div class="controls">
           <div class="row">
             <div class="col-12 col-lg-9">
-              <label for="startDateTimePicker">Start</label>
-              <input type="datetime-local" id="startDateTimePicker" value="2021-05-01T03:40">
-              <label for="endDateTimePicker">End</label>
-              <input type="datetime-local" id="endDateTimePicker" value="2021-05-01T05:00">
+              <div>
+                <label for="startDateTimePicker">Start</label>
+                <input type="datetime-local" id="startDateTimePicker" value="2021-05-01T03:40">
+                <label for="endDateTimePicker">End</label>
+                <input type="datetime-local" id="endDateTimePicker" value="2021-05-01T05:00">
 
-              <select name="tickerSelect" id="tickerSelect">
-                <!-- filled dynamically by API call -->
-              </select>
-              <select name="periodSelect" id="periodSelect">
-                <option value="1MIN">1min</option>
-                <option value="2MIN">2min</option>
-                <option value="3MIN">3min</option>
-                <option value="4MIN">4min</option>
-                <option value="5MIN">5min</option>
-                <option value="6MIN">6min</option>
-                <option value="10MIN">10min</option>
-                <option value="15MIN">15min</option>
-                <option value="20MIN">20min</option>
-                <option value="30MIN">30min</option>
-                <option value="1HRS">1hr</option>
-                <option value="2HRS">2hr</option>
-                <option value="3HRS">3hr</option>
-                <option value="4HRS">4hr</option>
-                <option value="6HRS">6hr</option>
-                <option value="8HRS">8hr</option>
-                <option value="12HRS">12hr</option>
-                <option value="1DAY">1d</option>
-                <option value="2DAY">2d</option>
-              </select>
+                <select name="tickerSelect" id="tickerSelect">
+                  <!-- filled dynamically by API call -->
+                </select>
+                <select name="periodSelect" id="periodSelect">
+                  <option value="1MIN">1min</option>
+                  <option value="2MIN">2min</option>
+                  <option value="3MIN">3min</option>
+                  <option value="4MIN">4min</option>
+                  <option value="5MIN">5min</option>
+                  <option value="6MIN">6min</option>
+                  <option value="10MIN">10min</option>
+                  <option value="15MIN">15min</option>
+                  <option value="20MIN">20min</option>
+                  <option value="30MIN">30min</option>
+                  <option value="1HRS">1hr</option>
+                  <option value="2HRS">2hr</option>
+                  <option value="3HRS">3hr</option>
+                  <option value="4HRS">4hr</option>
+                  <option value="6HRS">6hr</option>
+                  <option value="8HRS">8hr</option>
+                  <option value="12HRS">12hr</option>
+                  <option value="1DAY">1d</option>
+                  <option value="2DAY">2d</option>
+                </select>
+              </div>
+
+              <div class="arrows">
+                <button><h2><i class="bi bi-arrow-left-circle-fill"></i></h2></button>
+                <button><h2><i class="bi bi-arrow-right-circle-fill"></i></h2></button>
+              </div>
             </div>
             <div class="col-12 col-lg-3">
               <div class="controls-sub">
