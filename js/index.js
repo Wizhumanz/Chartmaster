@@ -1,16 +1,18 @@
 
+let baseURL = "http://localhost:8000"
 var wsStatus = document.getElementById("wsStatus")
-let index = 0
-var splitData = []
 
 /// CANDLESTICKS
 
-let baseURL = "http://localhost:8000"
-let candlestickDisplayData
+let candleDisplayIndex = 0
+let allCandles = []
+var displayCandlesChunks = []
+
 let addedData = []
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
 let newCandlesToFetch = 80
+
 let xAxisDateExisting
 var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
 const margin = { top: 30, right: 20, bottom: 205, left: 70 },
@@ -101,24 +103,20 @@ function connectWs() {
 
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
-          candlestickDisplayData = dataObj.Data
-          // console.log(dataObj.Data)
-          //replace entire candlestick chart
-          drawChart(candlestickDisplayData)
+          allCandles = dataObj.Data
+          //if canldestick chart empty
+          if (!displayCandlesChunks || displayCandlesChunks.length == 0) {
+            //create display data and draw chart
+            displayCandlesChunks = splitDisplayData(allCandles)[0]
+            drawChart()
+          }
           //save res id so next messages with same ID will be concatenated with existing data
           existingCandlesWSResID = dataObj.ResultID
         } else {
-          //add new data to front of existing array
-          var newA = []
-          candlestickDisplayData.forEach(oldData => {
-            newA.push(oldData)
-            // console.log(oldData)
-          })
+          //add new data to existing array
           dataObj.Data.forEach(newData => {
-            newA.push(newData)
+            allCandles.push(newData)
           })
-          splitData = separateData(newA)
-          drawChart(newA)
         }
       }
 
@@ -142,27 +140,39 @@ function connectWs() {
 }
 connectWs()
 
-function separateData(data) {
-  let splitData = []
-  let chunkSize = 150
-  for (var i = 0; i < data.length; i += chunkSize) {
-    splitData.push(data.slice(i, i + chunkSize));
+function splitDisplayData(data) {
+  let retChunks = []
+  let newChunk = []
+  let desiredChunkSize = 50
+  let currentChunkSz = 0
+  for (var i = 0; i < data.length; i += 1) {
+    currentChunkSz += 1
+
+    if (currentChunkSz >= desiredChunkSize) {
+      // console.log("pushing chunk" + newChunk)
+      retChunks.push(newChunk)
+      currentChunkSz = 0
+      newChunk = []
+    }
+
+    // console.log("pushing data" + data)
+    newChunk.push(data[i])
   }
-  return splitData;
+
+  // console.log(retChunks)
+  return retChunks;
 }
+
 function moveLeft() {
-  // console.log(splitData)
-  if (index > 0) {
-    index -= 1
-    // console.log(splitData[index])
-    drawChart(splitData[index])
+  if (candleDisplayIndex > 0) {
+    candleDisplayIndex -= 1
+    drawChart()
   }
 }
 function moveRight() {
-  // console.log(splitData)
-  if (index < splitData.length) {
-    index += 1
-    drawChart(splitData[index])
+  if (candleDisplayIndex < displayCandlesChunks.length) {
+    candleDisplayIndex += 1
+    drawChart()
   }
 }
 
@@ -188,8 +198,7 @@ function computeBacktest() {
       // mode: "cors",
     })
     .then((res) => {
-      console.log(res.data)
-      drawChart(res.data)
+      // console.log(res.data)
     })
     .catch((error) => {
       console.log(error);
@@ -273,41 +282,6 @@ function loadBacktestRes() {
     .then((res) => {
       let gay = res.data.ModifiedCandlesticks
       console.log(gay)
-      drawChart(res.data.ModifiedCandlesticks)
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-
-function getMoreData() {
-  wholeStartTime = getPickerDateTime("startDateTimePicker")
-  wholeEndTime = getPickerDateTime("endDateTimePicker")
-
-  let date1 = new Date(candlestickData[0].DateTime);
-  let date2 = new Date(candlestickData[1].DateTime);
-  let candleDuration = Math.abs(date2 - date1); //in ms
-
-  let currentStartTime = new Date(candlestickData[0].DateTime);
-  let newStartDate = new Date(Math.abs((new Date(currentStartTime)) - (newCandlesToFetch * candleDuration)) + getLocalTimezone())
-  let endTime = new Date(Math.abs(candlestickData[candlestickData.length - 1].DateTime) + getLocalTimezone());
-  let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
-
-  let hd = {
-    // "Content-Type": "application/json",
-    // Authorization: user.password,
-    "Cache-Control": "no-cache",
-    Pragma: "no-cache",
-    Expires: "0",
-  }
-
-  axios
-    .get(getURL, {
-      headers: hd,
-      // mode: "cors",
-    })
-    .then((res) => {
-      drawChart(res.data)
     })
     .catch((error) => {
       console.log(error);
@@ -343,14 +317,21 @@ function processXAxisLabel(d, dates) {
   }
 }
 
-function drawChart(prices) {
-  if (!prices) {
+function drawChart() {
+  console.log(displayCandlesChunks)
+  let candlesToShow = displayCandlesChunks[candleDisplayIndex]
+  if (!candlesToShow || candlesToShow.length == 0) {
     return
   }
-  console.log(prices)
+
   //reset chart
   d3.selectAll("#container > *").remove();
-  let candlestickData = prices.slice()
+
+  console.log(candlesToShow)
+  let candlestickData = []
+  for (const p of candlesToShow) {
+    candlestickData.push(p)
+  }
 
   // candlestickData.forEach(d => {
   //   if ((d.StratEnterPrice != 0) || (d.StratExitPrice != 0) || (d.Label != "")) {
@@ -692,14 +673,6 @@ function drawChart(prices) {
     });
 }
 
-// function drawChartInit() {
-//   let firstGetURL = baseURL + "/candlestick?time_start=" + wholeStartTime + "&time_end=" + wholeEndTime
-//   d3.json(firstGetURL).then(function (prices) {
-//     drawChart(prices)
-//   });
-// }
-// drawChartInit();
-
 function wrap(text, width) {
   text.each(function () {
     var text = d3.select(this),
@@ -915,6 +888,41 @@ function plotHistory(data) {
       }
     })
   })
+}
+
+//unused
+function getMoreData() {
+  wholeStartTime = getPickerDateTime("startDateTimePicker")
+  wholeEndTime = getPickerDateTime("endDateTimePicker")
+
+  let date1 = new Date(candlestickData[0].DateTime);
+  let date2 = new Date(candlestickData[1].DateTime);
+  let candleDuration = Math.abs(date2 - date1); //in ms
+
+  let currentStartTime = new Date(candlestickData[0].DateTime);
+  let newStartDate = new Date(Math.abs((new Date(currentStartTime)) - (newCandlesToFetch * candleDuration)) + getLocalTimezone())
+  let endTime = new Date(Math.abs(candlestickData[candlestickData.length - 1].DateTime) + getLocalTimezone());
+  let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
+
+  let hd = {
+    // "Content-Type": "application/json",
+    // Authorization: user.password,
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+    Expires: "0",
+  }
+
+  axios
+    .get(getURL, {
+      headers: hd,
+      // mode: "cors",
+    })
+    .then((res) => {
+      drawChart(res.data)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
 //unused 
