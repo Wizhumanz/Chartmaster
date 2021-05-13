@@ -538,8 +538,8 @@ function drawChart() {
 
     gX.call(
       d3.axisBottom(xScaleZ).tickFormat((d, e, target) => {
-        if (d >= 0 && d <= dates.length - 1) {
-          return processXAxisLabel(d, dates)
+        if (d >= 0 && d <= dateTimes.length - 1) {
+          return processXAxisLabel(d, dateTimes)
         }
       })
     )
