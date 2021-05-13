@@ -18,7 +18,7 @@ const margin = { top: 30, right: 20, bottom: 205, left: 70 },
   h = 680;
 let existingCandlesWSResID
 
-let result =[]
+let result = []
 
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
@@ -43,13 +43,13 @@ function loadResult() {
         // create new option element
         let opt = document.createElement('option');
         // create text node to add to option element (opt)
-        opt.appendChild( document.createTextNode(l) );
+        opt.appendChild(document.createTextNode(l));
         // set value property of opt
-        opt.value = l.split(".")[0]; 
+        opt.value = l.split(".")[0];
         // add opt to end of select box (sel)
         sel.appendChild(opt);
-        })
       })
+    })
     .catch((error) => {
       console.log(error);
     });
@@ -90,12 +90,15 @@ function connectWs() {
       if (msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}")) {
         dataObj = JSON.parse(msg.data)
       }
-      
+
       //update chart data based on data type
       //candlestick
-      if (dataObj != undefined 
-        && dataObj.Data != undefined 
+      if (dataObj != undefined
+        && dataObj.Data != undefined
         && parseFloat(dataObj.Data[0].Open) > 0) {
+
+        // console.log(msg.data)
+
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
           candlestickDisplayData = dataObj.Data
@@ -107,44 +110,30 @@ function connectWs() {
         } else {
           //add new data to front of existing array
           var newA = []
-          // console.log(candlestickDisplayData)
-          dataObj.Data.forEach(newData => {
-            newA.push(newData)
-          })
           candlestickDisplayData.forEach(oldData => {
             newA.push(oldData)
             // console.log(oldData)
           })
+          dataObj.Data.forEach(newData => {
+            newA.push(newData)
+          })
           splitData = separateData(newA)
-          // console.log(newA)
-          // newA.forEach(d => {
-          //   if (typeof(d.DateTime) === "string"){
-          //     console.log(d)
-          //   }
-          // })
-          // console.log(newA.map(d => {
-          //   if (typeof(d.DateTime) !== "string"){
-          //     console.log(d)
-          //     return d.DateTime = new Date(Math.abs(d.DateTime) + getLocalTimezone()).toISOString().split(".")[0]
-          //   }
-          // }))
-          // console.log(splitData)
           drawChart(newA)
         }
       }
 
       //profit curve
-      if (dataObj != undefined 
-        && dataObj[0] 
-        && dataObj[0].Data != undefined 
+      if (dataObj != undefined
+        && dataObj[0]
+        && dataObj[0].Data != undefined
         && parseFloat(dataObj[0].Data[0].Equity) > 0) {
         drawPC(dataObj)
       }
 
       //sim trades
-      if (dataObj != undefined 
-        && dataObj[0] 
-        && dataObj[0].Data != undefined 
+      if (dataObj != undefined
+        && dataObj[0]
+        && dataObj[0].Data != undefined
         && parseFloat(dataObj[0].Data[0].EntryPrice) > 0) {
         plotHistory(dataObj)
       }
@@ -156,10 +145,10 @@ connectWs()
 function separateData(data) {
   let splitData = []
   let chunkSize = 150
-    for (var i = 0; i < data.length; i += chunkSize) {
-      splitData.push(data.slice(i, i + chunkSize));
-    }
-    return splitData;
+  for (var i = 0; i < data.length; i += chunkSize) {
+    splitData.push(data.slice(i, i + chunkSize));
+  }
+  return splitData;
 }
 function moveLeft() {
   // console.log(splitData)
@@ -290,7 +279,7 @@ function loadBacktestRes() {
       console.log(error);
     });
 }
- 
+
 function getMoreData() {
   wholeStartTime = getPickerDateTime("startDateTimePicker")
   wholeEndTime = getPickerDateTime("endDateTimePicker")
@@ -362,7 +351,7 @@ function drawChart(prices) {
   //reset chart
   d3.selectAll("#container > *").remove();
   let candlestickData = prices.slice()
-  
+
   // candlestickData.forEach(d => {
   //   if ((d.StratEnterPrice != 0) || (d.StratExitPrice != 0) || (d.Label != "")) {
   //     console.log(d)
