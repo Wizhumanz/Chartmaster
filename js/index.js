@@ -123,16 +123,16 @@ function connectWs() {
       // console.log(dataObj.Data[0].Data[0].EntryPrice)
       //profit curve
       if (dataObj != undefined
-        // && dataObj[0]
-        // && dataObj[0].Data != undefined
+        // && dataObj.Data
+        // && dataObj.Data.length > 0
         && parseFloat(dataObj.Data[0].Data[0].Equity) > 0) {
         drawPC(dataObj.Data)
       }
 
       //sim trades
       if (dataObj != undefined
-        // && dataObj[0]
-        // && dataObj[0].Data != undefined
+        // && dataObj.Data
+        // && dataObj.Data.length > 0
         && parseFloat(dataObj.Data[0].Data[0].EntryPrice) > 0) {
         plotHistory(dataObj.Data)
       }
@@ -145,7 +145,7 @@ function splitDisplayData(data) {
   //split candles into display chunks
   let retChunks = []
   let newChunk = []
-  let desiredChunkSize = 50
+  let desiredChunkSize = 100
   let currentChunkSz = 0
   for (var i = 0; i < data.length; i += 1) {
     currentChunkSz += 1
