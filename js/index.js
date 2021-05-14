@@ -8,9 +8,8 @@ let candleDisplayIndex = 0
 let lBtn = document.getElementById("panCandlesLeftBtn")
 lBtn.style.display = "none"
 let allCandles = [] // all individual candles
-var displayCandlesChunks = [] // chunks of candles for display
+let displayCandlesChunks = [] // chunks of candles for display
 
-let addedData = []
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
 let newCandlesToFetch = 80
@@ -21,8 +20,6 @@ const margin = { top: 30, right: 20, bottom: 205, left: 70 },
   w = 1050,
   h = 680;
 let existingCandlesWSResID
-
-let result = []
 
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
@@ -94,7 +91,7 @@ function connectWs() {
       if (msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}")) {
         dataObj = JSON.parse(msg.data)
       }
-
+      
       //update chart data based on data type
       //candlestick
       if (dataObj != undefined
@@ -211,8 +208,17 @@ function computeBacktest() {
   let startTimeStr = startTime.toISOString().split(".")[0]
   let endTime = new Date(Math.abs((new Date(getPickerDateTime("endDateTimePicker")))) + getLocalTimezone())
   let endTimeStr = endTime.toISOString().split(".")[0]
-  let getURL = baseURL + "/backtest?time_start=" + startTimeStr + "&time_end=" + endTimeStr + "&ticker=" + ticker + "&period=" + period + "&user=5632499082330112" + "&candlePacketSize=100"
-
+  let getURL = baseURL + "/backtest"
+  allCandles = [] // all individual candles
+  displayCandlesChunks = [] // chunks of candles for display
+  let backendInfo = {
+    "ticker": ticker,
+    "period": period,
+    "time_start": startTimeStr,
+    "time_end": endTimeStr,
+    "candlePacketSize": "100",
+    "user": "5632499082330112"
+}
   let hd = {
     // "Content-Type": "application/json",
     // Authorization: user.password,
@@ -221,7 +227,7 @@ function computeBacktest() {
     Expires: "0",
   }
   axios
-    .get(getURL, {
+    .post(getURL, backendInfo, {
       headers: hd,
       // mode: "cors",
     })
@@ -318,6 +324,8 @@ function loadBacktestRes() {
 
 function processXAxisLabel(d, dates) {
   d = new Date(dates[d])
+  console.log(d)
+
   //save date to make sure consecutive same dates don't show on axis label
   if (!xAxisDateExisting) {
     xAxisDateExisting = d
@@ -346,8 +354,9 @@ function processXAxisLabel(d, dates) {
 }
 
 function drawChart() {
-  let candlesToShow = displayCandlesChunks[candleDisplayIndex]
-
+  let candlesToShow = displayCandlesChunks[candleDisplayIndex].slice()
+  console.log(displayCandlesChunks)
+  console.log(candlesToShow)
   if (!candlesToShow || candlesToShow.length == 0) {
     return
   }
