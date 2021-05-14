@@ -291,7 +291,7 @@ tickerSelectChanged()
 function loadBacktestRes() {
   var s = document.getElementById("resSelect")
   var selectedRes = s.value
-  let getURL = baseURL + `/backtestHistory/${selectedRes}?user=5632499082330112&candlePacketSize=19`
+  let getURL = baseURL + `/backtestHistory/${selectedRes}?user=5632499082330112&candlePacketSize=100`
 
   let hd = {
     // "Content-Type": "application/json",
