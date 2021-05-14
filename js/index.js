@@ -93,7 +93,6 @@ function connectWs() {
       var dataObj
       if (msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}")) {
         dataObj = JSON.parse(msg.data)
-        console.log(dataObj)
       }
 
       //update chart data based on data type
@@ -101,6 +100,7 @@ function connectWs() {
       if (dataObj != undefined
         && dataObj.Data != undefined
         && parseFloat(dataObj.Data[0].Open) > 0) {
+        console.log(dataObj)
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
           allCandles = dataObj.Data
@@ -118,21 +118,24 @@ function connectWs() {
           })
         }
       }
-
+      console.log(dataObj.Data)
+      // console.log(dataObj.Data[0].Data[0].EntryPrice)
       //profit curve
       if (dataObj != undefined
-        && dataObj[0]
-        && dataObj[0].Data != undefined
-        && parseFloat(dataObj[0].Data[0].Equity) > 0) {
-        drawPC(dataObj)
+        // && dataObj[0]
+        // && dataObj[0].Data != undefined
+        && parseFloat(dataObj.Data[0].Data[0].Equity) > 0) {
+        console.log(dataObj.Data[0].Data)
+        drawPC(dataObj.Data)
       }
 
       //sim trades
       if (dataObj != undefined
-        && dataObj[0]
-        && dataObj[0].Data != undefined
-        && parseFloat(dataObj[0].Data[0].EntryPrice) > 0) {
-        plotHistory(dataObj)
+        // && dataObj[0]
+        // && dataObj[0].Data != undefined
+        && parseFloat(dataObj.Data[0].Data[0].EntryPrice) > 0) {
+        console.log(dataObj)
+        plotHistory(dataObj.Data)
       }
     };
   }
