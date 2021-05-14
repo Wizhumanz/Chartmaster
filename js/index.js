@@ -384,7 +384,7 @@ function drawChart() {
     if (candlestickToShowDateFormatObject[i].DateTime === "") {
       console.log(candlestickToShowDateFormatObject[i])
     } else {
-      let add = dateFormat(candlestickToShowDateFormatObject[i].DateTime) //sometimes causes null data
+      let add = new Date(candlestickToShowDateFormatObject[i].DateTime) //sometimes causes null data
       dateTimes.push(add)
       if (add === null) {
         console.log(candlestickToShowDateFormatObject[i])
