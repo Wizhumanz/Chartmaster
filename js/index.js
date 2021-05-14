@@ -208,9 +208,17 @@ function computeBacktest() {
   let startTimeStr = startTime.toISOString().split(".")[0]
   let endTime = new Date(Math.abs((new Date(getPickerDateTime("endDateTimePicker")))) + getLocalTimezone())
   let endTimeStr = endTime.toISOString().split(".")[0]
-  let getURL = baseURL + "/backtest?time_start=" + startTimeStr + "&time_end=" + endTimeStr + "&ticker=" + ticker + "&period=" + period + "&user=5632499082330112" + "&candlePacketSize=100"
+  let getURL = baseURL + "/backtest"
   allCandles = [] // all individual candles
   displayCandlesChunks = [] // chunks of candles for display
+  let backendInfo = {
+    "ticker": ticker,
+    "period": period,
+    "time_start": startTimeStr,
+    "time_end": endTimeStr,
+    "candlePacketSize": "100",
+    "user": "5632499082330112"
+}
   let hd = {
     // "Content-Type": "application/json",
     // Authorization: user.password,
@@ -219,7 +227,7 @@ function computeBacktest() {
     Expires: "0",
   }
   axios
-    .get(getURL, {
+    .post(getURL, backendInfo, {
       headers: hd,
       // mode: "cors",
     })
