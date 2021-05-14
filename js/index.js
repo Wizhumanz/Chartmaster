@@ -324,7 +324,6 @@ function loadBacktestRes() {
 
 function processXAxisLabel(d, dates) {
   d = new Date(dates[d])
-  console.log(d)
 
   //save date to make sure consecutive same dates don't show on axis label
   if (!xAxisDateExisting) {
@@ -355,32 +354,48 @@ function processXAxisLabel(d, dates) {
 
 function drawChart() {
   let candlesToShow = displayCandlesChunks[candleDisplayIndex].slice()
-  console.log(displayCandlesChunks)
-  console.log(candlesToShow)
   if (!candlesToShow || candlesToShow.length == 0) {
     return
   }
-  let candlestickData = []
-  for (const p of candlesToShow) {
-    candlestickData.push(p)
-  }
-  // displayCandlesChunks.forEach(chunk => {
-  //   chunk.forEach(c => {
-  //     console.log(typeof(c.DateTime))
-  //   })
-  // })
 
   //reset chart
   d3.selectAll("#container > *").remove();
 
+  let candlestickToShowDateFormatObject = candlesToShow.slice()
+
+  candlesToShow.forEach(c => {
+    if (c.DateTime === "") {
+      console.log(c)
+    }
+  })
+
+  candlestickToShowDateFormatObject.forEach(c => {
+    console.log("BEFORE " + typeof(c.DateTime))
+    // if (c.DateTime === "") {
+    //   console.log(c)
+    // }
+  })
+
   //build datetime array
   let dateTimes = []
-  let candlestickDataDateFormatObject = candlesToShow.slice()
-  for (var i = 0; i < candlestickData.length; i++) {
-    let add = dateFormat(candlestickData[i].DateTime)
-    dateTimes.push(add)
-    candlestickDataDateFormatObject[i].DateTime = add
+  for (var i = 0; i < candlesToShow.length; i++) {
+    // console.log(candlestickToShowDateFormatObject[i].DateTime)
+
+    if (candlestickToShowDateFormatObject[i].DateTime === "") {
+      console.log(candlestickToShowDateFormatObject[i])
+    } else {
+      let add = dateFormat(candlestickToShowDateFormatObject[i].DateTime) //sometimes causes null data
+      dateTimes.push(add)
+      if (add === null) {
+        console.log(candlestickToShowDateFormatObject[i])
+      } 
+      candlestickToShowDateFormatObject[i].DateTime = add
+    }
   }
+
+  candlestickToShowDateFormatObject.forEach(c => {
+    console.log("AFTER " +typeof(c.DateTime))
+  })
 
   var svg = d3.select("#container")
     // .attr("width", "100%")
@@ -421,8 +436,8 @@ function drawChart() {
   gX.selectAll(".tick text")
     .call(wrap, xBand.bandwidth())
 
-  var ymin = d3.min(candlestickData.map(r => r.Low));
-  var ymax = d3.max(candlestickData.map(r => r.High));
+  var ymin = d3.min(candlesToShow.map(r => r.Low));
+  var ymax = d3.max(candlesToShow.map(r => r.High));
   var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h, 0]).nice();
   var yAxis = d3.axisLeft()
     .scale(yScale)
@@ -437,7 +452,7 @@ function drawChart() {
 
   // draw rectangles
   let candles = chartBody.selectAll(".candle")
-    .data(candlestickData)
+    .data(candlesToShow)
     .enter()
     .append("rect")
     .attr('x', (d, i) => xScale(i) - xBand.bandwidth())
@@ -456,13 +471,13 @@ function drawChart() {
   //   .attr("fill", "yellow")
 
   // Add index to Price Array
-  candlestickData.map(p => p["index"] = candlestickData.indexOf(p))
+  candlesToShow.map(p => p["index"] = candlesToShow.indexOf(p))
 
   // Create Label
   let labelXMove = 4
   let labelYMove = 10
   let labelText = chartBody.selectAll("labelText")
-    .data(candlestickData.filter((p) => { return p.Label !== "" }))
+    .data(candlesToShow.filter((p) => { return p.Label !== "" }))
     .enter()
     .append("text")
     .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
@@ -481,7 +496,7 @@ function drawChart() {
   let pointerYMove = 25
 
   let enterPointer = chartBody.selectAll("enterPointer")
-    .data(candlestickData.filter((p) => { return p.StratEnterPrice != 0 }))
+    .data(candlesToShow.filter((p) => { return p.StratEnterPrice != 0 }))
     .enter()
     .append("rect")
     .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
@@ -491,7 +506,7 @@ function drawChart() {
     .attr("fill", "chartreuse")
 
   let exitPointer = chartBody.selectAll("exitPointer")
-    .data(candlestickData.filter((p) => { return p.StratExitPrice != 0 }))
+    .data(candlesToShow.filter((p) => { return p.StratExitPrice != 0 }))
     .enter()
     .append("rect")
     .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
@@ -503,7 +518,7 @@ function drawChart() {
 
   // draw high and low
   let stems = chartBody.selectAll("g.line")
-    .data(candlestickData)
+    .data(candlesToShow)
     .enter()
     .append("line")
     .attr("class", "stem")
@@ -602,7 +617,7 @@ function drawChart() {
 
       var xmin = new Date(xDateScale(Math.floor(xScaleZ.domain()[0])))
       xmax = new Date(xDateScale(Math.floor(xScaleZ.domain()[1])))
-      filtered = _.filter(candlestickDataDateFormatObject, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
+      filtered = _.filter(candlestickToShowDateFormatObject, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
       minP = +d3.min(filtered, d => d.Low)
       maxP = +d3.max(filtered, d => d.High)
       buffer = Math.floor((maxP - minP) * 0.1)
@@ -704,7 +719,7 @@ function drawChart() {
 
       stemsXArray.forEach((x, i) => {
         if ((mouse[0] > (x - 3)) && (mouse[0] < (x + 3))) {
-          document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlestickData[i].Open}</span> <br>H <span>${candlestickData[i].High}</span> <br>L <span>${candlestickData[i].Low}</span> <br>C <span>${candlestickData[i].Close}</span>`
+          document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> <br>H <span>${candlesToShow[i].High}</span> <br>L <span>${candlesToShow[i].Low}</span> <br>C <span>${candlesToShow[i].Close}</span>`
         }
       })
     });
@@ -933,13 +948,13 @@ function getMoreData() {
   wholeStartTime = getPickerDateTime("startDateTimePicker")
   wholeEndTime = getPickerDateTime("endDateTimePicker")
 
-  let date1 = new Date(candlestickData[0].DateTime);
-  let date2 = new Date(candlestickData[1].DateTime);
+  let date1 = new Date(candlestickToShow[0].DateTime);
+  let date2 = new Date(candlestickToShow[1].DateTime);
   let candleDuration = Math.abs(date2 - date1); //in ms
 
-  let currentStartTime = new Date(candlestickData[0].DateTime);
+  let currentStartTime = new Date(candlestickToShow[0].DateTime);
   let newStartDate = new Date(Math.abs((new Date(currentStartTime)) - (newCandlesToFetch * candleDuration)) + getLocalTimezone())
-  let endTime = new Date(Math.abs(candlestickData[candlestickData.length - 1].DateTime) + getLocalTimezone());
+  let endTime = new Date(Math.abs(candlestickToShow[candlestickToShow.length - 1].DateTime) + getLocalTimezone());
   let getURL = baseURL + "/candlestick?time_start=" + newStartDate.toISOString().split(".")[0] + "&time_end=" + endTime.toISOString().split(".")[0]
 
   let hd = {
@@ -972,8 +987,8 @@ function horizontalScroll() {
       .interpolate(d3.interpolateLinear)
       .on("zoom", zoomed))
 
-  // console.log(candlestickData)
-  var divs = d3.select("#scroll").selectAll(".indicatorDivs").data(candlestickData)
+  // console.log(candlestickToShow)
+  var divs = d3.select("#scroll").selectAll(".indicatorDivs").data(candlestickToShow)
 
   divs.enter()
     .append("div")
