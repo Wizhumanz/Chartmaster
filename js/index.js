@@ -100,7 +100,6 @@ function connectWs() {
       if (dataObj != undefined
         && dataObj.Data != undefined
         && parseFloat(dataObj.Data[0].Open) > 0) {
-        console.log(dataObj)
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
           allCandles = dataObj.Data
@@ -116,16 +115,17 @@ function connectWs() {
           dataObj.Data.forEach(newData => {
             allCandles.push(newData)
           })
+          displayCandlesChunks = splitDisplayData(allCandles)
+          drawChart()
         }
       }
-      console.log(dataObj.Data)
+      // console.log(dataObj.Data)
       // console.log(dataObj.Data[0].Data[0].EntryPrice)
       //profit curve
       if (dataObj != undefined
         // && dataObj[0]
         // && dataObj[0].Data != undefined
         && parseFloat(dataObj.Data[0].Data[0].Equity) > 0) {
-        console.log(dataObj.Data[0].Data)
         drawPC(dataObj.Data)
       }
 
@@ -134,7 +134,6 @@ function connectWs() {
         // && dataObj[0]
         // && dataObj[0].Data != undefined
         && parseFloat(dataObj.Data[0].Data[0].EntryPrice) > 0) {
-        console.log(dataObj)
         plotHistory(dataObj.Data)
       }
     };
@@ -188,10 +187,8 @@ function moveLeft() {
 function moveRight() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
-  console.log(candleDisplayIndex)
   if (candleDisplayIndex + 1 >= displayCandlesChunks.length) {
     rBtn.style.display = "none"
-    console.log("candleDisplayIndex")
   } else {
     rBtn.style.display = "inline"
     candleDisplayIndex += 1
@@ -350,6 +347,7 @@ function processXAxisLabel(d, dates) {
 
 function drawChart() {
   let candlesToShow = displayCandlesChunks[candleDisplayIndex]
+
   if (!candlesToShow || candlesToShow.length == 0) {
     return
   }
@@ -375,7 +373,6 @@ function drawChart() {
     candlestickDataDateFormatObject[i].DateTime = add
   }
 
-  console.log(candlestickDataDateFormatObject)
   var svg = d3.select("#container")
     // .attr("width", "100%")
     // .attr("height", "110%")
