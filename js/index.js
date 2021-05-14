@@ -106,7 +106,6 @@ function connectWs() {
           //if canldestick chart empty
           if (!displayCandlesChunks || displayCandlesChunks.length == 0) {
             displayCandlesChunks = splitDisplayData(dataObj.Data)
-            console.log(displayCandlesChunks)
             drawChart()
           }
           //save res id so next messages with same ID will be concatenated with existing data
@@ -116,6 +115,9 @@ function connectWs() {
           dataObj.Data.forEach(newData => {
             allCandles.push(newData)
           })
+
+          console.log(allCandles)
+
         }
       }
 
@@ -727,31 +729,32 @@ function wrap(text, width) {
 }
 
 /// PROFIT CURVE
-
-var profitCurveData
-var pcMargin = { top: 20, right: 20, bottom: 30, left: 40 },
-  width = 550 - pcMargin.left - pcMargin.right,
-  height = 300 - pcMargin.top - pcMargin.bottom;
-
-// parse the date / time
-var parseTime = d3.timeParse("%d-%b-%y");
-
-// set the ranges
-var x = d3.scaleTime().range([0, width]);
-var y = d3.scaleLinear().range([height, 0]);
-
-// append the svg obgect to the body of the page
-// appends a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
-var pcSvg = d3.select("#profit").append("svg")
-  // .attr("width", "550")
-  // .attr("height", "400")
-  .attr("viewBox", "0 0 600 600")
-  .append("g")
-  .attr("transform",
-    "translate(" + pcMargin.left + "," + pcMargin.top + ")");
-
 function drawPC(data) {
+  d3.selectAll("#profit > *").remove();
+  var profitCurveData
+  var pcMargin = { top: 20, right: 20, bottom: 30, left: 40 },
+    width = 550 - pcMargin.left - pcMargin.right,
+    height = 300 - pcMargin.top - pcMargin.bottom;
+
+  // parse the date / time
+  var parseTime = d3.timeParse("%d-%b-%y");
+
+  // set the ranges
+  var x = d3.scaleTime().range([0, width]);
+  var y = d3.scaleLinear().range([height, 0]);
+
+  // append the svg obgect to the body of the page
+  // appends a 'group' element to 'svg'
+  // moves the 'group' element to the top left margin
+  var pcSvg = d3.select("#profit").append("svg")
+    // .attr("width", "550")
+    // .attr("height", "400")
+    .attr("viewBox", "0 0 600 600")
+    .append("g")
+    .attr("transform",
+      "translate(" + pcMargin.left + "," + pcMargin.top + ")");
+
+    
   let formattedData = []
   let changedData = []
 
