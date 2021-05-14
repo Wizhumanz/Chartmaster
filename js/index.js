@@ -172,6 +172,9 @@ function moveLeft() {
   } else {
     lBtn.style.display = "inline"
     candleDisplayIndex -= 1
+    if (candleDisplayIndex - 1 < 0) {
+      lBtn.style.display = "none"
+    }
   }
 
   if (candleDisplayIndex < displayCandlesChunks.length) {
@@ -189,6 +192,9 @@ function moveRight() {
   } else {
     rBtn.style.display = "inline"
     candleDisplayIndex += 1
+    if (candleDisplayIndex + 1 >= displayCandlesChunks.length) {
+      rBtn.style.display = "none"
+    }
   }
 
   if (candleDisplayIndex >= 1) {
