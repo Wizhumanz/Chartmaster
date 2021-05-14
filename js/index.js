@@ -4,11 +4,9 @@ var wsStatus = document.getElementById("wsStatus")
 
 /// CANDLESTICKS
 
-let candleDisplayIndex = 0
-let lBtn = document.getElementById("panCandlesLeftBtn")
-lBtn.style.display = "none"
+let candleDrawStartIndex = 0
+let candleDrawEndIndex = 50
 let allCandles = [] // all individual candles
-let displayCandlesChunks = [] // chunks of candles for display
 
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
@@ -102,8 +100,7 @@ function connectWs() {
           allCandles = dataObj.Data
           //if canldestick chart empty
           if (!displayCandlesChunks || displayCandlesChunks.length == 0) {
-            displayCandlesChunks = splitDisplayData(dataObj.Data)
-            drawChart()
+            drawChart(0, 50)
           }
           //save res id so next messages with same ID will be concatenated with existing data
           existingCandlesWSResID = dataObj.ResultID
@@ -112,8 +109,6 @@ function connectWs() {
           dataObj.Data.forEach(newData => {
             allCandles.push(newData)
           })
-          displayCandlesChunks = splitDisplayData(allCandles)
-          drawChart()
         }
       }
       // console.log(dataObj.Data)
@@ -138,67 +133,47 @@ function connectWs() {
 }
 connectWs()
 
-function splitDisplayData(data) {
-  //split candles into display chunks
-  let retChunks = []
-  let newChunk = []
-  let desiredChunkSize = 100
-  let currentChunkSz = 0
-  for (var i = 0; i < data.length; i += 1) {
-    currentChunkSz += 1
-
-    if ((currentChunkSz > desiredChunkSize) || (i === (data.length - 1))) {
-      // console.log("pushing chunk" + newChunk)
-      retChunks.push(newChunk)
-      currentChunkSz = 0
-      newChunk = []
-    }
-
-    // console.log("pushing data" + data)
-    newChunk.push(data[i])
-  }
-  // console.log(retChunks)
-  return retChunks;
-}
-
 function moveLeft() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
 
-  if (candleDisplayIndex - 1 < 0) {
-    //update left btn style
-    lBtn.style.display = "none"
-  } else {
-    lBtn.style.display = "inline"
-    candleDisplayIndex -= 1
-    if (candleDisplayIndex - 1 < 0) {
-      lBtn.style.display = "none"
-    }
-  }
+  // if (candleDisplayIndex - 1 < 0) {
+  //   //update left btn style
+  //   lBtn.style.display = "none"
+  // } else {
+  //   lBtn.style.display = "inline"
+  //   candleDisplayIndex -= 1
+  //   if (candleDisplayIndex - 1 < 0) {
+  //     lBtn.style.display = "none"
+  //   }
+  // }
 
-  if (candleDisplayIndex < displayCandlesChunks.length) {
-    rBtn.style.display = "inline"
-  }
-  drawChart()
+  // if (candleDisplayIndex < displayCandlesChunks.length) {
+  //   rBtn.style.display = "inline"
+  // }
+  candleDrawStartIndex = candleDrawStartIndex-50
+  candleDrawEndIndex = candleDrawEndIndex-50
+  drawChart(candleDrawStartIndex, candleDrawEndIndex)
 }
 function moveRight() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
-  if (candleDisplayIndex + 1 >= displayCandlesChunks.length) {
-    rBtn.style.display = "none"
-  } else {
-    rBtn.style.display = "inline"
-    candleDisplayIndex += 1
-    if (candleDisplayIndex + 1 >= displayCandlesChunks.length) {
-      rBtn.style.display = "none"
-    }
-  }
+  // if (candleDisplayIndex + 1 >= displayCandlesChunks.length) {
+  //   rBtn.style.display = "none"
+  // } else {
+  //   rBtn.style.display = "inline"
+  //   candleDisplayIndex += 1
+  //   if (candleDisplayIndex + 1 >= displayCandlesChunks.length) {
+  //     rBtn.style.display = "none"
+  //   }
+  // }
 
-  if (candleDisplayIndex >= 1) {
-    lBtn.style.display = "inline"
-  }
-
-  drawChart()
+  // if (candleDisplayIndex >= 1) {
+  //   lBtn.style.display = "inline"
+  // }
+  candleDrawStartIndex = candleDrawStartIndex+50
+  candleDrawEndIndex = candleDrawEndIndex+50
+  drawChart(candleDrawStartIndex, candleDrawEndIndex)
 }
 
 function computeBacktest() {
@@ -216,7 +191,7 @@ function computeBacktest() {
     "period": period,
     "time_start": startTimeStr,
     "time_end": endTimeStr,
-    "candlePacketSize": "100",
+    "candlePacketSize": "50",
     "user": "5632499082330112"
 }
   let hd = {
@@ -352,8 +327,10 @@ function processXAxisLabel(d, dates) {
   }
 }
 
-function drawChart() {
-  let candlesToShow = displayCandlesChunks[candleDisplayIndex].slice()
+function drawChart(start, end) {
+  console.log(start + " - " + end)
+  let candlesToShow = allCandles.slice(start, end)
+  console.log(candlesToShow)
   if (!candlesToShow || candlesToShow.length == 0) {
     return
   }
@@ -361,15 +338,13 @@ function drawChart() {
   //reset chart
   d3.selectAll("#container > *").remove();
 
-  let candlestickToShowDateFormatObject = candlesToShow.slice()
-
   candlesToShow.forEach(c => {
     if (c.DateTime === "") {
       console.log(c)
     }
   })
 
-  candlestickToShowDateFormatObject.forEach(c => {
+  candlesToShow.forEach(c => {
     console.log("BEFORE " + typeof(c.DateTime))
     // if (c.DateTime === "") {
     //   console.log(c)
@@ -379,21 +354,21 @@ function drawChart() {
   //build datetime array
   let dateTimes = []
   for (var i = 0; i < candlesToShow.length; i++) {
-    // console.log(candlestickToShowDateFormatObject[i].DateTime)
+    // console.log(candlesToShow[i].DateTime)
 
-    if (candlestickToShowDateFormatObject[i].DateTime === "") {
-      console.log(candlestickToShowDateFormatObject[i])
+    if (candlesToShow[i].DateTime === "") {
+      console.log(candlesToShow[i])
     } else {
-      let add = new Date(candlestickToShowDateFormatObject[i].DateTime) //sometimes causes null data
+      let add = new Date(candlesToShow[i].DateTime) //sometimes causes null data
       dateTimes.push(add)
       if (add === null) {
-        console.log(candlestickToShowDateFormatObject[i])
+        console.log(candlesToShow[i])
       } 
-      candlestickToShowDateFormatObject[i].DateTime = add
+      candlesToShow[i].DateTime = add
     }
   }
 
-  candlestickToShowDateFormatObject.forEach(c => {
+  candlesToShow.forEach(c => {
     console.log("AFTER " +typeof(c.DateTime))
   })
 
@@ -617,7 +592,7 @@ function drawChart() {
 
       var xmin = new Date(xDateScale(Math.floor(xScaleZ.domain()[0])))
       xmax = new Date(xDateScale(Math.floor(xScaleZ.domain()[1])))
-      filtered = _.filter(candlestickToShowDateFormatObject, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
+      filtered = _.filter(candlesToShow, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
       minP = +d3.min(filtered, d => d.Low)
       maxP = +d3.max(filtered, d => d.High)
       buffer = Math.floor((maxP - minP) * 0.1)
