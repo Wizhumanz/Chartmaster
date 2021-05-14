@@ -93,6 +93,7 @@ function connectWs() {
       var dataObj
       if (msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}")) {
         dataObj = JSON.parse(msg.data)
+        console.log(dataObj)
       }
 
       //update chart data based on data type
@@ -115,9 +116,6 @@ function connectWs() {
           dataObj.Data.forEach(newData => {
             allCandles.push(newData)
           })
-
-          console.log(allCandles)
-
         }
       }
 
