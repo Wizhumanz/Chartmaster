@@ -103,10 +103,10 @@ function connectWs() {
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
           allCandles = dataObj.Data
-
           //if canldestick chart empty
           if (!displayCandlesChunks || displayCandlesChunks.length == 0) {
             displayCandlesChunks = splitDisplayData(dataObj.Data)
+            console.log(displayCandlesChunks)
             drawChart()
           }
           //save res id so next messages with same ID will be concatenated with existing data
@@ -148,7 +148,7 @@ function splitDisplayData(data) {
   for (var i = 0; i < data.length; i += 1) {
     currentChunkSz += 1
 
-    if ((currentChunkSz >= desiredChunkSize) || (i === (data.length - 1))) {
+    if ((currentChunkSz > desiredChunkSize) || (i === (data.length - 1))) {
       // console.log("pushing chunk" + newChunk)
       retChunks.push(newChunk)
       currentChunkSz = 0
@@ -182,9 +182,10 @@ function moveLeft() {
 function moveRight() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
-  
+  console.log(candleDisplayIndex)
   if (candleDisplayIndex + 1 >= displayCandlesChunks.length) {
     rBtn.style.display = "none"
+    console.log("candleDisplayIndex")
   } else {
     rBtn.style.display = "inline"
     candleDisplayIndex += 1
@@ -358,11 +359,14 @@ function drawChart() {
 
   //build datetime array
   let dateTimes = []
+  let candlestickDataDateFormatObject = candlesToShow.slice()
   for (var i = 0; i < candlestickData.length; i++) {
     let add = dateFormat(candlestickData[i].DateTime)
     dateTimes.push(add)
+    candlestickDataDateFormatObject[i].DateTime = add
   }
 
+  console.log(candlestickDataDateFormatObject)
   var svg = d3.select("#container")
     // .attr("width", "100%")
     // .attr("height", "110%")
@@ -583,7 +587,7 @@ function drawChart() {
 
       var xmin = new Date(xDateScale(Math.floor(xScaleZ.domain()[0])))
       xmax = new Date(xDateScale(Math.floor(xScaleZ.domain()[1])))
-      filtered = _.filter(candlestickData, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
+      filtered = _.filter(candlestickDataDateFormatObject, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
       minP = +d3.min(filtered, d => d.Low)
       maxP = +d3.max(filtered, d => d.High)
       buffer = Math.floor((maxP - minP) * 0.1)
