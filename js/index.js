@@ -2,6 +2,8 @@
 let baseURL = "http://localhost:8000"
 let wsStatus = document.getElementById("wsStatus")
 let userID = "5632499082330112"
+// Simulated Trades index
+let indexST = 1
 
 // Disable btns initially
 document.getElementById("panCandlesLeftBtn").style.display = "none"
@@ -12,7 +14,8 @@ let candleDrawStartIndex = 0
 let candleDrawEndIndex = 50
 let candleDisplayNumber = 50
 let allCandles = [] // all individual candles
-let allProfitCurve = [] // all individual candles
+let allProfitCurve = [] // all individual profits
+let allSimTrades = [] // all individual trades
 
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
@@ -24,6 +27,8 @@ const margin = { top: 30, right: 20, bottom: 205, left: 70 },
   w = 1050,
   h = 680;
 let existingWSResID
+let existingWSResIDPC
+let existingWSResIDST
 
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
@@ -118,15 +123,15 @@ function connectWs() {
 
       //profit curve
       if (dataObj != undefined && parseFloat(dataObj.Data[0].Data[0].Equity) > 0) {
-        console.log(dataObj)
+        // console.log(dataObj.Data)
+
         //check if concat needed, or new data
-        if (existingWSResID === "" || existingWSResID !== dataObj.ResultID) {
+        if (existingWSResIDPC === "" || existingWSResIDPC !== dataObj.ResultID) {
           allProfitCurve = dataObj.Data
           //if candlestick chart empty
           drawPC(allProfitCurve)
-
           //save res id so next messages with same ID will be concatenated with existing data
-          existingWSResID = dataObj.ResultID
+          existingWSResIDPC = dataObj.ResultID
         } else {
           //add new data to existing array
           dataObj.Data.forEach(newData => {
@@ -138,8 +143,25 @@ function connectWs() {
 
       //sim trades
       if (dataObj != undefined && parseFloat(dataObj.Data[0].Data[0].EntryPrice) > 0) {
-        plotHistory(dataObj.Data)
+        if (existingWSResIDST === "" || existingWSResIDST !== dataObj.ResultID) {
+          allSimTrades = dataObj.Data
+          //if candlestick chart empty
+          plotHistory(allSimTrades)
+
+          //save res id so next messages with same ID will be concatenated with existing data
+          existingWSResIDST = dataObj.ResultID
+        } else {
+          //add new data to existing array
+          dataObj.Data.forEach(newData => {
+            allSimTrades.push(newData)
+          })
+          plotHistory(allSimTrades)
+          indexST = 1
+
+          console.log(allSimTrades)
+        }
       }
+
     };
   }
 }
@@ -258,7 +280,6 @@ function drawChart(start, end) {
       console.log(c)
     }
   })
-  console.log(candlesToShow)
 
   candlesToShow.forEach(c => {
     console.log("BEFORE " + typeof(c.DateTime))
@@ -776,16 +797,22 @@ function drawPC(data) {
 }
 
 /// SIMULATED TRADES
-
 function plotHistory(data) {
   var table = document.getElementById("history")
+  table.innerHTML = ""
+  let row = table.insertRow()
+  let tableHeader = ["Index","Raw Profit Perc","Entry Price","Exit Price","Risked Equity","Date","Position Size","Direction","Parameter"]
+  tableHeader.forEach(t => {
+    let newCell = row.insertCell()
+    newCell.innerHTML = t
+    newCell.className = "thead"
+  })
   //for each param
   data.forEach((d) => {
     //for each trade history item in that param
     d.Data.forEach((s, i) => {
       let row = table.insertRow()
-      row.insertCell().innerHTML = parseInt(JSON.stringify(i)) + 1
-
+      row.insertCell().innerHTML = indexST
       row.insertCell().innerHTML = s.RawProfitPerc
       row.insertCell().innerHTML = s.EntryPrice.toFixed(2)
       row.insertCell().innerHTML = s.ExitPrice.toFixed(2)
@@ -808,6 +835,7 @@ function plotHistory(data) {
       } else if ((s.Direction == "LONG") && (exit < entry)) {
         row.style.backgroundColor = "#240000"
       }
+      indexST += 1
     })
   })
 }
