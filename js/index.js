@@ -808,7 +808,7 @@ function plotHistory(data) {
     d.Data.forEach((s, i) => {
       let row = table.insertRow()
       row.insertCell().innerHTML = indexST
-      row.insertCell().innerHTML = s.RawProfitPerc
+      row.insertCell().innerHTML = s.RawProfitPerc.toFixed(2)
       row.insertCell().innerHTML = s.EntryPrice.toFixed(2)
       row.insertCell().innerHTML = s.ExitPrice.toFixed(2)
       row.insertCell().innerHTML = s.RiskedEquity.toFixed(2)
@@ -826,9 +826,9 @@ function plotHistory(data) {
       var entry = parseFloat(s.EntryPrice)
       var exit = parseFloat(s.ExitPrice)
       if ((s.Direction == "LONG") && (exit > entry)) {
-        row.style.backgroundColor = "#002405"
+        row.style.backgroundColor = "#001204"
       } else if ((s.Direction == "LONG") && (exit < entry)) {
-        row.style.backgroundColor = "#240000"
+        row.style.backgroundColor = "#1a0000"
       }
       indexST += 1
     })
