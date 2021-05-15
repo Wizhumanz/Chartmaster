@@ -10,16 +10,16 @@ document.getElementById("panCandlesLeftBtn").style.display = "none"
 document.getElementById("panCandlesRightBtn").style.display = "none"
 
 /// CANDLESTICKS
+let candleDisplayNumber = 170
 let candleDrawStartIndex = 0
-let candleDrawEndIndex = 50
-let candleDisplayNumber = 50
+let candleDrawEndIndex = candleDisplayNumber
 let allCandles = [] // all individual candles
 let allProfitCurve = [] // all individual profits
 let allSimTrades = [] // all individual trades
 
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
-let newCandlesToFetch = 80
+let newCandlesToFetch = 80 //used by obsolete getMoreData() 
 
 let xAxisDateExisting
 var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
@@ -105,7 +105,7 @@ function connectWs() {
         if (existingWSResID === "" || existingWSResID !== JSON.parse(msg.data).ResultID) {
           allCandles = JSON.parse(msg.data).Data
           //if candlestick chart empty
-          drawChart(0, 50)
+          drawChart(0, candleDisplayNumber)
           //show right arrow btn
           document.getElementById("panCandlesRightBtn").style.display = "inline"
 
@@ -116,7 +116,7 @@ function connectWs() {
           JSON.parse(msg.data).Data.forEach(newData => {
             allCandles.push(newData)
           })
-          drawChart(0, 50)
+          drawChart(0, candleDisplayNumber)
         }
       }
 
@@ -176,7 +176,7 @@ function computeBacktest() {
     "period": period,
     "time_start": startTimeStr,
     "time_end": endTimeStr,
-    "candlePacketSize": "50",
+    "candlePacketSize": "80",
     "user": userID
   }
 
