@@ -211,7 +211,6 @@ div.stacked::-webkit-scrollbar-thumb {
 
 #simTradesDiv {
   height: 37rem;
-  overflow-x: hidden;
 
   h4 {
     margin-left: -7rem;
@@ -226,7 +225,7 @@ div.stacked::-webkit-scrollbar-thumb {
 
 td {
   padding: 0.5rem;
-  font-size: xx-small;
+  font-size: small;
 }
 
 tr:hover {
