@@ -2,8 +2,12 @@
 let baseURL = "http://localhost:8000"
 var wsStatus = document.getElementById("wsStatus")
 
-/// CANDLESTICKS
 
+// Disable btns initially
+document.getElementById("panCandlesLeftBtn").style.display = "none"
+document.getElementById("panCandlesRightBtn").style.display = "none"
+
+/// CANDLESTICKS
 let candleDrawStartIndex = 0
 let candleDrawEndIndex = 50
 let candleDisplayNumber = 50
@@ -90,21 +94,17 @@ function connectWs() {
       if (msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}")) {
         dataObj = JSON.parse(msg.data)
       }
-      
-      //update chart data based on data type
+
       //candlestick
-      if (dataObj != undefined
-        && dataObj.Data != undefined
-        && parseFloat(dataObj.Data[0].Open) > 0) {
+      if (dataObj != undefined && parseFloat(dataObj.Data[0].Open) > 0) {
         //check if concat needed, or new data
         if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
           allCandles = dataObj.Data
-          //if canldestick chart empty
-          if (!displayCandlesChunks || displayCandlesChunks.length == 0) {
-            drawChart(0, 50)
-            document.getElementById("panCandlesRightBtn").style.display = "inline"
+          //if candlestick chart empty
+          drawChart(0, 50)
+          //show right arrow btn
+          document.getElementById("panCandlesRightBtn").style.display = "inline"
 
-          }
           //save res id so next messages with same ID will be concatenated with existing data
           existingCandlesWSResID = dataObj.ResultID
         } else {
@@ -112,23 +112,17 @@ function connectWs() {
           dataObj.Data.forEach(newData => {
             allCandles.push(newData)
           })
+          drawChart(0, 50)
         }
       }
-      // console.log(dataObj.Data)
-      // console.log(dataObj.Data[0].Data[0].EntryPrice)
+
       //profit curve
-      if (dataObj != undefined
-        // && dataObj.Data
-        // && dataObj.Data.length > 0
-        && parseFloat(dataObj.Data[0].Data[0].Equity) > 0) {
+      if (dataObj != undefined && parseFloat(dataObj.Data[0].Data[0].Equity) > 0) {
         drawPC(dataObj.Data)
       }
 
       //sim trades
-      if (dataObj != undefined
-        // && dataObj.Data
-        // && dataObj.Data.length > 0
-        && parseFloat(dataObj.Data[0].Data[0].EntryPrice) > 0) {
+      if (dataObj != undefined && parseFloat(dataObj.Data[0].Data[0].EntryPrice) > 0) {
         plotHistory(dataObj.Data)
       }
     };
@@ -136,51 +130,15 @@ function connectWs() {
 }
 connectWs()
 
-// Disable btns initially
-document.getElementById("panCandlesLeftBtn").style.display = "none"
-document.getElementById("panCandlesRightBtn").style.display = "none"
-
-function moveLeft() {
-  let lBtn = document.getElementById("panCandlesLeftBtn")
-  let rBtn = document.getElementById("panCandlesRightBtn")
-
-  lBtn.style.display = "inline"
-  candleDrawStartIndex -= candleDisplayNumber
-  candleDrawEndIndex -= candleDisplayNumber
-  if (candleDrawStartIndex <= 0) {
-    lBtn.style.display = "none"
-  }
-
-  rBtn.style.display = "inline"
-  
-  drawChart(candleDrawStartIndex, candleDrawEndIndex)
-}
-function moveRight() {
-  let lBtn = document.getElementById("panCandlesLeftBtn")
-  let rBtn = document.getElementById("panCandlesRightBtn")
- 
-  rBtn.style.display = "inline"
-  candleDrawStartIndex += candleDisplayNumber
-  candleDrawEndIndex += candleDisplayNumber
-  if (candleDrawEndIndex >= allCandles.length) {
-    rBtn.style.display = "none"
-  }
-
-  lBtn.style.display = "inline"
-  
-  drawChart(candleDrawStartIndex, candleDrawEndIndex)
-}
-
 function computeBacktest() {
   let ticker = document.getElementById("tickerSelect").value
   let period = document.getElementById("periodSelect").value
-  let startTime = new Date(Math.abs((new Date(getPickerDateTime("startDateTimePicker")))) + getLocalTimezone())
-  let startTimeStr = startTime.toISOString().split(".")[0]
-  let endTime = new Date(Math.abs((new Date(getPickerDateTime("endDateTimePicker")))) + getLocalTimezone())
-  let endTimeStr = endTime.toISOString().split(".")[0]
-  let getURL = baseURL + "/backtest"
+  let startTimeStr = new Date(Math.abs((new Date(getPickerDateTime("startDateTimePicker")))) + getLocalTimezone()).toISOString().split(".")[0]
+  let endTimeStr = new Date(Math.abs((new Date(getPickerDateTime("endDateTimePicker")))) + getLocalTimezone()).toISOString().split(".")[0]
+
   allCandles = [] // all individual candles
   displayCandlesChunks = [] // chunks of candles for display
+
   let backendInfo = {
     "ticker": ticker,
     "period": period,
@@ -188,7 +146,8 @@ function computeBacktest() {
     "time_end": endTimeStr,
     "candlePacketSize": "50",
     "user": "5632499082330112"
-}
+  }
+
   let hd = {
     // "Content-Type": "application/json",
     // Authorization: user.password,
@@ -197,12 +156,9 @@ function computeBacktest() {
     Expires: "0",
   }
   axios
-    .post(getURL, backendInfo, {
+    .post(baseURL + "/backtest", backendInfo, {
       headers: hd,
       // mode: "cors",
-    })
-    .then((res) => {
-      // console.log(res.data)
     })
     .catch((error) => {
       console.log(error);
@@ -210,8 +166,6 @@ function computeBacktest() {
 }
 
 function getExchanges() {
-  let getURL = baseURL + "/getChartmasterTickers"
-
   let hd = {
     // "Content-Type": "application/json",
     // Authorization: user.password,
@@ -220,7 +174,7 @@ function getExchanges() {
     Expires: "0",
   }
   axios
-    .get(getURL, {
+    .get(baseURL + "/getChartmasterTickers", {
       headers: hd,
       // mode: "cors",
     })
@@ -246,25 +200,6 @@ function getExchanges() {
     });
 }
 getExchanges()
-
-function getPickerDateTime(pickerID) {
-  return document.getElementById(pickerID).value + ":00"
-}
-
-function getLocalTimezone() {
-  return (-new Date().getTimezoneOffset() / 60) * 3600000
-}
-
-function tickerSelectChanged() {
-  var s = document.getElementById("resSelect")
-  var btn = document.getElementById("loadResBtn")
-  if (s.value !== "") {
-    btn.style.display = "inline"
-  } else {
-    btn.style.display = "none"
-  }
-}
-tickerSelectChanged()
 
 function loadBacktestRes() {
   var s = document.getElementById("resSelect")
@@ -292,40 +227,10 @@ function loadBacktestRes() {
     });
 }
 
-function processXAxisLabel(d, dates) {
-  d = new Date(dates[d])
-
-  //save date to make sure consecutive same dates don't show on axis label
-  if (!xAxisDateExisting) {
-    xAxisDateExisting = d
-  }
-
-  hours = d.getHours()
-  minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()
-  amPM = hours < 13 ? 'am' : 'pm'
-  if (parseInt(hours)) {
-    // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
-    let retLabel = hours + ':' + minutes + amPM
-    //if date the same, don't show
-    let dateStr = ""
-    if (xAxisDateExisting.getDate() != d.getDate()) {
-      //always show date with month
-      dateStr = dateStr + ' ' + d.getDate() + ' ' + months[d.getMonth()]
-      xAxisDateExisting = d
-    }
-    if (xAxisDateExisting.getFullYear() != d.getFullYear()) {
-      dateStr = dateStr + ' ' + d.getFullYear()
-      xAxisDateExisting = d
-    }
-    return retLabel + dateStr
-    // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
-  }
-}
-
 function drawChart(start, end) {
-  console.log(start + " - " + end)
+  // console.log(start + " - " + end)
   let candlesToShow = allCandles.slice(start, end)
-  console.log(candlesToShow)
+  // console.log(candlesToShow)
   if (!candlesToShow || candlesToShow.length == 0) {
     return
   }
@@ -854,28 +759,6 @@ function drawPC(data) {
     .style("color", "white")
 }
 
-function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
-function sortByDate(arr) {
-  // Sorting the array based on date from earlier to later
-  arr.sort(function (a, b) {
-    return new Date(new Date(a.date)) - new Date(new Date(b.date));
-  });
-}
-
-function useKeyAndValue(func, obj) {
-  for (const [key, value] of Object.entries(obj)) {
-    func(key, value)
-  }
-}
-
 /// SIMULATED TRADES
 
 function plotHistory(data) {
@@ -911,6 +794,109 @@ function plotHistory(data) {
       }
     })
   })
+}
+
+// Helper Functions
+function moveLeft() {
+  let lBtn = document.getElementById("panCandlesLeftBtn")
+  let rBtn = document.getElementById("panCandlesRightBtn")
+
+  lBtn.style.display = "inline"
+  candleDrawStartIndex -= candleDisplayNumber
+  candleDrawEndIndex -= candleDisplayNumber
+  if (candleDrawStartIndex <= 0) {
+    lBtn.style.display = "none"
+  }
+
+  rBtn.style.display = "inline"
+  
+  drawChart(candleDrawStartIndex, candleDrawEndIndex)
+}
+
+function moveRight() {
+  let lBtn = document.getElementById("panCandlesLeftBtn")
+  let rBtn = document.getElementById("panCandlesRightBtn")
+ 
+  rBtn.style.display = "inline"
+  candleDrawStartIndex += candleDisplayNumber
+  candleDrawEndIndex += candleDisplayNumber
+  if (candleDrawEndIndex >= allCandles.length) {
+    rBtn.style.display = "none"
+  }
+
+  lBtn.style.display = "inline"
+  
+  drawChart(candleDrawStartIndex, candleDrawEndIndex)
+}
+
+function getPickerDateTime(pickerID) {
+  return document.getElementById(pickerID).value + ":00"
+}
+
+function getLocalTimezone() {
+  return (-new Date().getTimezoneOffset() / 60) * 3600000
+}
+
+function tickerSelectChanged() {
+  var s = document.getElementById("resSelect")
+  var btn = document.getElementById("loadResBtn")
+  if (s.value !== "") {
+    btn.style.display = "inline"
+  } else {
+    btn.style.display = "none"
+  }
+}
+tickerSelectChanged()
+function processXAxisLabel(d, dates) {
+  d = new Date(dates[d])
+
+  //save date to make sure consecutive same dates don't show on axis label
+  if (!xAxisDateExisting) {
+    xAxisDateExisting = d
+  }
+
+  hours = d.getHours()
+  minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()
+  amPM = hours < 13 ? 'am' : 'pm'
+  if (parseInt(hours)) {
+    // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+    let retLabel = hours + ':' + minutes + amPM
+    //if date the same, don't show
+    let dateStr = ""
+    if (xAxisDateExisting.getDate() != d.getDate()) {
+      //always show date with month
+      dateStr = dateStr + ' ' + d.getDate() + ' ' + months[d.getMonth()]
+      xAxisDateExisting = d
+    }
+    if (xAxisDateExisting.getFullYear() != d.getFullYear()) {
+      dateStr = dateStr + ' ' + d.getFullYear()
+      xAxisDateExisting = d
+    }
+    return retLabel + dateStr
+    // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+  }
+}
+
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+function sortByDate(arr) {
+  // Sorting the array based on date from earlier to later
+  arr.sort(function (a, b) {
+    return new Date(new Date(a.date)) - new Date(new Date(b.date));
+  });
+}
+
+function useKeyAndValue(func, obj) {
+  for (const [key, value] of Object.entries(obj)) {
+    func(key, value)
+  }
 }
 
 //unused
