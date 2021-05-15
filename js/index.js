@@ -6,6 +6,7 @@ var wsStatus = document.getElementById("wsStatus")
 
 let candleDrawStartIndex = 0
 let candleDrawEndIndex = 50
+let candleDisplayNumber = 50
 let allCandles = [] // all individual candles
 
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
@@ -101,6 +102,8 @@ function connectWs() {
           //if canldestick chart empty
           if (!displayCandlesChunks || displayCandlesChunks.length == 0) {
             drawChart(0, 50)
+            document.getElementById("panCandlesRightBtn").style.display = "inline"
+
           }
           //save res id so next messages with same ID will be concatenated with existing data
           existingCandlesWSResID = dataObj.ResultID
@@ -133,46 +136,38 @@ function connectWs() {
 }
 connectWs()
 
+// Disable btns initially
+document.getElementById("panCandlesLeftBtn").style.display = "none"
+document.getElementById("panCandlesRightBtn").style.display = "none"
+
 function moveLeft() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
 
-  // if (candleDisplayIndex - 1 < 0) {
-  //   //update left btn style
-  //   lBtn.style.display = "none"
-  // } else {
-  //   lBtn.style.display = "inline"
-  //   candleDisplayIndex -= 1
-  //   if (candleDisplayIndex - 1 < 0) {
-  //     lBtn.style.display = "none"
-  //   }
-  // }
+  lBtn.style.display = "inline"
+  candleDrawStartIndex -= candleDisplayNumber
+  candleDrawEndIndex -= candleDisplayNumber
+  if (candleDrawStartIndex <= 0) {
+    lBtn.style.display = "none"
+  }
 
-  // if (candleDisplayIndex < displayCandlesChunks.length) {
-  //   rBtn.style.display = "inline"
-  // }
-  candleDrawStartIndex = candleDrawStartIndex-50
-  candleDrawEndIndex = candleDrawEndIndex-50
+  rBtn.style.display = "inline"
+  
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
 }
 function moveRight() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
-  // if (candleDisplayIndex + 1 >= displayCandlesChunks.length) {
-  //   rBtn.style.display = "none"
-  // } else {
-  //   rBtn.style.display = "inline"
-  //   candleDisplayIndex += 1
-  //   if (candleDisplayIndex + 1 >= displayCandlesChunks.length) {
-  //     rBtn.style.display = "none"
-  //   }
-  // }
+ 
+  rBtn.style.display = "inline"
+  candleDrawStartIndex += candleDisplayNumber
+  candleDrawEndIndex += candleDisplayNumber
+  if (candleDrawEndIndex >= allCandles.length) {
+    rBtn.style.display = "none"
+  }
 
-  // if (candleDisplayIndex >= 1) {
-  //   lBtn.style.display = "inline"
-  // }
-  candleDrawStartIndex = candleDrawStartIndex+50
-  candleDrawEndIndex = candleDrawEndIndex+50
+  lBtn.style.display = "inline"
+  
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
 }
 
