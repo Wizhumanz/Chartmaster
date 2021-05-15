@@ -1,7 +1,7 @@
 
 let baseURL = "http://localhost:8000"
-var wsStatus = document.getElementById("wsStatus")
-
+let wsStatus = document.getElementById("wsStatus")
+let userID = "5632499082330112"
 
 // Disable btns initially
 document.getElementById("panCandlesLeftBtn").style.display = "none"
@@ -27,7 +27,6 @@ let existingCandlesWSResID
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
 function loadResult() {
-  let getURL = "http://localhost:8000/backtestHistory?user=5632499082330112"
   let hd = {
     // "Content-Type": "application/json",
     // Authorization: user.password,
@@ -36,7 +35,7 @@ function loadResult() {
     Expires: "0",
   }
   axios
-    .get(getURL, {
+    .get(baseURL + "/backtestHistory?user=" + userID, {
       headers: hd,
       // mode: "cors",
     })
@@ -65,7 +64,7 @@ function connectWs() {
   wsStatus.innerText = "Loading websockets..."
   var socket
   try {
-    socket = new WebSocket("ws://localhost:8000/ws-cm/" + "5632499082330112");
+    socket = new WebSocket("ws://localhost:8000/ws-cm/" + userID);
   } catch (err) {
     console.log(err);
   }
@@ -145,7 +144,7 @@ function computeBacktest() {
     "time_start": startTimeStr,
     "time_end": endTimeStr,
     "candlePacketSize": "50",
-    "user": "5632499082330112"
+    "user": userID
   }
 
   let hd = {
@@ -204,7 +203,7 @@ getExchanges()
 function loadBacktestRes() {
   var s = document.getElementById("resSelect")
   var selectedRes = s.value
-  let getURL = baseURL + `/backtestHistory/${selectedRes}?user=5632499082330112&candlePacketSize=100`
+  let getURL = baseURL + `/backtestHistory/${selectedRes}?user=` + userID + "&candlePacketSize=100"
 
   let hd = {
     // "Content-Type": "application/json",
@@ -243,6 +242,7 @@ function drawChart(start, end) {
       console.log(c)
     }
   })
+  console.log(candlesToShow)
 
   candlesToShow.forEach(c => {
     console.log("BEFORE " + typeof(c.DateTime))
@@ -858,23 +858,24 @@ function processXAxisLabel(d, dates) {
   hours = d.getHours()
   minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()
   amPM = hours < 13 ? 'am' : 'pm'
-  if (parseInt(hours)) {
-    // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
-    let retLabel = hours + ':' + minutes + amPM
-    //if date the same, don't show
-    let dateStr = ""
-    if (xAxisDateExisting.getDate() != d.getDate()) {
-      //always show date with month
-      dateStr = dateStr + ' ' + d.getDate() + ' ' + months[d.getMonth()]
-      xAxisDateExisting = d
-    }
-    if (xAxisDateExisting.getFullYear() != d.getFullYear()) {
-      dateStr = dateStr + ' ' + d.getFullYear()
-      xAxisDateExisting = d
-    }
-    return retLabel + dateStr
-    // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
-  }
+  // if (parseInt(hours)) {
+  //   // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+  //   let retLabel = hours + ':' + minutes + amPM
+  //   //if date the same, don't show
+  //   let dateStr = ""
+  //   if (xAxisDateExisting.getDate() != d.getDate()) {
+  //     //always show date with month
+  //     dateStr = dateStr + ' ' + d.getDate() + ' ' + months[d.getMonth()]
+  //     xAxisDateExisting = d
+  //   }
+  //   if (xAxisDateExisting.getFullYear() != d.getFullYear()) {
+  //     dateStr = dateStr + ' ' + d.getFullYear()
+  //     xAxisDateExisting = d
+  //   }
+  //   return retLabel + dateStr
+  // }
+    return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+
 }
 
 function getRandomColor() {
