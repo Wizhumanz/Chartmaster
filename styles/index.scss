@@ -60,6 +60,16 @@ html {
   }
 }
 
+.computeInputs {
+  padding: 0.25rem;
+  margin-left: 0.25rem;
+  margin-top: 0.5rem;
+  color: $cream;
+  background-color: black;
+  border-radius: 5px;
+  border: $blood 2px dashed;
+}
+
 .arrows {
   margin: 0.5rem;
   color: $cream;

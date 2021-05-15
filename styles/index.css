@@ -104,6 +104,16 @@ html {
   border: #001b6b 2px solid;
 }
 
+.computeInputs {
+  padding: 0.25rem;
+  margin-left: 0.25rem;
+  margin-top: 0.5rem;
+  color: #fffdd0;
+  background-color: black;
+  border-radius: 5px;
+  border: #8a0000 2px dashed;
+}
+
 .arrows {
   margin: 0.5rem;
   color: #fffdd0;
