@@ -90,26 +90,25 @@ function connectWs() {
     };
 
     socket.onmessage = (msg) => {
-      var dataObj
-      if (msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}")) {
-        dataObj = JSON.parse(msg.data)
+      if (!(msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}"))) {
+        return
       }
-
+      
       //candlestick
-      if (dataObj != undefined && parseFloat(dataObj.Data[0].Open) > 0) {
+      if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Open) > 0) {
         //check if concat needed, or new data
-        if (existingWSResID === "" || existingWSResID !== dataObj.ResultID) {
-          allCandles = dataObj.Data
+        if (existingWSResID === "" || existingWSResID !== JSON.parse(msg.data).ResultID) {
+          allCandles = JSON.parse(msg.data).Data
           //if candlestick chart empty
           drawChart(0, 50)
           //show right arrow btn
           document.getElementById("panCandlesRightBtn").style.display = "inline"
 
           //save res id so next messages with same ID will be concatenated with existing data
-          existingWSResID = dataObj.ResultID
+          existingWSResID = JSON.parse(msg.data).ResultID
         } else {
           //add new data to existing array
-          dataObj.Data.forEach(newData => {
+          JSON.parse(msg.data).Data.forEach(newData => {
             allCandles.push(newData)
           })
           drawChart(0, 50)
@@ -117,19 +116,19 @@ function connectWs() {
       }
 
       //profit curve
-      if (dataObj != undefined && parseFloat(dataObj.Data[0].Data[0].Equity) > 0) {
-        console.log(dataObj)
+      if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Data[0].Equity) > 0) {
+        console.log(JSON.parse(msg.data))
         //check if concat needed, or new data
-        if (existingWSResID === "" || existingWSResID !== dataObj.ResultID) {
-          allProfitCurve = dataObj.Data
+        if (existingWSResID === "" || existingWSResID !== JSON.parse(msg.data).ResultID) {
+          allProfitCurve = JSON.parse(msg.data).Data
           //if candlestick chart empty
           drawPC(allProfitCurve)
 
           //save res id so next messages with same ID will be concatenated with existing data
-          existingWSResID = dataObj.ResultID
+          existingWSResID = JSON.parse(msg.data).ResultID
         } else {
           //add new data to existing array
-          dataObj.Data.forEach(newData => {
+          JSON.parse(msg.data).Data.forEach(newData => {
             allProfitCurve.push(newData)
           })
           drawPC(allProfitCurve)
@@ -137,8 +136,8 @@ function connectWs() {
       }
 
       //sim trades
-      if (dataObj != undefined && parseFloat(dataObj.Data[0].Data[0].EntryPrice) > 0) {
-        plotHistory(dataObj.Data)
+      if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Data[0].EntryPrice) > 0) {
+        plotHistory(JSON.parse(msg.data).Data)
       }
     };
   }
