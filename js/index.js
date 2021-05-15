@@ -12,6 +12,7 @@ let candleDrawStartIndex = 0
 let candleDrawEndIndex = 50
 let candleDisplayNumber = 50
 let allCandles = [] // all individual candles
+let allProfitCurve = [] // all individual candles
 
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
@@ -22,7 +23,7 @@ var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
 const margin = { top: 30, right: 20, bottom: 205, left: 70 },
   w = 1050,
   h = 680;
-let existingCandlesWSResID
+let existingWSResID
 
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
@@ -98,7 +99,7 @@ function connectWs() {
       //candlestick
       if (dataObj != undefined && parseFloat(dataObj.Data[0].Open) > 0) {
         //check if concat needed, or new data
-        if (existingCandlesWSResID === "" || existingCandlesWSResID !== dataObj.ResultID) {
+        if (existingWSResID === "" || existingWSResID !== dataObj.ResultID) {
           allCandles = dataObj.Data
           //if candlestick chart empty
           drawChart(0, 50)
@@ -106,7 +107,7 @@ function connectWs() {
           document.getElementById("panCandlesRightBtn").style.display = "inline"
 
           //save res id so next messages with same ID will be concatenated with existing data
-          existingCandlesWSResID = dataObj.ResultID
+          existingWSResID = dataObj.ResultID
         } else {
           //add new data to existing array
           dataObj.Data.forEach(newData => {
@@ -118,7 +119,22 @@ function connectWs() {
 
       //profit curve
       if (dataObj != undefined && parseFloat(dataObj.Data[0].Data[0].Equity) > 0) {
-        drawPC(dataObj.Data)
+        console.log(dataObj)
+        //check if concat needed, or new data
+        if (existingWSResID === "" || existingWSResID !== dataObj.ResultID) {
+          allProfitCurve = dataObj.Data
+          //if candlestick chart empty
+          drawPC(allProfitCurve)
+
+          //save res id so next messages with same ID will be concatenated with existing data
+          existingWSResID = dataObj.ResultID
+        } else {
+          //add new data to existing array
+          dataObj.Data.forEach(newData => {
+            allProfitCurve.push(newData)
+          })
+          drawPC(allProfitCurve)
+        }
       }
 
       //sim trades
