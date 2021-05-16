@@ -200,6 +200,12 @@ function computeBacktest() {
       headers: hd,
       // mode: "cors",
     })
+    .then(() => {
+      setTimeout(() => {
+        loadResult()
+        document.getElementById("shareResult").style = "display: block;"
+      },5000)
+    })
     .catch((error) => {
       console.log(error);
     });
@@ -283,11 +289,17 @@ function loadBacktestRes() {
     })
     .then((res) => {
       let gay = res.data.ModifiedCandlesticks
-      console.log(gay)
+      document.getElementById("shareResult").style = "display: block;"
     })
     .catch((error) => {
       console.log(error);
     });
+}
+
+function shareResult() {
+  var titleText = document.getElementById("shareTitle").value
+  var descText = document.getElementById("shareDesc").value
+  console.log(titleText, descText)
 }
 
 function drawChart(start, end) {

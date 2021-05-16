@@ -61,7 +61,7 @@
                 <button id="loadResBtn" onclick="loadBacktestRes()">Load</button>
               </div>
               <div class="controls-sub">
-                <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal">Share Results</button>
+                <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult" style="display: none;">Share Results</button>
                 <!-- share controls -->
                 <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                   aria-hidden="true">
@@ -80,7 +80,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button"data-bs-dismiss="modal">Close</button>
-                        <button type="button">Share</button>
+                        <button type="button" onclick="shareResult()">Share</button>
                       </div>
                     </div>
                   </div>
