@@ -257,12 +257,12 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 #profitCurveDiv {
-  height: 20rem;
+  height: 24rem;
   overflow: hidden;
 }
 
 #simTradesDiv {
-  height: 28rem;
+  height: 34rem;
 
   h4 {
     margin-left: -7rem;
@@ -351,7 +351,7 @@ tr:hover {
 
 .axis text {
   font-family: $body-font;
-  font-size: 11px;
+  font-size: 15px;
   fill: white;
 }
 
