@@ -73,11 +73,13 @@ function loadResult() {
 
 loadResult()
 
-function connectWs() {
+function connectWs(id) {
+  console.log(id)
   wsStatus.innerText = "Loading websockets..."
   var socket
   try {
-    socket = new WebSocket("ws://localhost:8000/ws-cm/" + userID);
+    socket = new WebSocket("ws://localhost:8000/ws-cm/" + "5632499082330112");
+    console.log(socket)
   } catch (err) {
     console.log(err);
   }
@@ -105,6 +107,8 @@ function connectWs() {
       if (!(msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}"))) {
         return
       }
+      console.log(JSON.parse(msg.data))
+      console.log("HELLO")
       
       //candlestick
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Open) > 0) {
@@ -163,7 +167,7 @@ function connectWs() {
     };
   }
 }
-connectWs()
+connectWs(userID)
 
 let riskInput
 let leverageInput
@@ -309,6 +313,7 @@ function shareResult() {
     "title": titleText,
     "description": descText,
     "resultFileName": selectedRes,
+    "userID" : userID
   }
 
   let hd = {
@@ -331,28 +336,37 @@ function shareResult() {
     });
 }
 
-function shareLink() {
-  let shareLink = getParams(window.location.href).share
-  
-  let hd = {
-    // "Content-Type": "application/json",
-    // Authorization: user.password,
-    "Cache-Control": "no-cache",
-    Pragma: "no-cache",
-    Expires: "0",
+function sharedLink() {
+  if (getParams(window.location.href).share){
+    console.log(getParams(window.location.href).share)
+    let shareLink = getParams(window.location.href).share
+    
+    let hd = {
+      // "Content-Type": "application/json",
+      // Authorization: user.password,
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
+      Expires: "0",
+    }
+    axios
+      .get(baseURL + "/getshareresult?share=" + shareLink, {
+        headers: hd,
+        // mode: "cors",
+      })
+      .then((res) => {
+        console.log(res.data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    let randomID = Date.now().toString().concat(generateString(20))
+    console.log(randomID)
+    connectWs(randomID)
   }
-  axios
-    .get(baseURL + "/getshareresult?share=" + shareLink, {
-      headers: hd,
-      // mode: "cors",
-    })
-    .then((res) => {
-      console.log(res.data)
-    })
-    .catch((error) => {
-      console.log(error);
-    });
 }
+
+sharedLink()
 
 function drawChart(start, end) {
   // console.log(start + " - " + end)
@@ -370,13 +384,6 @@ function drawChart(start, end) {
       console.log(c)
     }
   })
-
-  // candlesToShow.forEach(c => {
-    // console.log("BEFORE " + typeof(c.DateTime))
-    // if (c.DateTime === "") {
-    //   console.log(c)
-    // }
-  // })
 
   //build datetime array
   let dateTimes = []
@@ -1012,6 +1019,17 @@ function processXAxisLabel(d, dates) {
 
 }
 
+function generateString(length) {
+  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+  let result = ' ';
+  const charactersLength = characters.length;
+  for ( let i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result.substring(1);
+}
+  
 function getRandomColor() {
   var letters = '0123456789ABCDEF';
   var color = '#';
