@@ -162,6 +162,11 @@ function connectWs() {
 }
 connectWs()
 
+let riskInput
+let leverageInput
+let sizeInput
+getInputValues() 
+
 function computeBacktest() {
   let ticker = document.getElementById("tickerSelect").value
   let period = document.getElementById("periodSelect").value
@@ -177,7 +182,10 @@ function computeBacktest() {
     "time_start": startTimeStr,
     "time_end": endTimeStr,
     "candlePacketSize": "80",
-    "user": userID
+    "user": userID,
+    "risk" : riskInput, 
+    "leverage": leverageInput, 
+    "size" : sizeInput
   }
 
   let hd = {
@@ -195,6 +203,29 @@ function computeBacktest() {
     .catch((error) => {
       console.log(error);
     });
+}
+
+function getInputValues() {
+  const risk = document.getElementById('risk');
+  const leverage = document.getElementById('leverage');
+  const size = document.getElementById('size');
+
+  risk.addEventListener('input', riskFunc);
+  leverage.addEventListener('input', leverageFunc);
+  size.addEventListener('input', sizeFunc);
+
+  function riskFunc(e) {
+    riskInput = e.target.value;
+    console.log(riskInput)
+  }
+  function leverageFunc(e) {
+    leverageInput = e.target.value;
+    console.log(leverageInput)
+  }
+  function sizeFunc(e) {
+    sizeInput = e.target.value;
+    console.log(sizeInput)
+  }
 }
 
 function getExchanges() {
