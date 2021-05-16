@@ -734,9 +734,9 @@ function wrap(text, width) {
 function drawPC(data) {
   d3.selectAll("#profit > *").remove();
   var profitCurveData
-  var pcMargin = { top: 20, right: 20, bottom: 30, left: 40 },
+  var pcMargin = { top: 0, right: 20, bottom: 30, left: 40 },
     width = 550 - pcMargin.left - pcMargin.right,
-    height = 300 - pcMargin.top - pcMargin.bottom;
+    height = 350 - pcMargin.top - pcMargin.bottom;
 
   // parse the date / time
   var parseTime = d3.timeParse("%d-%b-%y");
