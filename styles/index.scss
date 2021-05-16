@@ -1,11 +1,5 @@
 @import "./_all";
 
-body,
-.row,
-html {
-  background-color: black;
-  overflow: hidden;
-}
 
 .axis path,
 .axis line {
@@ -24,10 +18,33 @@ html {
   stroke-width: 1.5px;
 }
 
-.controls {
-  padding: 0.5rem;
-  font-size: small;
+body,
+.row,
+html,
+.container-fluid,
+.row {
+  background-color: black !important;
+}
+
+#brand-h {
+  font-family: $title-font;
+  margin: 0.75rem;
+  margin-left: 1rem;
+  margin-bottom: 0;
+  background-color: black;
+}
+
+.topControls {
+  margin-left: -1rem;
   font-family: $body-font;
+
+  div {
+    margin: 0.5rem;
+  }
+}
+
+.right {
+  text-align: right;
 }
 
 .arrows {
@@ -39,21 +56,28 @@ html {
     width: fit-content;
     margin-right: 0.75rem;
   }
-
+  computeBtn
   h2 {
     display: inline;
   }
 }
 
+#computeRow {
+  margin-top: 1rem;
+}
+
 .controls-sub {
   color: $cream;
   text-align: right;
-  margin-bottom: 0.35rem;
 
   p, select {
     display: inline;
     margin-left: 0.5rem;
   }
+}
+
+#shareResult {
+  margin: 0.5rem;
 }
 
 #computeParamsDiv {
@@ -89,7 +113,7 @@ input[type="datetime-local"] {
 #tickerSelect,
 #periodSelect,
 select {
-  width: 140px;
+  width: 170px;
   padding: 0.25rem;
   margin: 0.25rem;
   background-color: black;
@@ -106,20 +130,19 @@ select {
 }
 
 #resSelect {
-  width: 180px;
+  width: 140px;
   margin-right: 0.5rem;
 }
 
 #computeBtn {
+  margin-left: 1.5rem;
   background-color: $blood;
   color: $cream;
-  padding-left: 0.75rem;
 }
 
 #wsStatus {
   display: inline;
-  margin-left: 2rem;
-  margin-right: 0.5rem;
+  margin-left: 0.5rem;
   color: $cream;
 }
 

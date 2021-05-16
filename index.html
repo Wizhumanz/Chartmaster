@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Chartmaster by Myika Technologies</title>
+  <title>Chartmaster | Myika</title>
 
   <link rel="stylesheet" href="styles/index.css">
 
@@ -23,65 +23,129 @@
 
 <body>
   <script src="https://d3js.org/d3.v5.min.js"></script>
-
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+
+  <h4 id="brand-h">Chartmaster</h4>
 
   <div class="container-fluid">
     <div class="row">
+      <!-- candlestick + controls col -->
       <div class="col-12 col-lg-8">
-        <div class="controls">
-          <div class="row">
-            <div class="col-12 col-lg-7">
+        <!-- top controls -->
+        <div class="row">
+          <!-- start/end compute controls -->
+          <div class="col-12 col-md-4">
+            <div class="topControls">
               <div>
                 <label for="startDateTimePicker">Start</label>
                 <input type="datetime-local" id="startDateTimePicker" value="2021-05-01T00:00">
+              </div>
+              <div>
                 <label for="endDateTimePicker">End</label>
                 <input type="datetime-local" id="endDateTimePicker" value="2021-05-01T05:00">
-
-                <p id="wsStatus"></p>
-                <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> Compute</button>
-              </div>
-
-              <div class="arrows">
-                <button id="panCandlesLeftBtn" onclick="moveLeft()">
-                  <h2><i class="bi bi-arrow-left-circle-fill"></i></h2>
-                </button>
-                <button id="panCandlesRightBtn" onclick="moveRight()">
-                  <h2><i class="bi bi-arrow-right-circle-fill"></i></h2>
-                </button>
               </div>
             </div>
-            <div class="col-12 col-lg-5">
-              <div class="controls-sub">
-                <p>FAKE96969420</p>
-                <select name="resSelect" id="resSelect" onchange="tickerSelectChanged()">
+          </div>
+          <!-- more compute settings -->
+          <div class="col-12 col-md-8">
+            <div class="row">
+              <div class="col-12 col-md-4">
+                <select name="tickerSelect" id="tickerSelect">
                   <!-- filled dynamically by API call -->
-                  <option value="">History...</option>
                 </select>
-                <button id="loadResBtn" onclick="loadBacktestRes()">Load</button>
+                <select name="periodSelect" id="periodSelect">
+                  <option value="1MIN">1min</option>
+                  <option value="2MIN">2min</option>
+                  <option value="3MIN">3min</option>
+                  <option value="4MIN">4min</option>
+                  <option value="5MIN">5min</option>
+                  <option value="6MIN">6min</option>
+                  <option value="10MIN">10min</option>
+                  <option value="15MIN">15min</option>
+                  <option value="20MIN">20min</option>
+                  <option value="30MIN">30min</option>
+                  <option value="1HRS">1hr</option>
+                  <option value="2HRS">2hr</option>
+                  <option value="3HRS">3hr</option>
+                  <option value="4HRS">4hr</option>
+                  <option value="6HRS">6hr</option>
+                  <option value="8HRS">8hr</option>
+                  <option value="12HRS">12hr</option>
+                  <option value="1DAY">1d</option>
+                  <option value="2DAY">2d</option>
+                </select>
               </div>
-              <div class="controls-sub">
-                <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult" style="display: none;">Share Results</button>
-                <!-- share controls -->
-                <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                  aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Share Results</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <label for="shareTitle">Title</label>
-                        <input id="shareTitle" type="text">
-                        <br>
-                        <label for="shareDesc">Description</label>
-                        <textarea id="shareDesc" type="text"></textarea>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button"data-bs-dismiss="modal">Close</button>
-                        <button type="button" onclick="shareResult()">Share</button>
-                      </div>
+
+              <div class="col-12 col-md-8">
+                <div class="row">
+                  <div class="col-3">
+                    <label>Acc Risk/Trade (%)</label>
+                  </div>
+                  <div class="col-9">
+                    <input class="computeInputs" id="risk" type="number" value="1">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-3">
+                    <label>Leverage</label>
+                  </div>
+                  <div class="col-9">
+                    <input class="computeInputs" id="leverage" type="number" value="5">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-3">
+                    <label>Acc size ($)</label>
+                  </div>
+                  <div class="col-9">
+                    <input class="computeInputs" id="size" type="number" value="1000">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- compute + history controls -->
+        <div class="row" id="computeRow">
+          <div class="col-6">
+            <div class="topControls">
+              <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> Compute</button>
+              <p id="wsStatus"></p>
+            </div>
+          </div>
+          <div class="col-6 right">
+            <!-- history select + loading -->
+            <div class="topControls">
+              <select name="resSelect" id="resSelect" onchange="tickerSelectChanged()">
+                <!-- filled dynamically by API call -->
+                <option value="">History...</option>
+              </select>
+              <button id="loadResBtn" onclick="loadBacktestRes()">Load</button>
+            </div>
+            <!-- sharing btn + modal -->
+            <div class="controls-sub">
+              <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
+                style="display: none;">Share Results</button>
+              <!-- share controls -->
+              <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Share Results</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <label for="shareTitle">Title</label>
+                      <input id="shareTitle" type="text">
+                      <br>
+                      <label for="shareDesc">Description</label>
+                      <textarea id="shareDesc" type="text"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" data-bs-dismiss="modal">Close</button>
+                      <button type="button" onclick="shareResult()">Share</button>
                     </div>
                   </div>
                 </div>
@@ -90,6 +154,16 @@
           </div>
         </div>
 
+        <div class="topControls arrows">
+          <button id="panCandlesLeftBtn" onclick="moveLeft()">
+            <h2><i class="bi bi-arrow-left-circle-fill"></i></h2>
+          </button>
+          <button id="panCandlesRightBtn" onclick="moveRight()">
+            <h2><i class="bi bi-arrow-right-circle-fill"></i></h2>
+          </button>
+        </div>
+
+        <!-- candlestick chart -->
         <div class="svg-container">
           <p id="ohlcDisplay"></p>
           <svg id="container"></svg>
@@ -99,69 +173,12 @@
         </div>
       </div>
       <div class="col-12 col-lg-4">
-        <div class="stacked" id="computeParamsDiv">
-          <div class="row">
-            <div class="col-4">
-              <select name="tickerSelect" id="tickerSelect">
-                <!-- filled dynamically by API call -->
-              </select>
-              <select name="periodSelect" id="periodSelect">
-                <option value="1MIN">1min</option>
-                <option value="2MIN">2min</option>
-                <option value="3MIN">3min</option>
-                <option value="4MIN">4min</option>
-                <option value="5MIN">5min</option>
-                <option value="6MIN">6min</option>
-                <option value="10MIN">10min</option>
-                <option value="15MIN">15min</option>
-                <option value="20MIN">20min</option>
-                <option value="30MIN">30min</option>
-                <option value="1HRS">1hr</option>
-                <option value="2HRS">2hr</option>
-                <option value="3HRS">3hr</option>
-                <option value="4HRS">4hr</option>
-                <option value="6HRS">6hr</option>
-                <option value="8HRS">8hr</option>
-                <option value="12HRS">12hr</option>
-                <option value="1DAY">1d</option>
-                <option value="2DAY">2d</option>
-              </select>
-            </div>
-
-            <div class="col-8">
-              <div class="row">
-                <div class="col-3">
-                  <label>Acc Risk/Trade (%)</label>
-                </div>
-                <div class="col-9">
-                  <input class="computeInputs" id="risk" type="number" value="1">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-3">
-                  <label>Leverage</label>
-                </div>
-                <div class="col-9">
-                  <input class="computeInputs" id="leverage" type="number" value="5">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-3">
-                  <label>Acc size ($)</label>
-                </div>
-                <div class="col-9">
-                  <input class="computeInputs" id="size" type="number" value="1000">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         <div class="stacked" id="profitCurveDiv">
-          <h4>Profit Curve</h4>
+          <!-- <h4>Profit Curve</h4> -->
           <div id="profit"></div>
         </div>
         <div class="stacked" id="simTradesDiv">
-          <h4>Strategy Trades</h4>
+          <!-- <h4>Strategy Trades</h4> -->
           <table id="history">
             <thead id="head">
             </thead>
