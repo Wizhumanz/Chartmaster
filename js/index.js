@@ -1,7 +1,10 @@
 
 let baseURL = "http://localhost:8000"
 let wsStatus = document.getElementById("wsStatus")
-let userID = "5632499082330112"
+
+// Get parameters from a URL string
+console.log(getParams(window.location.href).user)
+let userID = getParams(window.location.href).user
 // Simulated Trades index
 let indexST = 1
 
@@ -29,6 +32,7 @@ const margin = { top: 30, right: 20, bottom: 205, left: 70 },
 let existingWSResID
 let existingWSResIDPC
 let existingWSResIDST
+
 
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
@@ -131,9 +135,7 @@ function connectWs() {
           existingWSResIDPC = JSON.parse(msg.data).ResultID
         } else {
           //add new data to existing array
-          JSON.parse(msg.data).Data.forEach(newData => {
-            allProfitCurve.push(newData)
-          })
+          allProfitCurve[0].Data = allProfitCurve[0].Data.concat(JSON.parse(msg.data).Data[0].Data)
           drawPC(allProfitCurve)
         }
       }
@@ -149,11 +151,9 @@ function connectWs() {
           existingWSResIDST = JSON.parse(msg.data).ResultID
         } else {
           //add new data to existing array
-          JSON.parse(msg.data).Data.forEach(newData => {
-            allSimTrades.push(newData)
-          })
-          plotHistory(allSimTrades)
           indexST = 1
+          allSimTrades[0].Data = allSimTrades[0].Data.concat(JSON.parse(msg.data).Data[0].Data)
+          plotHistory(allSimTrades)
         }
       }
 
@@ -161,6 +161,11 @@ function connectWs() {
   }
 }
 connectWs()
+
+let riskInput
+let leverageInput
+let sizeInput
+getInputValues() 
 
 function computeBacktest() {
   let ticker = document.getElementById("tickerSelect").value
@@ -177,7 +182,10 @@ function computeBacktest() {
     "time_start": startTimeStr,
     "time_end": endTimeStr,
     "candlePacketSize": "80",
-    "user": userID
+    "user": userID,
+    "risk" : riskInput, 
+    "leverage": leverageInput, 
+    "size" : sizeInput
   }
 
   let hd = {
@@ -195,6 +203,29 @@ function computeBacktest() {
     .catch((error) => {
       console.log(error);
     });
+}
+
+function getInputValues() {
+  const risk = document.getElementById('risk');
+  const leverage = document.getElementById('leverage');
+  const size = document.getElementById('size');
+
+  risk.addEventListener('input', riskFunc);
+  leverage.addEventListener('input', leverageFunc);
+  size.addEventListener('input', sizeFunc);
+
+  function riskFunc(e) {
+    riskInput = e.target.value;
+    console.log(riskInput)
+  }
+  function leverageFunc(e) {
+    leverageInput = e.target.value;
+    console.log(leverageInput)
+  }
+  function sizeFunc(e) {
+    sizeInput = e.target.value;
+    console.log(sizeInput)
+  }
 }
 
 function getExchanges() {
@@ -276,12 +307,12 @@ function drawChart(start, end) {
     }
   })
 
-  candlesToShow.forEach(c => {
-    console.log("BEFORE " + typeof(c.DateTime))
+  // candlesToShow.forEach(c => {
+    // console.log("BEFORE " + typeof(c.DateTime))
     // if (c.DateTime === "") {
     //   console.log(c)
     // }
-  })
+  // })
 
   //build datetime array
   let dateTimes = []
@@ -300,9 +331,9 @@ function drawChart(start, end) {
     }
   }
 
-  candlesToShow.forEach(c => {
-    console.log("AFTER " +typeof(c.DateTime))
-  })
+  // candlesToShow.forEach(c => {
+  //   console.log("AFTER " +typeof(c.DateTime))
+  // })
 
   var svg = d3.select("#container")
     // .attr("width", "100%")
@@ -938,6 +969,19 @@ function useKeyAndValue(func, obj) {
     func(key, value)
   }
 }
+
+function getParams(url) {
+	var params = {};
+	var parser = document.createElement('a');
+	parser.href = url;
+	var query = parser.search.substring(1);
+	var vars = query.split('&');
+	for (var i = 0; i < vars.length; i++) {
+		var pair = vars[i].split('=');
+		params[pair[0]] = decodeURIComponent(pair[1]);
+	}
+	return params;
+};
 
 //unused
 function getMoreData() {
