@@ -34,6 +34,10 @@ html,
   background-color: black;
 }
 
+div#computeControls {
+  margin-top: 0.75rem;
+}
+
 .topControls {
   margin-left: -1rem;
   font-family: $body-font;
@@ -105,10 +109,14 @@ input[type="datetime-local"] {
   width: 200px;
   padding: 0.25rem;
   margin-left: -0.25rem;
-  background-color: $blood;
   color: $cream;
-  border: none;
   border-radius: 5px;
+  border: $blood 2px dashed;
+  background-color: black;
+}
+
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
 }
 
 #tickerSelect,
