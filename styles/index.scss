@@ -39,11 +39,10 @@ div#computeControls {
 }
 
 .topControls {
-  margin-left: -1rem;
   font-family: $body-font;
 
-  div {
-    margin: 0.5rem;
+  div.row {
+    margin-top: 0.5rem;
   }
 }
 
@@ -105,14 +104,22 @@ label {
   font-size: small;
 }
 
+div.col-4, div.col-3 {
+  text-align: right;
+}
+
 input[type="datetime-local"] {
   width: 200px;
   padding: 0.25rem;
-  margin-left: -0.25rem;
   color: $cream;
   border-radius: 5px;
   border: $blood 2px dashed;
   background-color: black;
+  font-size: small;
+}
+
+input[type="number"] {
+  font-size: small;
 }
 
 ::-webkit-calendar-picker-indicator {
@@ -241,7 +248,6 @@ label {
 }
 
 div.stacked {
-  margin-bottom: 0.5rem;
   overflow: scroll;
   // border-left: $blood 3px solid;
   padding: 0.75rem;
