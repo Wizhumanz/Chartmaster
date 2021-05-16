@@ -5,8 +5,12 @@ let wsStatus = document.getElementById("wsStatus")
 // Get parameters from a URL string
 console.log(getParams(window.location.href).user)
 let userID = getParams(window.location.href).user
+
 // Simulated Trades index
 let indexST = 1
+
+// History json name
+var selectedRes
 
 // Disable btns initially
 document.getElementById("panCandlesLeftBtn").style.display = "none"
@@ -272,7 +276,8 @@ getExchanges()
 
 function loadBacktestRes() {
   var s = document.getElementById("resSelect")
-  var selectedRes = s.value
+  selectedRes = s.value
+
   let getURL = baseURL + `/backtestHistory/${selectedRes}?user=` + userID + "&candlePacketSize=100"
 
   let hd = {
@@ -300,6 +305,31 @@ function shareResult() {
   var titleText = document.getElementById("shareTitle").value
   var descText = document.getElementById("shareDesc").value
   console.log(titleText, descText)
+
+  let result = {
+    "title": titleText,
+    "description": descText,
+    "resultFileName": selectedRes,
+  }
+
+  let hd = {
+    // "Content-Type": "application/json",
+    // Authorization: user.password,
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+    Expires: "0",
+  }
+  axios
+    .post(baseURL + "/shareresult", result, {
+      headers: hd,
+      // mode: "cors",
+    })
+    .then((res) => {
+      console.log(res.data)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
 function drawChart(start, end) {
