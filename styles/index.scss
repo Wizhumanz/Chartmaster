@@ -30,7 +30,7 @@ html,
   font-family: $title-font;
   margin: 0.75rem;
   margin-left: 1rem;
-  margin-bottom: 0;
+  margin-bottom: 0.25rem;
   background-color: black;
 }
 
@@ -203,10 +203,6 @@ button {
   margin-left: 0.75rem;
 }
 
-.container-fluid {
-  height: 100%;
-}
-
 label {
   color: $cream;
   margin-left: 1rem;
@@ -218,9 +214,10 @@ label {
   position: relative;
   width: 100%;
   padding-bottom: 100%;
-  vertical-align: top;
-  overflow: hidden;
+  // vertical-align: top;
+  // overflow: hidden;
 }
+
 .svg-content {
   display: inline-block;
   position: absolute;
