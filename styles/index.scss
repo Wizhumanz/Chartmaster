@@ -28,46 +28,6 @@ html {
   padding: 0.5rem;
   font-size: small;
   font-family: $body-font;
-
-  label {
-    font-size: small;
-    margin-left: 0.5rem;
-  }
-
-  input[type="datetime-local"] {
-    width: 200px;
-    padding: 0.25rem;
-    margin-left: -0.25rem;
-    background-color: $blood;
-    color: $cream;
-    border: none;
-    border-radius: 5px;
-  }
-
-  select {
-    width: 110px;
-    padding: 0.25rem;
-    margin-left: 0.25rem;
-    background-color: black;
-    color: $cream;
-    border: $blood 2px solid;
-    border-radius: 5px;
-  }
-
-  #periodSelect {
-    width: 80px;
-    border: $blue 2px solid;
-  }
-}
-
-.computeInputs {
-  padding: 0.25rem;
-  margin-left: 0.25rem;
-  margin-top: 0.5rem;
-  color: $cream;
-  background-color: black;
-  border-radius: 5px;
-  border: $blood 2px dashed;
 }
 
 .arrows {
@@ -88,6 +48,56 @@ html {
 .controls-sub {
   text-align: right;
   margin-bottom: 0.35rem;
+}
+
+#computeParamsDiv {
+  overflow: hidden;
+  padding-bottom: 1rem;
+  border-bottom: $blue 1px solid;
+}
+
+.computeInputs {
+  padding: 0.25rem;
+  margin-left: 0.25rem;
+  margin-top: 0.5rem;
+  color: $cream;
+  background-color: black;
+  border-radius: 5px;
+  border: $blood 2px dashed;
+}
+
+label {
+  font-size: small;
+  margin-left: 0.5rem;
+}
+
+input[type="datetime-local"] {
+  width: 200px;
+  padding: 0.25rem;
+  margin-left: -0.25rem;
+  background-color: $blood;
+  color: $cream;
+  border: none;
+  border-radius: 5px;
+}
+
+#tickerSelect,
+#periodSelect,
+select {
+  width: 140px;
+  padding: 0.25rem;
+  margin: 0.25rem;
+  background-color: black;
+  color: $cream;
+  border: $blood 2px solid;
+  border-radius: 5px;
+  font-size: small;
+  font-family: $body-font;
+}
+
+#periodSelect {
+  width: 80px;
+  border: $blue 2px solid;
 }
 
 #resSelect {
@@ -215,12 +225,12 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 #profitCurveDiv {
-  height: 21rem;
+  height: 20rem;
   overflow: hidden;
 }
 
 #simTradesDiv {
-  height: 37rem;
+  height: 29rem;
 
   h4 {
     margin-left: -7rem;

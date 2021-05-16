@@ -77,42 +77,6 @@ html {
   font-size: small;
   font-family: "Alata", sans-serif;
 }
-.controls label {
-  font-size: small;
-  margin-left: 0.5rem;
-}
-.controls input[type=datetime-local] {
-  width: 200px;
-  padding: 0.25rem;
-  margin-left: -0.25rem;
-  background-color: #8a0000;
-  color: #fffdd0;
-  border: none;
-  border-radius: 5px;
-}
-.controls select {
-  width: 110px;
-  padding: 0.25rem;
-  margin-left: 0.25rem;
-  background-color: black;
-  color: #fffdd0;
-  border: #8a0000 2px solid;
-  border-radius: 5px;
-}
-.controls #periodSelect {
-  width: 80px;
-  border: #001b6b 2px solid;
-}
-
-.computeInputs {
-  padding: 0.25rem;
-  margin-left: 0.25rem;
-  margin-top: 0.5rem;
-  color: #fffdd0;
-  background-color: black;
-  border-radius: 5px;
-  border: #8a0000 2px dashed;
-}
 
 .arrows {
   margin: 0.5rem;
@@ -130,6 +94,56 @@ html {
 .controls-sub {
   text-align: right;
   margin-bottom: 0.35rem;
+}
+
+#computeParamsDiv {
+  overflow: hidden;
+  padding-bottom: 1rem;
+  border-bottom: #001b6b 1px solid;
+}
+
+.computeInputs {
+  padding: 0.25rem;
+  margin-left: 0.25rem;
+  margin-top: 0.5rem;
+  color: #fffdd0;
+  background-color: black;
+  border-radius: 5px;
+  border: #8a0000 2px dashed;
+}
+
+label {
+  font-size: small;
+  margin-left: 0.5rem;
+}
+
+input[type=datetime-local] {
+  width: 200px;
+  padding: 0.25rem;
+  margin-left: -0.25rem;
+  background-color: #8a0000;
+  color: #fffdd0;
+  border: none;
+  border-radius: 5px;
+}
+
+#tickerSelect,
+#periodSelect,
+select {
+  width: 140px;
+  padding: 0.25rem;
+  margin: 0.25rem;
+  background-color: black;
+  color: #fffdd0;
+  border: #8a0000 2px solid;
+  border-radius: 5px;
+  font-size: small;
+  font-family: "Alata", sans-serif;
+}
+
+#periodSelect {
+  width: 80px;
+  border: #001b6b 2px solid;
 }
 
 #resSelect {
@@ -256,12 +270,12 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 #profitCurveDiv {
-  height: 21rem;
+  height: 20rem;
   overflow: hidden;
 }
 
 #simTradesDiv {
-  height: 37rem;
+  height: 29rem;
 }
 #simTradesDiv h4 {
   margin-left: -7rem;
