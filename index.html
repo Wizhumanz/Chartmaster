@@ -118,45 +118,41 @@
 
             <!-- compute + history controls -->
             <div class="row" id="computeRow">
-              <div class="col-6">
-                <div class="topControls">
-                  <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> Compute</button>
-                  <p id="wsStatus"></p>
-                </div>
+              <div class="topControls">
+                <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> Compute</button>
+                <p id="wsStatus"></p>
               </div>
-              <div class="col-6 right">
-                <!-- history select + loading -->
-                <div class="topControls">
-                  <select name="resSelect" id="resSelect" onchange="tickerSelectChanged()">
-                    <!-- filled dynamically by API call -->
-                    <option value="">History...</option>
-                  </select>
-                  <button id="loadResBtn" onclick="loadBacktestRes()">Load</button>
-                </div>
-                <!-- sharing btn + modal -->
-                <div class="controls-sub">
-                  <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
-                    style="display: none;">Share Results</button>
-                  <!-- share controls -->
-                  <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Share Results</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <label for="shareTitle">Title</label>
-                          <input id="shareTitle" type="text">
-                          <br>
-                          <label for="shareDesc">Description</label>
-                          <textarea id="shareDesc" type="text"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" data-bs-dismiss="modal">Close</button>
-                          <button type="button" onclick="shareResult()">Share</button>
-                        </div>
+              <!-- history select + loading -->
+              <div class="topControls">
+                <select name="resSelect" id="resSelect" onchange="tickerSelectChanged()">
+                  <!-- filled dynamically by API call -->
+                  <option value="">History...</option>
+                </select>
+                <button id="loadResBtn" onclick="loadBacktestRes()">Load</button>
+              </div>
+              <!-- sharing btn + modal -->
+              <div class="controls-sub">
+                <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
+                  style="display: none;">Share Results</button>
+                <!-- share controls -->
+                <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Share Results</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <label for="shareTitle">Title</label>
+                        <input id="shareTitle" type="text">
+                        <br>
+                        <label for="shareDesc">Description</label>
+                        <textarea id="shareDesc" type="text"></textarea>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" data-bs-dismiss="modal">Close</button>
+                        <button type="button" onclick="shareResult()">Share</button>
                       </div>
                     </div>
                   </div>

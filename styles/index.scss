@@ -44,6 +44,10 @@ div#computeControls {
   div.row {
     margin-top: 0.5rem;
   }
+
+  button {
+    margin-left: 0.5rem;
+  }
 }
 
 .right {
@@ -68,6 +72,12 @@ div#computeControls {
 
 #computeRow {
   margin-top: 1rem;
+  text-align: right;
+  padding-right: 1rem;
+
+  div {
+    margin: 0.25rem auto;
+  }
 }
 
 .controls-sub {
@@ -147,7 +157,6 @@ select {
 
 #resSelect {
   width: 140px;
-  margin-right: 0.5rem;
 }
 
 #computeBtn {
