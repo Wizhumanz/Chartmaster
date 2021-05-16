@@ -8,13 +8,20 @@ let userID = getParams(window.location.href).user
 // Simulated Trades index
 let indexST = 1
 
-// Disable btns initially
-document.getElementById("panCandlesLeftBtn").style.display = "none"
-document.getElementById("panCandlesRightBtn").style.display = "none"
-
 /// CANDLESTICKS
 let candleDisplayNumber = 170
 let candleDrawStartIndex = 0
+let margin = { top: 30, right: 20, bottom: 205, left: 70 },
+  w = 1050,
+  h = 680;
+
+//mobile display options
+if (screen.availWidth < 700) {
+  h = 1800
+  margin.left = 140
+  candleDisplayNumber = 30
+}
+
 let candleDrawEndIndex = candleDisplayNumber
 let allCandles = [] // all individual candles
 let allProfitCurve = [] // all individual profits
@@ -26,12 +33,13 @@ let newCandlesToFetch = 80 //used by obsolete getMoreData()
 
 let xAxisDateExisting
 var dateFormat = d3.timeParse("%Y-%m-%dT%H:%M:%S");
-const margin = { top: 30, right: 20, bottom: 205, left: 70 },
-  w = 1050,
-  h = 680;
 let existingWSResID
 let existingWSResIDPC
 let existingWSResIDST
+
+// Disable btns initially
+document.getElementById("panCandlesLeftBtn").style.display = "none"
+document.getElementById("panCandlesRightBtn").style.display = "none"
 
 
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
@@ -102,7 +110,7 @@ function connectWs() {
       if (!(msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}"))) {
         return
       }
-      
+
       //candlestick
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Open) > 0) {
         //check if concat needed, or new data
@@ -165,7 +173,7 @@ connectWs()
 let riskInput
 let leverageInput
 let sizeInput
-getInputValues() 
+getInputValues()
 
 function computeBacktest() {
   let ticker = document.getElementById("tickerSelect").value
@@ -183,9 +191,9 @@ function computeBacktest() {
     "time_end": endTimeStr,
     "candlePacketSize": "80",
     "user": userID,
-    "risk" : riskInput, 
-    "leverage": leverageInput, 
-    "size" : sizeInput
+    "risk": riskInput,
+    "leverage": leverageInput,
+    "size": sizeInput
   }
 
   let hd = {
@@ -204,7 +212,7 @@ function computeBacktest() {
       setTimeout(() => {
         loadResult()
         document.getElementById("shareResult").style = "display: block;"
-      },5000)
+      }, 5000)
     })
     .catch((error) => {
       console.log(error);
@@ -320,10 +328,10 @@ function drawChart(start, end) {
   })
 
   // candlesToShow.forEach(c => {
-    // console.log("BEFORE " + typeof(c.DateTime))
-    // if (c.DateTime === "") {
-    //   console.log(c)
-    // }
+  // console.log("BEFORE " + typeof(c.DateTime))
+  // if (c.DateTime === "") {
+  //   console.log(c)
+  // }
   // })
 
   //build datetime array
@@ -338,7 +346,7 @@ function drawChart(start, end) {
       dateTimes.push(add)
       if (add === null) {
         console.log(candlesToShow[i])
-      } 
+      }
       candlesToShow[i].DateTime = add
     }
   }
@@ -352,7 +360,7 @@ function drawChart(start, end) {
     // .attr("height", "110%")
     // .attr("padding-bottom", "3rem")
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 1200 1200")
+    .attr("viewBox", "0 0 1200 2200")
     .classed("svg-content", true)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
@@ -726,7 +734,7 @@ function drawPC(data) {
     .attr("transform",
       "translate(" + pcMargin.left + "," + pcMargin.top + ")");
 
-    
+
   let formattedData = []
   let changedData = []
 
@@ -839,7 +847,7 @@ function plotHistory(data) {
   var table = document.getElementById("history")
   table.innerHTML = ""
   let row = table.insertRow()
-  let tableHeader = ["Index","Raw Profit Perc","Entry Price","Exit Price","Risked Equity","Date","Position Size","Direction","Parameter"]
+  let tableHeader = ["Index", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Position Size", "Direction", "Parameter"]
   tableHeader.forEach(t => {
     let newCell = row.insertCell()
     newCell.innerHTML = t
@@ -891,14 +899,14 @@ function moveLeft() {
   }
 
   rBtn.style.display = "inline"
-  
+
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
 }
 
 function moveRight() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
- 
+
   rBtn.style.display = "inline"
   candleDrawStartIndex += candleDisplayNumber
   candleDrawEndIndex += candleDisplayNumber
@@ -907,7 +915,7 @@ function moveRight() {
   }
 
   lBtn.style.display = "inline"
-  
+
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
 }
 
@@ -956,7 +964,7 @@ function processXAxisLabel(d, dates) {
   //   }
   //   return retLabel + dateStr
   // }
-    return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+  return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
 
 }
 
@@ -983,16 +991,16 @@ function useKeyAndValue(func, obj) {
 }
 
 function getParams(url) {
-	var params = {};
-	var parser = document.createElement('a');
-	parser.href = url;
-	var query = parser.search.substring(1);
-	var vars = query.split('&');
-	for (var i = 0; i < vars.length; i++) {
-		var pair = vars[i].split('=');
-		params[pair[0]] = decodeURIComponent(pair[1]);
-	}
-	return params;
+  var params = {};
+  var parser = document.createElement('a');
+  parser.href = url;
+  var query = parser.search.substring(1);
+  var vars = query.split('&');
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split('=');
+    params[pair[0]] = decodeURIComponent(pair[1]);
+  }
+  return params;
 };
 
 //unused

@@ -254,7 +254,8 @@ label {
   display: inline-block;
   position: relative;
   width: 100%;
-  padding-bottom: 100%;
+  vertical-align: top;
+  height: 600px;
 }
 
 .svg-content {
@@ -386,7 +387,7 @@ tr:hover {
 
 .axis text {
   font-family: "Alata", sans-serif;
-  font-size: 15px;
+  font-size: 30px;
   fill: white;
 }
 

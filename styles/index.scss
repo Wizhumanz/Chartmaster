@@ -213,9 +213,10 @@ label {
   display: inline-block;
   position: relative;
   width: 100%;
-  padding-bottom: 100%;
-  // vertical-align: top;
+  // padding-bottom: 100%;
+  vertical-align: top;
   // overflow: hidden;
+  height: 600px;
 }
 
 .svg-content {
@@ -348,7 +349,7 @@ tr:hover {
 
 .axis text {
   font-family: $body-font;
-  font-size: 15px;
+  font-size: 30px;
   fill: white;
 }
 
