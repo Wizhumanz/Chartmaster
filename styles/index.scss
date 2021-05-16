@@ -104,7 +104,7 @@ label {
   font-size: small;
 }
 
-div.col-4, div.col-3 {
+div.col-4 {
   text-align: right;
 }
 
@@ -209,6 +209,10 @@ div.modal-content {
     color: cyan;
     margin-left: 0.25rem;
   }
+}
+
+.center {
+  text-align: center;
 }
 
 button {
