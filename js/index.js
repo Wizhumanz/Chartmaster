@@ -12,7 +12,8 @@ let indexST = 1
 let candleDisplayNumber = 170
 let candleDrawStartIndex = 0
 let tickNum = 10
-let margin = { top: 30, right: 20, bottom: 205, left: 70 },
+let candlestickChartLabelFontSize = "11px"
+let margin = { top: 40, right: 20, bottom: 205, left: 70 },
   w = 1050,
   h = 680;
 
@@ -21,7 +22,8 @@ if (screen.availWidth < 700) {
   h = 1800
   margin.left = 140
   candleDisplayNumber = 30
-  tickNum = 5
+  tickNum = 2
+  candlestickChartLabelFontSize = "40px"
 }
 
 let candleDrawEndIndex = candleDisplayNumber
@@ -365,7 +367,7 @@ function drawChart(start, end) {
     .attr("viewBox", "0 0 1200 2200")
     .classed("svg-content", true)
     .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    .attr("transform", "translate(" + margin.left + "," + margin.top*2 + ")")
 
   var xmin = d3.min(dateTimes);
   var xmax = d3.max(dateTimes);
@@ -443,8 +445,10 @@ function drawChart(start, end) {
     .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
     .attr("y", d => yScale(d.High) - labelYMove)
     .attr("stroke", "white")
+    .attr("stroke-width", "4px")
     .attr("font-family", "Courier")
-    .attr("font-size", "11px")
+    .attr("font-size", candlestickChartLabelFontSize)
+    .attr("font-weight", "bold")
     .attr("z-index", "100")
     .text(d => d.Label);
 
