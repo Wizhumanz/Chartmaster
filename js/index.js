@@ -320,7 +320,7 @@ function shareResult() {
 function drawChart(start, end) {
   // console.log(start + " - " + end)
   let candlesToShow = allCandles.slice(start, end)
-  console.log(JSON.stringify(candlesToShow))
+  // console.log(JSON.stringify(candlesToShow))
   if (!candlesToShow || candlesToShow.length == 0) {
     return
   }
@@ -724,6 +724,12 @@ function drawPC(data) {
   var pcMargin = { top: 0, right: 20, bottom: 30, left: 40 },
     width = 550 - pcMargin.left - pcMargin.right,
     height = 350 - pcMargin.top - pcMargin.bottom;
+
+  //mobile display options
+  if (screen.availWidth < 700) {
+    width = 550 - pcMargin.left - pcMargin.right,
+    height = 800 - pcMargin.top - pcMargin.bottom;
+  }
 
   // parse the date / time
   var parseTime = d3.timeParse("%d-%b-%y");

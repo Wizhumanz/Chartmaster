@@ -133,6 +133,8 @@ div#computeControls {
 
 #shareResult {
   margin: 0.5rem;
+  font-size: small;
+  padding: auto 0.75rem;
 }
 
 #computeParamsDiv {
