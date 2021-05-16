@@ -149,6 +149,10 @@ select {
   }
 }
 
+div.modal-content {
+  background-color: $blue;
+}
+
 #ohlcDisplay {
   margin: 0.5rem 6.5rem;
   padding: 0.35rem;

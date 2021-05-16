@@ -193,6 +193,10 @@ select {
     color: yellowgreen;
   }
 }
+div.modal-content {
+  background-color: #001b6b;
+}
+
 #ohlcDisplay {
   margin: 0.5rem 6.5rem;
   padding: 0.35rem;
