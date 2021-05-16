@@ -31,12 +31,15 @@
       <div class="col-12 col-lg-8">
         <div class="controls">
           <div class="row">
-            <div class="col-12 col-lg-9">
+            <div class="col-12 col-lg-7">
               <div>
                 <label for="startDateTimePicker">Start</label>
                 <input type="datetime-local" id="startDateTimePicker" value="2021-05-01T00:00">
                 <label for="endDateTimePicker">End</label>
                 <input type="datetime-local" id="endDateTimePicker" value="2021-05-01T05:00">
+
+                <p id="wsStatus"></p>
+                <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> Compute</button>
               </div>
 
               <div class="arrows">
@@ -48,12 +51,7 @@
                 </button>
               </div>
             </div>
-            <div class="col-12 col-lg-3">
-              <div class="controls-sub">
-                <p id="wsStatus"></p>
-                <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> Compute</button>
-              </div>
-
+            <div class="col-12 col-lg-5">
               <div class="controls-sub">
                 <select name="resSelect" id="resSelect" onchange="tickerSelectChanged()">
                   <!-- filled dynamically by API call -->

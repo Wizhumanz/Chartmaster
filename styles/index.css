@@ -114,7 +114,6 @@ html {
 
 label {
   font-size: small;
-  margin-left: 0.5rem;
 }
 
 input[type=datetime-local] {
@@ -155,11 +154,11 @@ select {
   background-color: #8a0000;
   color: #fffdd0;
   padding-left: 0.75rem;
-  padding-right: 0.75rem;
 }
 
 #wsStatus {
   display: inline;
+  margin-left: 2rem;
   margin-right: 0.5rem;
   color: #fffdd0;
 }

@@ -68,7 +68,6 @@ html {
 
 label {
   font-size: small;
-  margin-left: 0.5rem;
 }
 
 input[type="datetime-local"] {
@@ -109,11 +108,11 @@ select {
   background-color: $blood;
   color: $cream;
   padding-left: 0.75rem;
-  padding-right: 0.75rem;
 }
 
 #wsStatus {
   display: inline;
+  margin-left: 2rem;
   margin-right: 0.5rem;
   color: $cream;
 }
