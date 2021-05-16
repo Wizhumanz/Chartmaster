@@ -3,7 +3,6 @@ let baseURL = "http://localhost:8000"
 let wsStatus = document.getElementById("wsStatus")
 
 // Get parameters from a URL string
-console.log(getParams(window.location.href).user)
 let userID = getParams(window.location.href).user
 
 // Simulated Trades index
@@ -321,6 +320,29 @@ function shareResult() {
   }
   axios
     .post(baseURL + "/shareresult", result, {
+      headers: hd,
+      // mode: "cors",
+    })
+    .then((res) => {
+      console.log(res.data)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+function shareLink() {
+  let shareLink = getParams(window.location.href).share
+  
+  let hd = {
+    // "Content-Type": "application/json",
+    // Authorization: user.password,
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+    Expires: "0",
+  }
+  axios
+    .get(baseURL + "/getshareresult?share=" + shareLink, {
       headers: hd,
       // mode: "cors",
     })
