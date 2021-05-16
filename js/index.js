@@ -11,6 +11,7 @@ let indexST = 1
 /// CANDLESTICKS
 let candleDisplayNumber = 170
 let candleDrawStartIndex = 0
+let tickNum = 10
 let margin = { top: 30, right: 20, bottom: 205, left: 70 },
   w = 1050,
   h = 680;
@@ -20,6 +21,7 @@ if (screen.availWidth < 700) {
   h = 1800
   margin.left = 140
   candleDisplayNumber = 30
+  tickNum = 5
 }
 
 let candleDrawEndIndex = candleDisplayNumber
@@ -372,7 +374,7 @@ function drawChart(start, end) {
   var xDateScale = d3.scaleQuantize().domain([0, dateTimes.length]).range(dateTimes)
   let xBand = d3.scaleBand().domain(d3.range(-1, dateTimes.length)).range([0, w]).padding(0.3)
   var xAxis = d3.axisBottom()
-    .scale(xScale)
+    .scale(xScale).ticks(5)
     // .attr("font-size", "5px")
     .tickFormat(function (d) {
       return processXAxisLabel(d, dateTimes)
