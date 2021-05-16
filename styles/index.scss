@@ -46,8 +46,14 @@ html {
 }
 
 .controls-sub {
+  color: $cream;
   text-align: right;
   margin-bottom: 0.35rem;
+
+  p, select {
+    display: inline;
+    margin-left: 0.5rem;
+  }
 }
 
 #computeParamsDiv {

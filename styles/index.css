@@ -92,8 +92,13 @@ html {
 }
 
 .controls-sub {
+  color: #fffdd0;
   text-align: right;
   margin-bottom: 0.35rem;
+}
+.controls-sub p, .controls-sub select {
+  display: inline;
+  margin-left: 0.5rem;
 }
 
 #computeParamsDiv {
