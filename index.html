@@ -12,8 +12,11 @@
   <!-- Axios -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+    crossorigin="anonymous"></script>
   <!-- Bootstrap icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css" />
 </head>
@@ -71,8 +74,12 @@
               </div>
 
               <div class="arrows">
-                <button id="panCandlesLeftBtn" onclick="moveLeft()"><h2><i class="bi bi-arrow-left-circle-fill"></i></h2></button>
-                <button id="panCandlesRightBtn" onclick="moveRight()"><h2><i class="bi bi-arrow-right-circle-fill"></i></h2></button>
+                <button id="panCandlesLeftBtn" onclick="moveLeft()">
+                  <h2><i class="bi bi-arrow-left-circle-fill"></i></h2>
+                </button>
+                <button id="panCandlesRightBtn" onclick="moveRight()">
+                  <h2><i class="bi bi-arrow-right-circle-fill"></i></h2>
+                </button>
               </div>
             </div>
             <div class="col-12 col-lg-3">
@@ -101,6 +108,62 @@
         </div>
       </div>
       <div class="col-12 col-lg-4">
+        <div class="stacked" id="computeParamsDiv">
+          <div class="row">
+            <div class="col-4">
+              <select name="tickerSelect" id="tickerSelect">
+                <!-- filled dynamically by API call -->
+              </select>
+              <select name="periodSelect" id="periodSelect">
+                <option value="1MIN">1min</option>
+                <option value="2MIN">2min</option>
+                <option value="3MIN">3min</option>
+                <option value="4MIN">4min</option>
+                <option value="5MIN">5min</option>
+                <option value="6MIN">6min</option>
+                <option value="10MIN">10min</option>
+                <option value="15MIN">15min</option>
+                <option value="20MIN">20min</option>
+                <option value="30MIN">30min</option>
+                <option value="1HRS">1hr</option>
+                <option value="2HRS">2hr</option>
+                <option value="3HRS">3hr</option>
+                <option value="4HRS">4hr</option>
+                <option value="6HRS">6hr</option>
+                <option value="8HRS">8hr</option>
+                <option value="12HRS">12hr</option>
+                <option value="1DAY">1d</option>
+                <option value="2DAY">2d</option>
+              </select>
+            </div>
+            <div class="col-8">
+              <div class="row">
+                <div class="col-3">
+                  <label>Acc Risk/Trade (%)</label>
+                </div>
+                <div class="col-9">
+                  <input class="computeInputs" type="number" value="1">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3">
+                  <label>Leverage</label>
+                </div>
+                <div class="col-9">
+                  <input class="computeInputs" type="number" value="5">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3">
+                  <label>Acc size ($)</label>
+                </div>
+                <div class="col-9">
+                  <input class="computeInputs" type="number" value="1000">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="stacked" id="profitCurveDiv">
           <h4>Profit Curve</h4>
           <div id="profit"></div>
