@@ -848,7 +848,7 @@ function drawPC(data) {
   // Add the X Axis
   pcSvg.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .style("font-size","40px")
+    .style("font-size","20px")
     .call(d3.axisBottom(x))
     .style("color", "white")
 
@@ -856,7 +856,7 @@ function drawPC(data) {
   pcSvg.append("g")
     .call(d3.axisLeft(y))
     .style("color", "white")
-    .style("font-size","80px")
+    .style("font-size","20px")
 
 }
 
@@ -957,6 +957,8 @@ function tickerSelectChanged() {
 tickerSelectChanged()
 function processXAxisLabel(d, dates) {
   d = new Date(dates[d])
+  if (d.toString() !== "Invalid Date") {
+    console.log(d)
 
   //save date to make sure consecutive same dates don't show on axis label
   if (!xAxisDateExisting) {
@@ -983,6 +985,7 @@ function processXAxisLabel(d, dates) {
   //   return retLabel + dateStr
   // }
   return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+  }
 
 }
 
