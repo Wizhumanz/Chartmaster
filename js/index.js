@@ -78,9 +78,16 @@ function loadResult() {
   axios
     .get(baseURL + "/backtestHistory?user=" + userID, {
       headers: hd,
-      // mode: "cors",
+      mode: "cors",
     })
     .then((res) => {
+      let sel = document.getElementById('resSelect');
+      let opt = document.createElement('option');
+      sel.length = 0
+
+      opt.appendChild(document.createTextNode("History..."));
+      sel.appendChild(opt);
+      console.log(res.data)
       res.data.forEach((l) => {
         // get reference to select element
         let sel = document.getElementById('resSelect');
@@ -93,6 +100,7 @@ function loadResult() {
         // add opt to end of select box (sel)
         sel.appendChild(opt);
       })
+
     })
     .catch((error) => {
       console.log(error);
@@ -229,13 +237,13 @@ function computeBacktest() {
   axios
     .post(baseURL + "/backtest", backendInfo, {
       headers: hd,
-      // mode: "cors",
+      mode: "cors",
     })
     .then(() => {
       setTimeout(() => {
         loadResult()
         document.getElementById("shareResult").style = "display: inline;"
-      }, 5000)
+      }, 1000)
     })
     .catch((error) => {
       console.log(error);
@@ -276,7 +284,7 @@ function getExchanges() {
   axios
     .get(baseURL + "/getChartmasterTickers", {
       headers: hd,
-      // mode: "cors",
+      mode: "cors",
     })
     .then((res) => {
       //sort alphabetically
@@ -317,7 +325,7 @@ function loadBacktestRes() {
   axios
     .get(getURL, {
       headers: hd,
-      // mode: "cors",
+      mode: "cors",
     })
     .then((res) => {
       document.getElementById("shareResult").style = "display: block;"
@@ -348,7 +356,7 @@ function shareResult() {
   axios
     .post(baseURL + "/shareresult", result, {
       headers: hd,
-      // mode: "cors",
+      mode: "cors",
     })
     .then((res) => {
       console.log(res.data)
@@ -1089,7 +1097,7 @@ function getMoreData() {
   axios
     .get(getURL, {
       headers: hd,
-      // mode: "cors",
+      mode: "cors",
     })
     .then((res) => {
       drawChart(res.data)
