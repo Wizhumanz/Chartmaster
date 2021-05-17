@@ -87,6 +87,7 @@ div#computeControls {
 
 .topControls {
   font-family: "Alata", sans-serif;
+  margin: 0.5rem;
 }
 .topControls div.row {
   margin-top: 0.5rem;
@@ -109,7 +110,7 @@ div#computeControls {
   width: fit-content;
   margin-right: 0.75rem;
 }
-.arrows computeBtn h2 {
+.arrows h2 {
   display: inline;
 }
 
