@@ -24,7 +24,7 @@ html,
 .row {
   background-color: black !important;
   overflow: hidden;
-  
+
   @media only screen and (max-width: 700px) {
     overflow: scroll;
   }
@@ -39,8 +39,10 @@ html,
 }
 
 div#computeControls {
-  margin: 1.25rem auto 1rem auto;
+  margin: 0 auto;
+  font-size: x-small;
   @media only screen and (max-width: 700px) {
+    margin: 1.25rem auto 1rem auto;
     border-bottom: $blue 3px dotted;
     border-top: $blue 3px dotted;
   }
@@ -53,7 +55,6 @@ h4.chartHeader {
 
 .topControls {
   font-family: $body-font;
-  margin: 0.5rem;
 
   div.row {
     margin-top: 0.5rem;
@@ -111,7 +112,7 @@ h4.chartHeader {
 
 #shareResult {
   margin: 0.5rem;
-  font-size: small;
+  font-size: inherit;
   padding: auto 0.75rem;
 }
 
@@ -132,7 +133,7 @@ h4.chartHeader {
 }
 
 label {
-  font-size: small;
+  font-size: inherit;
 }
 
 div.col-4 {
@@ -140,17 +141,22 @@ div.col-4 {
 }
 
 input[type="datetime-local"] {
-  width: 200px;
-  padding: 0.25rem;
+  width: 165px;
+  padding: 0.15rem;
   color: $cream;
   border-radius: 5px;
   border: $blood 2px dashed;
   background-color: black;
-  font-size: small;
+  font-size: inherit;
+
+  @media only screen and (max-width: 700px) {
+    width: 200px;
+    padding: 0.25rem;
+  }
 }
 
 input[type="number"] {
-  font-size: small;
+  font-size: inherit;
 }
 
 ::-webkit-calendar-picker-indicator {
@@ -167,7 +173,7 @@ select {
   color: $cream;
   border: $blood 2px solid;
   border-radius: 5px;
-  font-size: small;
+  font-size: inherit;
   font-family: $body-font;
 }
 
@@ -260,8 +266,12 @@ button {
 
 label {
   color: $cream;
-  margin-left: 1rem;
-  margin-right: 0.5rem;
+  margin-top: 0.25rem;
+
+  @media only screen and (max-width: 700px) {
+    margin-left: 1rem;
+    margin-right: 0.5rem;
+  }
 }
 
 .svg-container {

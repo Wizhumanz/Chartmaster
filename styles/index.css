@@ -92,10 +92,12 @@ html,
 }
 
 div#computeControls {
-  margin: 1.25rem auto 1rem auto;
+  margin: 0 auto;
+  font-size: x-small;
 }
 @media only screen and (max-width: 700px) {
   div#computeControls {
+    margin: 1.25rem auto 1rem auto;
     border-bottom: #001b6b 3px dotted;
     border-top: #001b6b 3px dotted;
   }
@@ -108,7 +110,6 @@ h4.chartHeader {
 
 .topControls {
   font-family: "Alata", sans-serif;
-  margin: 0.5rem;
 }
 .topControls div.row {
   margin-top: 0.5rem;
@@ -160,7 +161,7 @@ h4.chartHeader {
 
 #shareResult {
   margin: 0.5rem;
-  font-size: small;
+  font-size: inherit;
   padding: auto 0.75rem;
 }
 
@@ -181,7 +182,7 @@ h4.chartHeader {
 }
 
 label {
-  font-size: small;
+  font-size: inherit;
 }
 
 div.col-4 {
@@ -189,17 +190,23 @@ div.col-4 {
 }
 
 input[type=datetime-local] {
-  width: 200px;
-  padding: 0.25rem;
+  width: 165px;
+  padding: 0.15rem;
   color: #fffdd0;
   border-radius: 5px;
   border: #8a0000 2px dashed;
   background-color: black;
-  font-size: small;
+  font-size: inherit;
+}
+@media only screen and (max-width: 700px) {
+  input[type=datetime-local] {
+    width: 200px;
+    padding: 0.25rem;
+  }
 }
 
 input[type=number] {
-  font-size: small;
+  font-size: inherit;
 }
 
 ::-webkit-calendar-picker-indicator {
@@ -216,7 +223,7 @@ select {
   color: #fffdd0;
   border: #8a0000 2px solid;
   border-radius: 5px;
-  font-size: small;
+  font-size: inherit;
   font-family: "Alata", sans-serif;
 }
 
@@ -308,8 +315,13 @@ button {
 
 label {
   color: #fffdd0;
-  margin-left: 1rem;
-  margin-right: 0.5rem;
+  margin-top: 0.25rem;
+}
+@media only screen and (max-width: 700px) {
+  label {
+    margin-left: 1rem;
+    margin-right: 0.5rem;
+  }
 }
 
 .svg-container {
