@@ -95,6 +95,10 @@ div#computeControls {
 .topControls button {
   margin-left: 0.5rem;
 }
+.topControls a {
+  font-style: italic;
+  color: #fffdd0;
+}
 
 .right {
   text-align: right;
