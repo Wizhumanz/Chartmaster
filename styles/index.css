@@ -82,7 +82,9 @@ html,
 }
 
 div#computeControls {
-  margin-top: 0.75rem;
+  margin: 1.25rem auto 1rem auto;
+  border-bottom: #001b6b 3px dotted;
+  border-top: #001b6b 3px dotted;
 }
 
 .topControls {
@@ -350,7 +352,7 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 .thead {
-  background-color: #001b6b;
+  background-color: black;
   color: #fffdd0;
   padding: auto 0.25rem;
 }
