@@ -119,7 +119,7 @@ function connectWs() {
   wsStatus.innerText = "Loading websockets..."
   var socket
   try {
-    socket = new WebSocket("ws://localhost:8000/ws-cm/" + userID);
+    socket = new WebSocket("wss://ana-api.myika.co/ws-cm/" + userID);
   } catch (err) {
     console.log(err);
   }
