@@ -741,7 +741,7 @@ function drawChart(start, end) {
         });
 
       stemsXArray.forEach((x, i) => {
-        if ((mouse[0] > (x - 3)) && (mouse[0] < (x + 3))) {
+        if ((mouse[0] > (x - 4)) && (mouse[0] < (x + 4))) {
           document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> <br>H <span>${candlesToShow[i].High}</span> <br>L <span>${candlesToShow[i].Low}</span> <br>C <span>${candlesToShow[i].Close}</span>`
         }
       })
