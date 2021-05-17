@@ -19,7 +19,9 @@ document.getElementById("panCandlesRightBtn").style.display = "none"
 /// CANDLESTICKS
 let candleDisplayNumber = 170
 let candleDrawStartIndex = 0
-let tickNum = 10
+let tickNumCandles = 10
+let tickNumProfitX = 10
+let tickNumProfitY = 10
 let candlestickChartLabelFontSize = "11px"
 let margin = { top: 40, right: 20, bottom: 205, left: 70 },
   w = 1050,
@@ -30,7 +32,9 @@ if (screen.availWidth < 700) {
   h = 1800
   margin.left = 140
   candleDisplayNumber = 30
-  tickNum = 7
+  tickNumCandles = 7
+  tickNumProfitX = 7
+  tickNumProfitY = 7
   candlestickChartLabelFontSize = "40px"
 }
 
@@ -416,7 +420,7 @@ function drawChart(start, end) {
   var xDateScale = d3.scaleQuantize().domain([0, dateTimes.length]).range(dateTimes)
   let xBand = d3.scaleBand().domain(d3.range(-1, dateTimes.length)).range([0, w]).padding(0.3)
   var xAxis = d3.axisBottom()
-    .scale(xScale).ticks(tickNum)
+    .scale(xScale).ticks(tickNumCandles)
     // .attr("font-size", "5px")
     .tickFormat(function (d) {
       return processXAxisLabel(d, dateTimes)
@@ -575,7 +579,7 @@ function drawChart(start, end) {
     }
 
     gX.call(
-      d3.axisBottom(xScaleZ).ticks(tickNum).tickFormat((d, e, target) => {
+      d3.axisBottom(xScaleZ).ticks(tickNumCandles).tickFormat((d, e, target) => {
         if (d >= 0 && d <= dateTimes.length - 1) {
           return processXAxisLabel(d, dateTimes)
         }
@@ -886,11 +890,11 @@ function drawPC(data) {
   pcSvg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .style("font-size","20px")
-    .call(d3.axisBottom(x))
+    .call(d3.axisBottom(x).ticks(tickNumProfitX))
     .style("color", "white")
   // Add the Y Axis
   pcSvg.append("g")
-    .call(d3.axisLeft(y))
+    .call(d3.axisLeft(y).ticks(tickNumProfitY))
     .style("color", "white")
     .style("font-size","20px")
 }
