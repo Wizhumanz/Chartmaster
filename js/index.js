@@ -40,7 +40,7 @@ if (screen.availWidth < 700) {
   tickNumProfitY = 7
   candlestickChartLabelFontSize = "40px"
   candlesViewBoxHeight = "2200"
-  candlestickLabelStroke = "4px"
+  candlestickLabelStroke = "3px"
 }
 
 let candleDrawEndIndex = candleDisplayNumber
@@ -503,6 +503,7 @@ function drawChart(start, end) {
     .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
     .attr("y", d => yScale(d.High) - labelYMove)
     .attr("stroke", "white")
+    .attr("fill", "white")
     .attr("stroke-width", candlestickLabelStroke)
     .attr("font-family", "Courier")
     .attr("font-size", candlestickChartLabelFontSize)
