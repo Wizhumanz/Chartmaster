@@ -30,7 +30,7 @@ if (screen.availWidth < 700) {
   h = 1800
   margin.left = 140
   candleDisplayNumber = 30
-  tickNum = 2
+  tickNum = 7
   candlestickChartLabelFontSize = "40px"
 }
 
@@ -416,7 +416,7 @@ function drawChart(start, end) {
   var xDateScale = d3.scaleQuantize().domain([0, dateTimes.length]).range(dateTimes)
   let xBand = d3.scaleBand().domain(d3.range(-1, dateTimes.length)).range([0, w]).padding(0.3)
   var xAxis = d3.axisBottom()
-    .scale(xScale).ticks(5)
+    .scale(xScale).ticks(tickNum)
     // .attr("font-size", "5px")
     .tickFormat(function (d) {
       return processXAxisLabel(d, dateTimes)
@@ -994,7 +994,7 @@ tickerSelectChanged()
 function processXAxisLabel(d, dates) {
   d = new Date(dates[d])
   if (d.toString() !== "Invalid Date") {
-    console.log(d)
+    // console.log(d)
 
   //save date to make sure consecutive same dates don't show on axis label
   if (!xAxisDateExisting) {
