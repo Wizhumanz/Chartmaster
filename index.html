@@ -118,19 +118,21 @@
 
             <!-- compute + history controls -->
             <div class="row" id="computeRow">
-              <div class="topControls">
-                <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> Compute</button>
-                <p id="wsStatus"></p>
-              </div>
-              <!-- history select + loading -->
-              <div class="topControls">
-                <select name="resSelect" id="resSelect" onchange="tickerSelectChanged()">
-                  <!-- filled dynamically by API call -->
-                  <option value="">History...</option>
-                </select>
-                <button id="loadResBtn" onclick="loadBacktestRes()">Load</button>
-                <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
-                  style="display: none;">Share Results</button>
+              <div class="center">
+                <div class="topControls">
+                  <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> Compute</button>
+                  <p id="wsStatus"></p>
+                </div>
+                <!-- history select + loading -->
+                <div class="topControls">
+                  <select name="resSelect" id="resSelect" onchange="tickerSelectChanged()">
+                    <!-- filled dynamically by API call -->
+                    <option value="">History...</option>
+                  </select>
+                  <button id="loadResBtn" onclick="loadBacktestRes()">Load</button>
+                  <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
+                    style="display: none;">Share Results</button>
+                </div>
               </div>
               <!-- sharing btn + modal -->
               <div class="controls-sub">

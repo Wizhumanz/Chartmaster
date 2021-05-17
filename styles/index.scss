@@ -40,6 +40,7 @@ div#computeControls {
 
 .topControls {
   font-family: $body-font;
+  margin: 0.5rem;
 
   div.row {
     margin-top: 0.5rem;
@@ -64,7 +65,6 @@ div#computeControls {
     width: fit-content;
     margin-right: 0.75rem;
   }
-  computeBtn
   h2 {
     display: inline;
   }
