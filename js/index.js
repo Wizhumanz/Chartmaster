@@ -1,5 +1,4 @@
-
-let baseURL = "http://localhost:8000"
+let baseURL = "https://ana-api.myika.co"
 let wsStatus = document.getElementById("wsStatus")
 
 // Get parameters from a URL string
