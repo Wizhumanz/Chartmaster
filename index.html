@@ -34,6 +34,8 @@
         <div class="row">
           <!-- top controls -->
           <div class="col order-2 order-lg-1" id="computeControls">
+            <h4 class="chartHeader"
+            class="chartHeader">Backtest Options</h4>
             <div class="row">
               <!-- start/end compute controls -->
               <div class="col-12 col-md-4">
@@ -122,7 +124,8 @@
                 <div class="topControls">
                   <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
                     style="display: none;">Share Results</button>
-                    
+                  <!-- TODO: copy share link to clipboard -->
+                  <a href="">Copy Link</a>
                   <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> Compute</button>
                   <p id="wsStatus"></p>
                 </div>
@@ -186,12 +189,13 @@
       </div>
       <!-- profit curve + sim trades table col -->
       <div class="col-12 col-lg-4">
+        <h4 class="chartHeader">Profit Curve</h4>
         <div class="stacked" id="profitCurveDiv">
           <!-- <h4>Profit Curve</h4> -->
           <div id="profit"></div>
         </div>
         <div class="stacked" id="simTradesDiv">
-          <!-- <h4>Strategy Trades</h4> -->
+          <h4 class="chartHeader">Backtest Trades</h4>
           <table id="history">
             <thead id="head">
             </thead>

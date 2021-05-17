@@ -35,7 +35,14 @@ html,
 }
 
 div#computeControls {
-  margin-top: 0.75rem;
+  margin: 1.25rem auto 1rem auto;
+  border-bottom: $blue 3px dotted;
+  border-top: $blue 3px dotted;
+}
+
+h4.chartHeader {
+  margin: 0.5rem;
+  text-align: right;
 }
 
 .topControls {
@@ -48,6 +55,11 @@ div#computeControls {
 
   button {
     margin-left: 0.5rem;
+  }
+
+  a {
+    font-style: italic;
+    color: $cream;
   }
 }
 
@@ -266,13 +278,6 @@ div.stacked {
   overflow: scroll;
   // border-left: $blood 3px solid;
   padding: 0.75rem;
-
-  h4 {
-    position: absolute;
-    margin-left: -6rem;
-    margin-top: 7rem;
-    transform: rotate(270deg);
-  }
 }
 
 div.stacked::-webkit-scrollbar {
@@ -300,14 +305,10 @@ div.stacked::-webkit-scrollbar-thumb {
 
 #simTradesDiv {
   height: 34rem;
-
-  h4 {
-    margin-left: -7rem;
-  }
 }
 
 .thead {
-  background-color: $blue;
+  background-color: black;
   color: $cream;
   padding: auto 0.25rem;
 }
