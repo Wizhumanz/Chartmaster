@@ -218,7 +218,7 @@ function computeBacktest() {
     .then(() => {
       setTimeout(() => {
         loadResult()
-        document.getElementById("shareResult").style = "display: block;"
+        document.getElementById("shareResult").style = "display: inline;"
       }, 5000)
     })
     .catch((error) => {
