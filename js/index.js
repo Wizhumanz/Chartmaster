@@ -848,6 +848,7 @@ function drawPC(data) {
   // Add the X Axis
   pcSvg.append("g")
     .attr("transform", "translate(0," + height + ")")
+    .style("font-size","40px")
     .call(d3.axisBottom(x))
     .style("color", "white")
 
@@ -855,6 +856,8 @@ function drawPC(data) {
   pcSvg.append("g")
     .call(d3.axisLeft(y))
     .style("color", "white")
+    .style("font-size","80px")
+
 }
 
 /// SIMULATED TRADES
