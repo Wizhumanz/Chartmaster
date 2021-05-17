@@ -41,7 +41,9 @@ html,
 div#computeControls {
   margin: 0 auto;
   font-size: x-small;
+
   @media only screen and (max-width: 700px) {
+    font-size: small;
     margin: 1.25rem auto 1rem auto;
     border-bottom: $blue 3px dotted;
     border-top: $blue 3px dotted;
@@ -247,7 +249,7 @@ div.modal-content {
 }
 
 #ohlcDisplay {
-  margin: 0.5rem 6.5rem;
+  margin: 0.5rem 4.5rem;
   padding: 0.35rem;
   width: fit-content;
   font-size: small;
@@ -299,7 +301,11 @@ label {
   // padding-bottom: 100%;
   vertical-align: top;
   // overflow: hidden;
-  height: 600px;
+  height: 830px;
+
+  @media only screen and (max-width: 700px) {
+    height: 600px;
+  }
 }
 
 .svg-content {
@@ -429,8 +435,12 @@ tr:hover {
 
 .axis text {
   font-family: $body-font;
-  font-size: 35px;
+  font-size: 10px;
   fill: white;
+
+  @media only screen and (max-width: 700px) {
+    font-size: 35px;
+  }
 }
 
 .line {

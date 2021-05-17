@@ -23,19 +23,23 @@ let tickNumCandles = 10
 let tickNumProfitX = 10
 let tickNumProfitY = 10
 let candlestickChartLabelFontSize = "11px"
-let margin = { top: 40, right: 20, bottom: 205, left: 70 },
+let margin = { top: 10, right: 20, bottom: 205, left: 45 },
   w = 1050,
-  h = 680;
+  h = 700;
+let candlesViewBoxHeight = "1000"
 
 //mobile display options
 if (screen.availWidth < 700) {
   h = 1800
   margin.left = 140
+  margin.top = 40
+  margin.left = 70
   candleDisplayNumber = 30
   tickNumCandles = 7
   tickNumProfitX = 4
   tickNumProfitY = 7
   candlestickChartLabelFontSize = "40px"
+  candlesViewBoxHeight = "2200"
 }
 
 let candleDrawEndIndex = candleDisplayNumber
@@ -416,7 +420,7 @@ function drawChart(start, end) {
     // .attr("height", "110%")
     // .attr("padding-bottom", "3rem")
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 1200 2200")
+    .attr("viewBox", "0 0 1200 " + candlesViewBoxHeight)
     .classed("svg-content", true)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
@@ -897,14 +901,14 @@ function drawPC(data) {
   // Add the X Axis
   pcSvg.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .style("font-size","20px")
+    .style("font-size", "20px")
     .call(d3.axisBottom(x).ticks(tickNumProfitX))
     .style("color", "white")
   // Add the Y Axis
   pcSvg.append("g")
     .call(d3.axisLeft(y).ticks(tickNumProfitY))
     .style("color", "white")
-    .style("font-size","20px")
+    .style("font-size", "20px")
 }
 
 /// SIMULATED TRADES
@@ -1008,31 +1012,31 @@ function processXAxisLabel(d, dates) {
   if (d.toString() !== "Invalid Date") {
     // console.log(d)
 
-  //save date to make sure consecutive same dates don't show on axis label
-  if (!xAxisDateExisting) {
-    xAxisDateExisting = d
-  }
+    //save date to make sure consecutive same dates don't show on axis label
+    if (!xAxisDateExisting) {
+      xAxisDateExisting = d
+    }
 
-  hours = d.getHours()
-  minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()
-  amPM = hours < 13 ? 'am' : 'pm'
-  // if (parseInt(hours)) {
-  //   // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
-  //   let retLabel = hours + ':' + minutes + amPM
-  //   //if date the same, don't show
-  //   let dateStr = ""
-  //   if (xAxisDateExisting.getDate() != d.getDate()) {
-  //     //always show date with month
-  //     dateStr = dateStr + ' ' + d.getDate() + ' ' + months[d.getMonth()]
-  //     xAxisDateExisting = d
-  //   }
-  //   if (xAxisDateExisting.getFullYear() != d.getFullYear()) {
-  //     dateStr = dateStr + ' ' + d.getFullYear()
-  //     xAxisDateExisting = d
-  //   }
-  //   return retLabel + dateStr
-  // }
-  return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+    hours = d.getHours()
+    minutes = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()
+    amPM = hours < 13 ? 'am' : 'pm'
+    // if (parseInt(hours)) {
+    //   // return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
+    //   let retLabel = hours + ':' + minutes + amPM
+    //   //if date the same, don't show
+    //   let dateStr = ""
+    //   if (xAxisDateExisting.getDate() != d.getDate()) {
+    //     //always show date with month
+    //     dateStr = dateStr + ' ' + d.getDate() + ' ' + months[d.getMonth()]
+    //     xAxisDateExisting = d
+    //   }
+    //   if (xAxisDateExisting.getFullYear() != d.getFullYear()) {
+    //     dateStr = dateStr + ' ' + d.getFullYear()
+    //     xAxisDateExisting = d
+    //   }
+    //   return retLabel + dateStr
+    // }
+    return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
   }
 
 }
