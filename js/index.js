@@ -571,7 +571,7 @@ function drawChart(start, end) {
     }
 
     gX.call(
-      d3.axisBottom(xScaleZ).tickFormat((d, e, target) => {
+      d3.axisBottom(xScaleZ).ticks(tickNum).tickFormat((d, e, target) => {
         if (d >= 0 && d <= dateTimes.length - 1) {
           return processXAxisLabel(d, dateTimes)
         }
