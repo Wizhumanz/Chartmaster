@@ -87,6 +87,11 @@ div#computeControls {
   border-top: #001b6b 3px dotted;
 }
 
+h4.chartHeader {
+  margin: 0.5rem;
+  text-align: right;
+}
+
 .topControls {
   font-family: "Alata", sans-serif;
   margin: 0.5rem;
@@ -311,12 +316,6 @@ div.stacked {
   overflow: scroll;
   padding: 0.75rem;
 }
-div.stacked h4 {
-  position: absolute;
-  margin-left: -6rem;
-  margin-top: 7rem;
-  transform: rotate(270deg);
-}
 
 div.stacked::-webkit-scrollbar {
   width: 12px;
@@ -346,9 +345,6 @@ div.stacked::-webkit-scrollbar-thumb {
 
 #simTradesDiv {
   height: 34rem;
-}
-#simTradesDiv h4 {
-  margin-left: -7rem;
 }
 
 .thead {
