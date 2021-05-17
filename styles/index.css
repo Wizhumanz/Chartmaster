@@ -345,6 +345,7 @@ div.stacked::-webkit-scrollbar-thumb {
 
 #simTradesDiv {
   height: 34rem;
+  margin-bottom: 1rem;
 }
 
 .thead {
