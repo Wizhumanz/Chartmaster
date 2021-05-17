@@ -33,7 +33,7 @@ if (screen.availWidth < 700) {
   margin.left = 140
   candleDisplayNumber = 30
   tickNumCandles = 7
-  tickNumProfitX = 7
+  tickNumProfitX = 4
   tickNumProfitY = 7
   candlestickChartLabelFontSize = "40px"
 }
