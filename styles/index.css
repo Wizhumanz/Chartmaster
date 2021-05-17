@@ -332,6 +332,11 @@ div.stacked::-webkit-scrollbar-thumb {
   height: 24rem;
   overflow: hidden;
 }
+@media only screen and (max-width: 700px) {
+  #profitCurveDiv {
+    height: 16rem;
+  }
+}
 
 #simTradesDiv {
   height: 34rem;
@@ -349,6 +354,11 @@ div.stacked::-webkit-scrollbar-thumb {
 td {
   padding: 0.5rem;
   font-size: small;
+}
+@media only screen and (max-width: 700px) {
+  td {
+    font-size: x-small;
+  }
 }
 
 tr:hover {
