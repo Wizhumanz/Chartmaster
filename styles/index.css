@@ -108,6 +108,18 @@ h4.chartHeader {
   text-align: right;
 }
 
+h4.chartHeader#optionsH {
+  display: none;
+}
+@media only screen and (max-width: 700px) {
+  h4.chartHeader#optionsH {
+    display: block;
+    position: relative;
+    margin: 0.5rem;
+    text-align: right;
+  }
+}
+
 .topControls {
   font-family: "Alata", sans-serif;
 }
@@ -141,12 +153,16 @@ h4.chartHeader {
 }
 
 #computeRow {
-  margin-top: 1rem;
   text-align: right;
-  padding-right: 1rem;
 }
 #computeRow div {
   margin: 0.25rem auto;
+}
+@media only screen and (max-width: 700px) {
+  #computeRow {
+    margin-top: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 .controls-sub {
@@ -172,13 +188,18 @@ h4.chartHeader {
 }
 
 .computeInputs {
-  padding: 0.25rem;
-  margin-left: 0.25rem;
-  margin-top: 0.5rem;
+  padding: 0.15rem;
+  margin-bottom: 0.25rem;
   color: #fffdd0;
   background-color: black;
   border-radius: 5px;
-  border: #8a0000 2px dashed;
+  border: #8a0000 2px solid;
+}
+@media only screen and (max-width: 700px) {
+  .computeInputs {
+    margin-left: 0.25rem;
+    padding: 0.25rem;
+  }
 }
 
 label {
@@ -194,7 +215,7 @@ input[type=datetime-local] {
   padding: 0.15rem;
   color: #fffdd0;
   border-radius: 5px;
-  border: #8a0000 2px dashed;
+  border: #8a0000 2px solid;
   background-color: black;
   font-size: inherit;
 }

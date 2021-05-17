@@ -53,6 +53,17 @@ h4.chartHeader {
   text-align: right;
 }
 
+h4.chartHeader#optionsH {
+  display: none;
+
+  @media only screen and (max-width: 700px) {
+    display: block;
+    position: relative;
+    margin: 0.5rem;
+    text-align: right;
+  }
+}
+
 .topControls {
   font-family: $body-font;
 
@@ -90,12 +101,15 @@ h4.chartHeader {
 }
 
 #computeRow {
-  margin-top: 1rem;
   text-align: right;
-  padding-right: 1rem;
 
   div {
     margin: 0.25rem auto;
+  }
+
+  @media only screen and (max-width: 700px) {
+    margin-top: 1rem;
+    padding-right: 1rem;
   }
 }
 
@@ -123,13 +137,17 @@ h4.chartHeader {
 }
 
 .computeInputs {
-  padding: 0.25rem;
-  margin-left: 0.25rem;
-  margin-top: 0.5rem;
+  padding: 0.15rem;
+  margin-bottom: 0.25rem;
   color: $cream;
   background-color: black;
   border-radius: 5px;
-  border: $blood 2px dashed;
+  border: $blood 2px solid;
+
+  @media only screen and (max-width: 700px) {
+    margin-left: 0.25rem;
+    padding: 0.25rem;
+  }
 }
 
 label {
@@ -145,7 +163,7 @@ input[type="datetime-local"] {
   padding: 0.15rem;
   color: $cream;
   border-radius: 5px;
-  border: $blood 2px dashed;
+  border: $blood 2px solid;
   background-color: black;
   font-size: inherit;
 
