@@ -388,7 +388,7 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 #profitCurveDiv {
-  height: 24rem;
+  height: 20rem;
   overflow: hidden;
 }
 @media only screen and (max-width: 700px) {

@@ -20,14 +20,15 @@ document.getElementById("panCandlesRightBtn").style.display = "none"
 let candleDisplayNumber = 170
 let candleDrawStartIndex = 0
 let tickNumCandles = 10
-let tickNumProfitX = 10
-let tickNumProfitY = 10
+let tickNumProfitX = 6
+let tickNumProfitY = 8
 let candlestickChartLabelFontSize = "11px"
 let margin = { top: 10, right: 20, bottom: 205, left: 45 },
   w = 1050,
   h = 700;
 let candlesViewBoxHeight = "1000"
 let candlestickLabelStroke = "1px"
+let pcFontSz = "14px"
 
 //mobile display options
 if (screen.availWidth < 700) {
@@ -36,11 +37,12 @@ if (screen.availWidth < 700) {
   margin.top = 40
   candleDisplayNumber = 30
   tickNumCandles = 7
-  tickNumProfitX = 4
-  tickNumProfitY = 7
   candlestickChartLabelFontSize = "40px"
   candlesViewBoxHeight = "2200"
   candlestickLabelStroke = "3px"
+  tickNumProfitX = 4
+  tickNumProfitY = 7
+  pcFontSz = "20px"
 }
 
 let candleDrawEndIndex = candleDisplayNumber
@@ -779,7 +781,7 @@ function drawPC(data) {
   d3.selectAll("#profit > *").remove();
   var pcMargin = { top: 0, right: 20, bottom: 30, left: 45 },
     width = 550 - pcMargin.left - pcMargin.right,
-    height = 350 - pcMargin.top - pcMargin.bottom;
+    height = 300 - pcMargin.top - pcMargin.bottom;
 
   //mobile display options
   if (screen.availWidth < 700) {
@@ -904,14 +906,14 @@ function drawPC(data) {
   // Add the X Axis
   pcSvg.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .style("font-size", "20px")
+    .style("font-size", pcFontSz)
     .call(d3.axisBottom(x).ticks(tickNumProfitX))
     .style("color", "white")
   // Add the Y Axis
   pcSvg.append("g")
     .call(d3.axisLeft(y).ticks(tickNumProfitY))
     .style("color", "white")
-    .style("font-size", "20px")
+    .style("font-size", pcFontSz)
 }
 
 /// SIMULATED TRADES
@@ -937,7 +939,7 @@ function plotHistory(data) {
       row.insertCell().innerHTML = s.ExitPrice.toFixed(2)
       row.insertCell().innerHTML = s.RiskedEquity.toFixed(2)
       dateStrs = s.DateTime.split("T")
-      row.insertCell().innerHTML = dateStrs[0] + "\n" + dateStrs[1]
+      row.insertCell().innerHTML = dateStrs[0] + " | " + dateStrs[1]
       row.insertCell().innerHTML = s.PosSize.toFixed(2)
       row.insertCell().innerHTML = s.Direction
       row.style.color = "white"
