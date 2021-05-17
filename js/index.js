@@ -728,7 +728,7 @@ function drawPC(data) {
   //mobile display options
   if (screen.availWidth < 700) {
     width = 550 - pcMargin.left - pcMargin.right,
-    height = 800 - pcMargin.top - pcMargin.bottom;
+    height = 600 - pcMargin.top - pcMargin.bottom;
   }
 
   // parse the date / time
