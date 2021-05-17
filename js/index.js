@@ -27,19 +27,20 @@ let margin = { top: 10, right: 20, bottom: 205, left: 45 },
   w = 1050,
   h = 700;
 let candlesViewBoxHeight = "1000"
+let candlestickLabelStroke = "1px"
 
 //mobile display options
 if (screen.availWidth < 700) {
   h = 1800
   margin.left = 140
   margin.top = 40
-  margin.left = 70
   candleDisplayNumber = 30
   tickNumCandles = 7
   tickNumProfitX = 4
   tickNumProfitY = 7
   candlestickChartLabelFontSize = "40px"
   candlesViewBoxHeight = "2200"
+  candlestickLabelStroke = "4px"
 }
 
 let candleDrawEndIndex = candleDisplayNumber
@@ -502,7 +503,7 @@ function drawChart(start, end) {
     .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
     .attr("y", d => yScale(d.High) - labelYMove)
     .attr("stroke", "white")
-    .attr("stroke-width", "4px")
+    .attr("stroke-width", candlestickLabelStroke)
     .attr("font-family", "Courier")
     .attr("font-size", candlestickChartLabelFontSize)
     .attr("font-weight", "bold")
