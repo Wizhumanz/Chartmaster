@@ -1,6 +1,5 @@
 @import "./_all";
 
-
 .axis path,
 .axis line {
   fill: none;
@@ -24,6 +23,11 @@ html,
 .container-fluid,
 .row {
   background-color: black !important;
+  overflow: hidden;
+  
+  @media only screen and (max-width: 700px) {
+    overflow: scroll;
+  }
 }
 
 #brand-h {
@@ -36,8 +40,10 @@ html,
 
 div#computeControls {
   margin: 1.25rem auto 1rem auto;
-  border-bottom: $blue 3px dotted;
-  border-top: $blue 3px dotted;
+  @media only screen and (max-width: 700px) {
+    border-bottom: $blue 3px dotted;
+    border-top: $blue 3px dotted;
+  }
 }
 
 h4.chartHeader {
@@ -96,7 +102,8 @@ h4.chartHeader {
   color: $cream;
   text-align: right;
 
-  p, select {
+  p,
+  select {
     display: inline;
     margin-left: 0.5rem;
   }

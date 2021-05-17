@@ -71,6 +71,16 @@ html,
 .container-fluid,
 .row {
   background-color: black !important;
+  overflow: hidden;
+}
+@media only screen and (max-width: 700px) {
+  body,
+.row,
+html,
+.container-fluid,
+.row {
+    overflow: scroll;
+  }
 }
 
 #brand-h {
@@ -83,8 +93,12 @@ html,
 
 div#computeControls {
   margin: 1.25rem auto 1rem auto;
-  border-bottom: #001b6b 3px dotted;
-  border-top: #001b6b 3px dotted;
+}
+@media only screen and (max-width: 700px) {
+  div#computeControls {
+    border-bottom: #001b6b 3px dotted;
+    border-top: #001b6b 3px dotted;
+  }
 }
 
 h4.chartHeader {
@@ -138,7 +152,8 @@ h4.chartHeader {
   color: #fffdd0;
   text-align: right;
 }
-.controls-sub p, .controls-sub select {
+.controls-sub p,
+.controls-sub select {
   display: inline;
   margin-left: 0.5rem;
 }
