@@ -952,9 +952,9 @@ function plotHistory(data) {
       var entry = parseFloat(s.EntryPrice)
       var exit = parseFloat(s.ExitPrice)
       if ((s.Direction == "LONG") && (exit > entry)) {
-        row.style.backgroundColor = "#001204"
+        row.style.backgroundColor = "#002e03"
       } else if ((s.Direction == "LONG") && (exit < entry)) {
-        row.style.backgroundColor = "#1a0000"
+        row.style.backgroundColor = "#540000"
       }
       indexST += 1
     })
