@@ -35,7 +35,7 @@ let candleWickWidth = 3
 
 //mobile display options
 if (screen.availWidth < 700) {
-  h = 2 * screen.height
+  h = 1.7 * screen.height
   margin.left = 140
   margin.top = 40
   labelXMove = 12
