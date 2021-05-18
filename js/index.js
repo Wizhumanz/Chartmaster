@@ -30,11 +30,18 @@ let candlesViewBoxHeight = "1000"
 let candlestickLabelStroke = "1px"
 let pcFontSz = "14px"
 
+let labelXMove = 4
+let labelYMove = 10
+let candleWickWidth = 3
+
 //mobile display options
 if (screen.availWidth < 700) {
-  h = 1800
+  h = 2 * screen.height
   margin.left = 140
   margin.top = 40
+  labelXMove = 12
+  labelYMove = 18
+  candleWickWidth = 7
   candleDisplayNumber = 30
   tickNumCandles = 7
   candlestickChartLabelFontSize = "40px"
@@ -495,9 +502,21 @@ function drawChart(start, end) {
   // Add index to Price Array
   candlesToShow.map(p => p["index"] = candlesToShow.indexOf(p))
 
+  // draw high and low
+  let stems = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append("line")
+    .attr("class", "stem")
+    .attr("x1", (d, i) => xScale(i) - xBand.bandwidth() / 2)
+    .attr("x2", (d, i) => xScale(i) - xBand.bandwidth() / 2)
+    .attr("y1", d => yScale(d.High))
+    .attr("y2", d => yScale(d.Low))
+    .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "darkgreen")
+    .attr("stroke-width", candleWickWidth)
+    .attr("z-index", "-1");
+
   // Create Label
-  let labelXMove = 4
-  let labelYMove = 10
   let labelText = chartBody.selectAll("labelText")
     .data(candlesToShow.filter((p) => { return p.Label !== "" }))
     .enter()
@@ -540,18 +559,6 @@ function drawChart(start, end) {
     .attr("height", pointerHeight)
     .attr("fill", "hotpink")
   // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
-
-  // draw high and low
-  let stems = chartBody.selectAll("g.line")
-    .data(candlesToShow)
-    .enter()
-    .append("line")
-    .attr("class", "stem")
-    .attr("x1", (d, i) => xScale(i) - xBand.bandwidth() / 2)
-    .attr("x2", (d, i) => xScale(i) - xBand.bandwidth() / 2)
-    .attr("y1", d => yScale(d.High))
-    .attr("y2", d => yScale(d.Low))
-    .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "darkgreen");
 
   // console.log(stems.selectAll("g.line").select(".stem"))
   // console.log(stems.selectAll(".stem"))
