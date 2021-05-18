@@ -35,7 +35,7 @@ let candleWickWidth = 3
 
 //mobile display options
 if (screen.availWidth < 700) {
-  h = 1.7 * screen.height
+  h = 1.6 * screen.height
   margin.left = 140
   margin.top = 40
   labelXMove = 12
@@ -688,72 +688,54 @@ function drawChart(start, end) {
 
   }
 
-  //crosshairs
-  var mouseG = svg.append("g")
-    .attr("class", "mouse-over-effects");
+  if (screen.availWidth >= 700) {
+    //crosshairs
+    var mouseG = svg.append("g")
+      .attr("class", "mouse-over-effects");
 
-  mouseG.append("path") // this is the black vertical line to follow mouse
-    .attr("class", "mouse-line")
-    .style("stroke", "yellow")
-    .style("stroke-width", "1px")
-    .style("opacity", "0");
+    mouseG.append("path") // this is the black vertical line to follow mouse
+      .attr("class", "mouse-line")
+      .style("stroke", "yellow")
+      .style("stroke-width", "1px")
+      .style("opacity", "0");
 
-  // var lines = document.getElementsByClassName('line');
-
-  // var mousePerLine = mouseG.selectAll('.mouse-per-line')
-  //   // .data(cities)
-  //   .enter()
-  //   .append("g")
-  //   .attr("class", "mouse-per-line");
-
-  // mousePerLine.append("circle")
-  //   .attr("r", 7)
-  //   .style("stroke", function (d) {
-  //     return color(d.name);
-  //   })
-  //   .style("fill", "none")
-  //   .style("stroke-width", "1px")
-  //   .style("opacity", "0");
-
-  // mousePerLine.append("text")
-  //   .attr("transform", "translate(10,3)");
-
-  mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
-    .attr('width', w) // can't catch mouse events on a g element
-    .attr('height', h)
-    .attr('fill', 'none')
-    .attr('pointer-events', 'all')
-    .on('mouseout', function () { // on mouse out hide line, circles and text
-      d3.select(".mouse-line")
-        .style("opacity", "0");
-      d3.selectAll(".mouse-per-line circle")
-        .style("opacity", "0");
-      d3.selectAll(".mouse-per-line text")
-        .style("opacity", "0");
-    })
-    .on('mouseover', function () { // on mouse in show line, circles and text
-      d3.select(".mouse-line")
-        .style("opacity", "1");
-      d3.selectAll(".mouse-per-line circle")
-        .style("opacity", "1");
-      d3.selectAll(".mouse-per-line text")
-        .style("opacity", "1");
-    })
-    .on('mousemove', function () { // mouse moving over canvas
-      var mouse = d3.mouse(this);
-      d3.select(".mouse-line")
-        .attr("d", function () {
-          var d = "M" + mouse[0] + "," + h;
-          d += " " + mouse[0] + "," + 0;
-          return d;
-        });
-
-      stemsXArray.forEach((x, i) => {
-        if ((mouse[0] > (x - 4)) && (mouse[0] < (x + 4))) {
-          document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> <br>H <span>${candlesToShow[i].High}</span> <br>L <span>${candlesToShow[i].Low}</span> <br>C <span>${candlesToShow[i].Close}</span>`
-        }
+    mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+      .attr('width', w) // can't catch mouse events on a g element
+      .attr('height', h)
+      .attr('fill', 'none')
+      .attr('pointer-events', 'all')
+      .on('mouseout', function () { // on mouse out hide line, circles and text
+        d3.select(".mouse-line")
+          .style("opacity", "0");
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "0");
+        d3.selectAll(".mouse-per-line text")
+          .style("opacity", "0");
       })
-    });
+      .on('mouseover', function () { // on mouse in show line, circles and text
+        d3.select(".mouse-line")
+          .style("opacity", "1");
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "1");
+        d3.selectAll(".mouse-per-line text")
+          .style("opacity", "1");
+      })
+      .on('mousemove', function () { // mouse moving over canvas
+        var mouse = d3.mouse(this);
+        d3.select(".mouse-line")
+          .attr("d", function () {
+            var d = "M" + mouse[0] + "," + h;
+            d += " " + mouse[0] + "," + 0;
+            return d;
+          });
+
+        stemsXArray.forEach((x, i) => {
+          if ((mouse[0] > (x - 4)) && (mouse[0] < (x + 4))) {
+            document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> <br>H <span>${candlesToShow[i].High}</span> <br>L <span>${candlesToShow[i].Low}</span> <br>C <span>${candlesToShow[i].Close}</span>`
+          }
+        })
+      });
+  }
 }
 
 function wrap(text, width) {
