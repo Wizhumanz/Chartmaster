@@ -96,7 +96,7 @@ function loadResult() {
 
       opt.appendChild(document.createTextNode("History..."));
       sel.appendChild(opt);
-      console.log(res.data)
+      // console.log(res.data)
       res.data.forEach((l) => {
         // get reference to select element
         let sel = document.getElementById('resSelect');
@@ -150,8 +150,6 @@ function connectWs() {
       if (!(msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}"))) {
         return
       }
-
-      console.log(msg.data)
 
       //candlestick
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Open) > 0) {
@@ -234,9 +232,9 @@ function computeBacktest() {
     "time_end": endTimeStr,
     "candlePacketSize": "80",
     "user": userID,
-    "risk": riskInput,
-    "leverage": leverageInput,
-    "size": sizeInput
+    "risk": document.getElementById('risk').value,
+    "leverage": document.getElementById('leverage').value,
+    "size": document.getElementById('size').value
   }
 
   let hd = {
