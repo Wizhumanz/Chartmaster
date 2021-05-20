@@ -2,8 +2,10 @@ let baseURL = "https://ana-api.myika.co"
 let wsStatus = document.getElementById("wsStatus")
 
 // Get parameters from a URL string
-console.log(getParams(window.location.href).user)
 let userID = getParams(window.location.href).user
+if (userID === undefined) {
+  document.getElementById("undefinedUserErr").style.display = "block"
+}
 
 // Simulated Trades index
 let indexST = 1
@@ -154,6 +156,8 @@ function connectWs() {
       if (!(msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}"))) {
         return
       }
+
+      console.log(msg.data)
 
       //candlestick
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Open) > 0) {
