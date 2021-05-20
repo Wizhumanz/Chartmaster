@@ -91,6 +91,15 @@ html,
   background-color: black;
 }
 
+#undefinedUserErr {
+  padding: 0.5rem;
+  width: fit-content;
+  color: white;
+  background-color: red;
+  font-family: "Alata", sans-serif;
+  margin-left: 1rem;
+}
+
 div#computeControls {
   margin: 0 auto;
   font-size: x-small;
