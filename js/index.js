@@ -2,8 +2,10 @@ let baseURL = "http://localhost:8000"
 let wsStatus = document.getElementById("wsStatus")
 
 // Get parameters from a URL string
-console.log(getParams(window.location.href).user)
 let userID = getParams(window.location.href).user
+if (userID === undefined) {
+  document.getElementById("undefinedUserErr").style.display = "block"
+}
 
 // Simulated Trades index
 let indexST = 1
@@ -29,11 +31,18 @@ let candlesViewBoxHeight = "1000"
 let candlestickLabelStroke = "1px"
 let pcFontSz = "14px"
 
+let labelXMove = 4
+let labelYMove = 10
+let candleWickWidth = 3
+
 //mobile display options
 if (screen.availWidth < 700) {
-  h = 1800
+  h = 1.6 * screen.height
   margin.left = 140
   margin.top = 40
+  labelXMove = 12
+  labelYMove = 18
+  candleWickWidth = 7
   candleDisplayNumber = 30
   tickNumCandles = 7
   candlestickChartLabelFontSize = "40px"
@@ -93,7 +102,7 @@ function loadResult() {
 
       opt.appendChild(document.createTextNode("History..."));
       sel.appendChild(opt);
-      console.log(res.data)
+      // console.log(res.data)
       res.data.forEach((l) => {
         // get reference to select element
         let sel = document.getElementById('resSelect');
@@ -229,9 +238,9 @@ function computeBacktest() {
     "time_end": endTimeStr,
     "candlePacketSize": "80",
     "user": userID,
-    "risk": riskInput,
-    "leverage": leverageInput,
-    "size": sizeInput
+    "risk": document.getElementById('risk').value,
+    "leverage": document.getElementById('leverage').value,
+    "size": document.getElementById('size').value
   }
 
   let hd = {
@@ -494,9 +503,21 @@ function drawChart(start, end) {
   // Add index to Price Array
   candlesToShow.map(p => p["index"] = candlesToShow.indexOf(p))
 
+  // draw high and low
+  let stems = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append("line")
+    .attr("class", "stem")
+    .attr("x1", (d, i) => xScale(i) - xBand.bandwidth() / 2)
+    .attr("x2", (d, i) => xScale(i) - xBand.bandwidth() / 2)
+    .attr("y1", d => yScale(d.High))
+    .attr("y2", d => yScale(d.Low))
+    .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "darkgreen")
+    .attr("stroke-width", candleWickWidth)
+    .attr("z-index", "-1");
+
   // Create Label
-  let labelXMove = 4
-  let labelYMove = 10
   let labelText = chartBody.selectAll("labelText")
     .data(candlesToShow.filter((p) => { return p.Label !== "" }))
     .enter()
@@ -539,18 +560,6 @@ function drawChart(start, end) {
     .attr("height", pointerHeight)
     .attr("fill", "hotpink")
   // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
-
-  // draw high and low
-  let stems = chartBody.selectAll("g.line")
-    .data(candlesToShow)
-    .enter()
-    .append("line")
-    .attr("class", "stem")
-    .attr("x1", (d, i) => xScale(i) - xBand.bandwidth() / 2)
-    .attr("x2", (d, i) => xScale(i) - xBand.bandwidth() / 2)
-    .attr("y1", d => yScale(d.High))
-    .attr("y2", d => yScale(d.Low))
-    .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "darkgreen");
 
   // console.log(stems.selectAll("g.line").select(".stem"))
   // console.log(stems.selectAll(".stem"))
@@ -681,72 +690,54 @@ function drawChart(start, end) {
 
   }
 
-  //crosshairs
-  var mouseG = svg.append("g")
-    .attr("class", "mouse-over-effects");
+  if (screen.availWidth >= 700) {
+    //crosshairs
+    var mouseG = svg.append("g")
+      .attr("class", "mouse-over-effects");
 
-  mouseG.append("path") // this is the black vertical line to follow mouse
-    .attr("class", "mouse-line")
-    .style("stroke", "yellow")
-    .style("stroke-width", "1px")
-    .style("opacity", "0");
+    mouseG.append("path") // this is the black vertical line to follow mouse
+      .attr("class", "mouse-line")
+      .style("stroke", "yellow")
+      .style("stroke-width", "1px")
+      .style("opacity", "0");
 
-  // var lines = document.getElementsByClassName('line');
-
-  // var mousePerLine = mouseG.selectAll('.mouse-per-line')
-  //   // .data(cities)
-  //   .enter()
-  //   .append("g")
-  //   .attr("class", "mouse-per-line");
-
-  // mousePerLine.append("circle")
-  //   .attr("r", 7)
-  //   .style("stroke", function (d) {
-  //     return color(d.name);
-  //   })
-  //   .style("fill", "none")
-  //   .style("stroke-width", "1px")
-  //   .style("opacity", "0");
-
-  // mousePerLine.append("text")
-  //   .attr("transform", "translate(10,3)");
-
-  mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
-    .attr('width', w) // can't catch mouse events on a g element
-    .attr('height', h)
-    .attr('fill', 'none')
-    .attr('pointer-events', 'all')
-    .on('mouseout', function () { // on mouse out hide line, circles and text
-      d3.select(".mouse-line")
-        .style("opacity", "0");
-      d3.selectAll(".mouse-per-line circle")
-        .style("opacity", "0");
-      d3.selectAll(".mouse-per-line text")
-        .style("opacity", "0");
-    })
-    .on('mouseover', function () { // on mouse in show line, circles and text
-      d3.select(".mouse-line")
-        .style("opacity", "1");
-      d3.selectAll(".mouse-per-line circle")
-        .style("opacity", "1");
-      d3.selectAll(".mouse-per-line text")
-        .style("opacity", "1");
-    })
-    .on('mousemove', function () { // mouse moving over canvas
-      var mouse = d3.mouse(this);
-      d3.select(".mouse-line")
-        .attr("d", function () {
-          var d = "M" + mouse[0] + "," + h;
-          d += " " + mouse[0] + "," + 0;
-          return d;
-        });
-
-      stemsXArray.forEach((x, i) => {
-        if ((mouse[0] > (x - 4)) && (mouse[0] < (x + 4))) {
-          document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> <br>H <span>${candlesToShow[i].High}</span> <br>L <span>${candlesToShow[i].Low}</span> <br>C <span>${candlesToShow[i].Close}</span>`
-        }
+    mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+      .attr('width', w) // can't catch mouse events on a g element
+      .attr('height', h)
+      .attr('fill', 'none')
+      .attr('pointer-events', 'all')
+      .on('mouseout', function () { // on mouse out hide line, circles and text
+        d3.select(".mouse-line")
+          .style("opacity", "0");
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "0");
+        d3.selectAll(".mouse-per-line text")
+          .style("opacity", "0");
       })
-    });
+      .on('mouseover', function () { // on mouse in show line, circles and text
+        d3.select(".mouse-line")
+          .style("opacity", "1");
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "1");
+        d3.selectAll(".mouse-per-line text")
+          .style("opacity", "1");
+      })
+      .on('mousemove', function () { // mouse moving over canvas
+        var mouse = d3.mouse(this);
+        d3.select(".mouse-line")
+          .attr("d", function () {
+            var d = "M" + mouse[0] + "," + h;
+            d += " " + mouse[0] + "," + 0;
+            return d;
+          });
+
+        stemsXArray.forEach((x, i) => {
+          if ((mouse[0] > (x - 4)) && (mouse[0] < (x + 4))) {
+            document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> <br>H <span>${candlesToShow[i].High}</span> <br>L <span>${candlesToShow[i].Low}</span> <br>C <span>${candlesToShow[i].Close}</span>`
+          }
+        })
+      });
+  }
 }
 
 function wrap(text, width) {
@@ -951,9 +942,9 @@ function plotHistory(data) {
       var entry = parseFloat(s.EntryPrice)
       var exit = parseFloat(s.ExitPrice)
       if ((s.Direction == "LONG") && (exit > entry)) {
-        row.style.backgroundColor = "#001204"
+        row.style.backgroundColor = "#002e03"
       } else if ((s.Direction == "LONG") && (exit < entry)) {
-        row.style.backgroundColor = "#1a0000"
+        row.style.backgroundColor = "#540000"
       }
       indexST += 1
     })
