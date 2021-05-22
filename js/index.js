@@ -158,9 +158,7 @@ function connectWs() {
           allCandles = JSON.parse(msg.data).Data
           //if candlestick chart empty
           drawChart(0, candleDisplayNumber)
-          //show right arrow btn
-          document.getElementById("panCandlesRightBtn").style.display = "inline"
-
+          
           //save res id so next messages with same ID will be concatenated with existing data
           existingWSResID = JSON.parse(msg.data).ResultID
         } else {
@@ -169,6 +167,10 @@ function connectWs() {
             allCandles.push(newData)
           })
           console.log(msg.data)
+          if (candleDisplayNumber < allCandles.length) {
+            //show right arrow btn
+            document.getElementById("panCandlesRightBtn").style.display = "inline"
+          }
           drawChart(0, candleDisplayNumber)
         }
       }
