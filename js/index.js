@@ -27,9 +27,9 @@ let tickNumProfitY = 8
 let candlestickChartLabelFontSize = "11px"
 let margin = { top: 10, right: 20, bottom: 205, left: 45 },
   w = 1050,
-  h = 680;
+  h = 685;
 let candlesViewBoxHeight = "1000"
-let candlestickLabelStroke = "1px"
+let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
 
 //mobile display options
