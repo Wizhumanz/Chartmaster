@@ -503,7 +503,7 @@ function drawChart(start, end) {
   let labelXMoveTop = 4
   let labelYMoveTop = 10
   let labelTextTop = chartBody.selectAll("labelTextTop")
-    .data(candlesToShow.filter((p) => { return p.Label !== "" }))
+    .data(candlesToShow.filter((p) => { return p.LabelTop !== "" }))
     .enter()
     .append("text")
     .attr("x", (d) => xScale(d.index) - labelXMoveTop - xBand.bandwidth() / 2)
@@ -515,13 +515,13 @@ function drawChart(start, end) {
     .attr("font-size", candlestickChartLabelFontSize)
     .attr("font-weight", "bold")
     .attr("z-index", "100")
-    .text(d => d.Label);
+    .text(d => d.LabelTop);
 
   // Create Label Middle
   let labelXMoveMid = 4
   let labelYMoveMid = -50
   let labelTextMid = chartBody.selectAll("labelTextMid")
-    .data(candlesToShow.filter((p) => { return p.Label !== "" }))
+    .data(candlesToShow.filter((p) => { return p.LabelMiddle !== "" }))
     .enter()
     .append("text")
     .attr("x", (d) => xScale(d.index) - labelXMoveMid - xBand.bandwidth() / 2)
@@ -533,13 +533,13 @@ function drawChart(start, end) {
     .attr("font-size", candlestickChartLabelFontSize)
     .attr("font-weight", "bold")
     .attr("z-index", "100")
-    .text(d => d.Label);
+    .text(d => d.LabelMiddle);
 
   // Create Label Bottom
   let labelXMoveBot = 4
   let labelYMoveBot = 60
   let labelTextBot = chartBody.selectAll("labelTextBot")
-    .data(candlesToShow.filter((p) => { return p.Label !== "" }))
+    .data(candlesToShow.filter((p) => { return p.LabelBottom !== "" }))
     .enter()
     .append("text")
     .attr("x", (d) => xScale(d.index) - labelXMoveBot - xBand.bandwidth() / 2)
@@ -551,7 +551,7 @@ function drawChart(start, end) {
     .attr("font-size", candlestickChartLabelFontSize)
     .attr("font-weight", "bold")
     .attr("z-index", "100")
-    .text(d => d.Label);
+    .text(d => d.LabelBottom);
 
   // Enter and Exit Pointers
   let pointerWidth = 7
