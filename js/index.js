@@ -499,15 +499,51 @@ function drawChart(start, end) {
   // Add index to Price Array
   candlesToShow.map(p => p["index"] = candlesToShow.indexOf(p))
 
-  // Create Label
-  let labelXMove = 4
-  let labelYMove = 10
-  let labelText = chartBody.selectAll("labelText")
+  // Create Label Top
+  let labelXMoveTop = 4
+  let labelYMoveTop = 10
+  let labelTextTop = chartBody.selectAll("labelTextTop")
     .data(candlesToShow.filter((p) => { return p.Label !== "" }))
     .enter()
     .append("text")
-    .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
-    .attr("y", d => yScale(d.High) - labelYMove)
+    .attr("x", (d) => xScale(d.index) - labelXMoveTop - xBand.bandwidth() / 2)
+    .attr("y", d => yScale(d.High) - labelYMoveTop)
+    .attr("stroke", "white")
+    .attr("fill", "white")
+    .attr("stroke-width", candlestickLabelStroke)
+    .attr("font-family", "Courier")
+    .attr("font-size", candlestickChartLabelFontSize)
+    .attr("font-weight", "bold")
+    .attr("z-index", "100")
+    .text(d => d.Label);
+
+  // Create Label Middle
+  let labelXMoveMid = 4
+  let labelYMoveMid = -50
+  let labelTextMid = chartBody.selectAll("labelTextMid")
+    .data(candlesToShow.filter((p) => { return p.Label !== "" }))
+    .enter()
+    .append("text")
+    .attr("x", (d) => xScale(d.index) - labelXMoveMid - xBand.bandwidth() / 2)
+    .attr("y", d => yScale(d.High) - labelYMoveMid)
+    .attr("stroke", "white")
+    .attr("fill", "white")
+    .attr("stroke-width", candlestickLabelStroke)
+    .attr("font-family", "Courier")
+    .attr("font-size", candlestickChartLabelFontSize)
+    .attr("font-weight", "bold")
+    .attr("z-index", "100")
+    .text(d => d.Label);
+
+  // Create Label Bottom
+  let labelXMoveBot = 4
+  let labelYMoveBot = 60
+  let labelTextBot = chartBody.selectAll("labelTextBot")
+    .data(candlesToShow.filter((p) => { return p.Label !== "" }))
+    .enter()
+    .append("text")
+    .attr("x", (d) => xScale(d.index) - labelXMoveBot - xBand.bandwidth() / 2)
+    .attr("y", d => yScale(d.Low) + labelYMoveBot)
     .attr("stroke", "white")
     .attr("fill", "white")
     .attr("stroke-width", candlestickLabelStroke)
@@ -626,7 +662,9 @@ function drawChart(start, end) {
     changeStemsX()
 
     // Label X Zooming
-    labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+    labelTextTop.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveTop - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+    labelTextMid.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveMid - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+    labelTextBot.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveBot - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
     // Pointers X Zooming
     enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
@@ -671,8 +709,12 @@ function drawChart(start, end) {
       //   .attr("y", (d) => yScale(d.High) - 100)
 
       // Label Y Zooming
-      labelText.transition().duration(100)
+      labelTextTop.transition().duration(100)
         .attr("y", (d) => yScale(d.High) - labelYMove)
+      labelTextMid.transition().duration(100)
+        .attr("y", (d) => yScale(d.High) - labelYMoveMid)
+      labelTextBot.transition().duration(100)
+        .attr("y", (d) => yScale(d.Low) + labelYMoveBot)
 
       // Pointers Y Zooming
       enterPointer.transition().duration(100)
