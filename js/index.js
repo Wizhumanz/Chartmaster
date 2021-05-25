@@ -518,7 +518,7 @@ function drawChart(start, end) {
     .text(d => d.LabelTop);
 
   // Create Label Middle
-  let labelXMoveMid = 16
+  let labelXMoveMid = 13
   let labelTextMid = chartBody.selectAll("labelTextMid")
     .data(candlesToShow.filter((p) => { return p.LabelMiddle !== "" }))
     .enter()
