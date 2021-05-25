@@ -518,14 +518,13 @@ function drawChart(start, end) {
     .text(d => d.LabelTop);
 
   // Create Label Middle
-  let labelXMoveMid = 4
-  let labelYMoveMid = -50
+  let labelXMoveMid = 16
   let labelTextMid = chartBody.selectAll("labelTextMid")
     .data(candlesToShow.filter((p) => { return p.LabelMiddle !== "" }))
     .enter()
     .append("text")
     .attr("x", (d) => xScale(d.index) - labelXMoveMid - xBand.bandwidth() / 2)
-    .attr("y", d => yScale(d.High) - labelYMoveMid)
+    .attr("y", d => yScale((d.Open+d.Close)/2))
     .attr("stroke", "white")
     .attr("fill", "white")
     .attr("stroke-width", candlestickLabelStroke)
@@ -712,7 +711,7 @@ function drawChart(start, end) {
       labelTextTop.transition().duration(100)
         .attr("y", (d) => yScale(d.High) - labelYMoveTop)
       labelTextMid.transition().duration(100)
-        .attr("y", (d) => yScale(d.High) - labelYMoveMid)
+        .attr("y", (d) => yScale((d.Open+d.Close)/2))
       labelTextBot.transition().duration(100)
         .attr("y", (d) => yScale(d.Low) + labelYMoveBot)
 
