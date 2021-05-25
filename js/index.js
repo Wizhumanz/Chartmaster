@@ -710,7 +710,7 @@ function drawChart(start, end) {
 
       // Label Y Zooming
       labelTextTop.transition().duration(100)
-        .attr("y", (d) => yScale(d.High) - labelYMove)
+        .attr("y", (d) => yScale(d.High) - labelYMoveTop)
       labelTextMid.transition().duration(100)
         .attr("y", (d) => yScale(d.High) - labelYMoveMid)
       labelTextBot.transition().duration(100)
@@ -718,9 +718,9 @@ function drawChart(start, end) {
 
       // Pointers Y Zooming
       enterPointer.transition().duration(100)
-        .attr("y", (d) => yScale(d.Low) + labelYMove)
+        .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
       exitPointer.transition().duration(100)
-        .attr("y", (d) => yScale(d.Low) + labelYMove)
+        .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
 
       gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
 
