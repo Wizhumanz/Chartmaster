@@ -200,6 +200,7 @@ function connectWs() {
         if (existingWSResIDST === "" || existingWSResIDST !== JSON.parse(msg.data).ResultID) {
           allSimTrades = JSON.parse(msg.data).Data
           //if candlestick chart empty
+          indexST = 1
           plotHistory(JSON.parse(msg.data).Data)
 
           //save res id so next messages with same ID will be concatenated with existing data
@@ -978,7 +979,10 @@ function drawPC(data) {
 
 /// SIMULATED TRADES
 function plotHistory(data) {
-  // console.log(JSON.stringify(data))
+  console.log(data)
+  // Number of rows
+  document.getElementById("numOfRows").innerHTML = "(" + data[0].Data.length.toString() + ")"
+
   var table = document.getElementById("history")
   table.innerHTML = ""
   let row = table.insertRow()
@@ -992,6 +996,7 @@ function plotHistory(data) {
   data.forEach((d) => {
     //for each trade history item in that param
     d.Data.forEach((s, i) => {
+      // console.log(s)
       let row = table.insertRow()
       row.insertCell().innerHTML = indexST
       row.insertCell().innerHTML = s.RawProfitPerc.toFixed(2)
