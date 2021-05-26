@@ -376,6 +376,19 @@ label {
   left: 1%;
 }
 
+div.inline {
+  margin: 0.5rem auto;
+  color: #fffdd0;
+}
+div.inline h5 {
+  font-family: "DM Serif Display", serif;
+  display: inline;
+}
+div.inline h5.value {
+  background-color: #8a0000;
+  padding: 0.1rem;
+}
+
 div.stacked {
   overflow: scroll;
   padding: 0.75rem;

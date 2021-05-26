@@ -325,6 +325,20 @@ label {
   left: 1%;
 }
 
+div.inline {
+  margin: 0.5rem auto;
+  color: $cream;
+
+  h5 {
+    font-family: $title-font;
+    display: inline;
+  }
+  h5.value {
+    background-color: $blood;
+    padding: 0.1rem;
+  }
+}
+
 div.stacked {
   overflow: scroll;
   // border-left: $blood 3px solid;
