@@ -380,7 +380,7 @@ div.inline {
   margin: 0.5rem auto;
   color: #fffdd0;
 }
-div.inline h5 {
+div.inline h4, div.inline h5, div.inline p {
   font-family: "DM Serif Display", serif;
   display: inline;
 }
