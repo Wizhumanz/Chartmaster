@@ -828,15 +828,15 @@ function wrap(text, width) {
 /// PROFIT CURVE
 function drawPC(data) {
   //  Calculate starting, ending, and Growth
-  document.getElementById("startingCapital").innerHTML = data[0].Data[0].Equity
+  document.getElementById("startingCapital").innerHTML = data[0].Data[0].Equity.toFixed(2)
 
   data.forEach(function (d) {
     d.Data.forEach(function (point) {
-      document.getElementById("endingCapital").innerHTML = point.Equity
+      document.getElementById("endingCapital").innerHTML = point.Equity.toFixed(2)
     })
   })
 
-  document.getElementById("growth").innerHTML = (document.getElementById("endingCapital").innerHTML - document.getElementById("startingCapital").innerHTML) / document.getElementById("startingCapital").innerHTML * 100
+  document.getElementById("growth").innerHTML = ((document.getElementById("endingCapital").innerHTML - document.getElementById("startingCapital").innerHTML) / document.getElementById("startingCapital").innerHTML * 100).toFixed(2) + "%"
 
   // console.log(JSON.stringify(data))
   d3.selectAll("#profit > *").remove();
