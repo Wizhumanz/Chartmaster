@@ -536,7 +536,7 @@ function drawChart(start, end) {
 
   // Create Label Bottom
   let labelXMoveBot = 4
-  let labelYMoveBot = 60
+  let labelYMoveBot = 30
   let labelTextBot = chartBody.selectAll("labelTextBot")
     .data(candlesToShow.filter((p) => { return p.LabelBottom !== "" }))
     .enter()
