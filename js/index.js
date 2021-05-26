@@ -166,7 +166,6 @@ function connectWs() {
           JSON.parse(msg.data).Data.forEach(newData => {
             allCandles.push(newData)
           })
-          console.log(msg.data)
           if (candleDisplayNumber < allCandles.length) {
             //show right arrow btn
             document.getElementById("panCandlesRightBtn").style.display = "inline"
@@ -178,16 +177,21 @@ function connectWs() {
       //profit curve
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Data[0].Equity) > 0) {
         //check if concat needed, or new data
+        console.log(JSON.parse(msg.data).Data)
+
         if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
           allProfitCurve = JSON.parse(msg.data).Data
           //if candlestick chart empty
           drawPC(allProfitCurve)
+          console.log("1")
           //save res id so next messages with same ID will be concatenated with existing data
           existingWSResIDPC = JSON.parse(msg.data).ResultID
         } else {
           //add new data to existing array
           allProfitCurve[0].Data = allProfitCurve[0].Data.concat(JSON.parse(msg.data).Data[0].Data)
+          console.log(allProfitCurve)
           drawPC(allProfitCurve)
+          console.log("2")
         }
       }
 
@@ -822,6 +826,17 @@ function wrap(text, width) {
 
 /// PROFIT CURVE
 function drawPC(data) {
+  //  Calculate starting, ending, and Growth
+  document.getElementById("startingCapital").innerHTML = data[0].Data[0].Equity
+
+  data.forEach(function (d) {
+    d.Data.forEach(function (point) {
+      document.getElementById("endingCapital").innerHTML = point.Equity
+    })
+  })
+
+  document.getElementById("growth").innerHTML = (document.getElementById("endingCapital").innerHTML - document.getElementById("startingCapital").innerHTML) / document.getElementById("startingCapital").innerHTML * 100
+
   // console.log(JSON.stringify(data))
   d3.selectAll("#profit > *").remove();
   var pcMargin = { top: 0, right: 20, bottom: 30, left: 45 },
