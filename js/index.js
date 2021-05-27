@@ -79,6 +79,29 @@ drawPC(allProfitCurve)
 allSimTrades = [{ "DataLabel": "strat1", "Data": [{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 }, { "DateTime": "2021-05-01T01:27:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57769.140625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.13197549962733782 }, { "DateTime": "2021-05-01T01:32:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57949.640625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.44483841193905677 }, { "DateTime": "2021-05-01T01:41:00", "Direction": "LONG", "EntryPrice": 57848.19921875, "ExitPrice": 57975.76171875, "PosSize": 0.11402694777476709, "RiskedEquity": 6596.253591180728, "RawProfitPerc": 0.22051248219089578 }, { "DateTime": "2021-05-01T02:10:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57863.03125, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.00537339274127546 }, { "DateTime": "2021-05-01T02:18:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57807.6484375, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.10108188807519942 }, { "DateTime": "2021-05-01T02:19:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57803.5703125, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.10812940317807829 }, { "DateTime": "2021-05-01T02:33:00", "Direction": "LONG", "EntryPrice": 57787.28125, "ExitPrice": 57619.859375, "PosSize": 0.10230792286941753, "RiskedEquity": 5912.096712958338, "RawProfitPerc": -0.2897209755823216 }, { "DateTime": "2021-05-01T02:35:00", "Direction": "LONG", "EntryPrice": 57609.19140625, "ExitPrice": 57640.609375, "PosSize": 0.20273213225103942, "RiskedEquity": 11679.234211047318, "RawProfitPerc": 0.05453638209994296 }, { "DateTime": "2021-05-01T02:38:00", "Direction": "LONG", "EntryPrice": 57609.19140625, "ExitPrice": 57710.73046875, "PosSize": 0.20273213225103942, "RiskedEquity": 11679.234211047318, "RawProfitPerc": 0.17625496907943766 }] }]
 plotHistory(allSimTrades)
 
+function getAllShareResults() {
+  return new Promise((resolve, reject) => {
+    let hd = {
+      // "Content-Type": "application/json",
+      // Authorization: user.password,
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
+      Expires: "0",
+    }
+    axios
+      .get(baseURL + "/getallshareresults?user=" + userID, {
+        headers: hd,
+        mode: "cors",
+      })
+      .then((res) => {
+        resolve(res.data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  })
+}
+
 function loadResult() {
   let hd = {
     // "Content-Type": "application/json",
@@ -106,7 +129,14 @@ function loadResult() {
         // create new option element
         let opt = document.createElement('option');
         // create text node to add to option element (opt)
-        opt.appendChild(document.createTextNode(l));
+        getAllShareResults().then((result) => {
+          if (result.includes(l.split(".")[0])) {
+            opt.appendChild(document.createTextNode(l + " (Shared)"));
+          } else {
+            opt.appendChild(document.createTextNode(l));
+          }
+        })
+
         // set value property of opt
         opt.value = l.split(".")[0];
         // add opt to end of select box (sel)
