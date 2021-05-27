@@ -8,6 +8,9 @@ if (userID === undefined) {
   document.getElementById("undefinedUserErr").style.display = "block"
 }
 
+// Progress bar
+document.getElementById("progress").style.display = "none";
+
 // Simulated Trades index
 let indexST = 1
 
@@ -151,6 +154,17 @@ function connectWs() {
         return
       }
 
+      // Progress bar
+      if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Progress) > 0) {
+        document.getElementById("progress").style.display = "block";
+        document.getElementById("progressBar").style = `width: ${JSON.parse(msg.data).Data[0].Progress}%`
+        if (JSON.parse(msg.data).Data[0].Progress >= 100) {
+          setTimeout(() => {
+            document.getElementById("progress").style.display = "none";
+          }, 2000)
+        }
+      }
+      
       //candlestick
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Open) > 0) {
         //check if concat needed, or new data
