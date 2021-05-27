@@ -159,7 +159,7 @@ function connectWs() {
         console.log(JSON.parse(msg.data).Data[0].Progress)
         document.getElementById("progress").style.display = "block";
         document.getElementById("progressBar").style = `width: ${JSON.parse(msg.data).Data[0].Progress}%`
-        if (JSON.parse(msg.data).Data[0].Progress >= 100) {
+        if (JSON.parse(msg.data).Data[0].Progress >= 98) {
           setTimeout(() => {
             document.getElementById("progress").style.display = "none";
           }, 1000)
