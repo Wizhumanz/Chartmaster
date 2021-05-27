@@ -156,12 +156,13 @@ function connectWs() {
 
       // Progress bar
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Progress) > 0) {
+        console.log(JSON.parse(msg.data).Data[0].Progress)
         document.getElementById("progress").style.display = "block";
         document.getElementById("progressBar").style = `width: ${JSON.parse(msg.data).Data[0].Progress}%`
         if (JSON.parse(msg.data).Data[0].Progress >= 100) {
           setTimeout(() => {
             document.getElementById("progress").style.display = "none";
-          }, 2000)
+          }, 1000)
         }
       }
       
@@ -191,21 +192,17 @@ function connectWs() {
       //profit curve
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Data[0].Equity) > 0) {
         //check if concat needed, or new data
-        console.log(JSON.parse(msg.data).Data)
 
         if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
           allProfitCurve = JSON.parse(msg.data).Data
           //if candlestick chart empty
           drawPC(allProfitCurve)
-          console.log("1")
           //save res id so next messages with same ID will be concatenated with existing data
           existingWSResIDPC = JSON.parse(msg.data).ResultID
         } else {
           //add new data to existing array
           allProfitCurve[0].Data = allProfitCurve[0].Data.concat(JSON.parse(msg.data).Data[0].Data)
-          console.log(allProfitCurve)
           drawPC(allProfitCurve)
-          console.log("2")
         }
       }
 
