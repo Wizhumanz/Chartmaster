@@ -1049,11 +1049,15 @@ function drawPC(data) {
     .style("font-size", pcFontSz)
     .call(d3.axisBottom(x).ticks(tickNumProfitX))
     .style("color", "white")
+    .attr("stroke", "white")
+
   // Add the Y Axis
   pcSvg.append("g")
     .call(d3.axisLeft(y).ticks(tickNumProfitY))
     .style("color", "white")
     .style("font-size", pcFontSz)
+    .attr("stroke", "white")
+
 }
 
 /// SIMULATED TRADES
@@ -1142,14 +1146,17 @@ function drawScatterPlot() {
     .range([ 0, width ]);
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x))
+    .attr("stroke", "white")
 
   // Add Y axis
   var y = d3.scaleLinear()
     .domain( [0,20])
     .range([ height, 0 ]);
   svg.append("g")
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y))
+    .attr("stroke", "white")
+    
 
   // Initialize line with group a
   var line = svg
@@ -1160,7 +1167,7 @@ function drawScatterPlot() {
         .x(function(d) { return x(+d.time) })
         .y(function(d) { return y(+d.valueA) })
       )
-      .attr("stroke", "black")
+      .attr("stroke", "white")
       .style("stroke-width", 4)
       .style("fill", "none")
 
