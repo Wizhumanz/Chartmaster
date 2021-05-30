@@ -11,6 +11,9 @@ if (userID === undefined) {
 // Progress bar
 document.getElementById("progress").style.display = "none";
 
+// Scan view
+document.getElementById("scan").style.display = "none"
+
 // Simulated Trades index
 let indexST = 1
 
@@ -1046,11 +1049,15 @@ function drawPC(data) {
     .style("font-size", pcFontSz)
     .call(d3.axisBottom(x).ticks(tickNumProfitX))
     .style("color", "white")
+    .attr("stroke", "white")
+
   // Add the Y Axis
   pcSvg.append("g")
     .call(d3.axisLeft(y).ticks(tickNumProfitY))
     .style("color", "white")
     .style("font-size", pcFontSz)
+    .attr("stroke", "white")
+
 }
 
 /// SIMULATED TRADES
@@ -1102,7 +1109,127 @@ function plotHistory(data) {
   })
 }
 
+// Scatter plot
+function drawScatterPlot() {
+  // set the dimensions and margins of the graph
+  var margin = {top: 10, right: 100, bottom: 30, left: 30},
+  width = 460 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
+
+  // append the svg object to the body of the page
+  var svg = d3.select("#scatterPlot")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+  //Read the data
+  d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectedscatter.csv", function(data) {
+
+  // List of groups (here I have one group per column)
+  var allGroup = ["valueA", "valueB", "valueC"]
+
+  // add the options to the button
+  d3.select("#selectButton")
+    .selectAll('myOptions')
+    .data(allGroup)
+    .enter()
+    .append('option')
+    .text(function (d) { return d; }) // text showed in the menu
+    .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+  // Add X axis --> it is a date format
+  var x = d3.scaleLinear()
+    .domain([0,10])
+    .range([ 0, width ]);
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .attr("stroke", "white")
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain( [0,20])
+    .range([ height, 0 ]);
+  svg.append("g")
+    .call(d3.axisLeft(y))
+    .attr("stroke", "white")
+    
+
+  // Initialize line with group a
+  var line = svg
+    .append('g')
+    .append("path")
+      .datum(data)
+      .attr("d", d3.line()
+        .x(function(d) { return x(+d.time) })
+        .y(function(d) { return y(+d.valueA) })
+      )
+      .attr("stroke", "white")
+      .style("stroke-width", 4)
+      .style("fill", "none")
+
+  // Initialize dots with group a
+  var dot = svg
+    .selectAll('circle')
+    .data(data)
+    .enter()
+    .append('circle')
+      .attr("cx", function(d) { return x(+d.time) })
+      .attr("cy", function(d) { return y(+d.valueA) })
+      .attr("r", 7)
+      .style("fill", "#69b3a2")
+
+
+  // A function that update the chart
+  function update(selectedGroup) {
+
+    // Create new data with the selection?
+    var dataFilter = data.map(function(d){return {time: d.time, value:d[selectedGroup]} })
+
+    // Give these new data to update line
+    line
+        .datum(dataFilter)
+        .transition()
+        .duration(1000)
+        .attr("d", d3.line()
+          .x(function(d) { return x(+d.time) })
+          .y(function(d) { return y(+d.value) })
+        )
+    dot
+      .data(dataFilter)
+      .transition()
+      .duration(1000)
+        .attr("cx", function(d) { return x(+d.time) })
+        .attr("cy", function(d) { return y(+d.value) })
+  }
+
+  // When the button is changed, run the updateChart function
+  d3.select("#selectButton").on("change", function(d) {
+      // recover the option that has been chosen
+      var selectedOption = d3.select(this).property("value")
+      // run the updateChart function with this selected option
+      update(selectedOption)
+  })
+  })
+}
+drawScatterPlot()
+
 // Helper Functions
+function showScanResults() {
+  if (document.getElementById("scanBtn").innerHTML === "Scan") {
+    document.getElementById("strategy").style.display = "none"
+    document.getElementById("scan").style.display = "block"
+    document.getElementById("scanBtn").innerHTML = "Strategy"
+  } else {
+    document.getElementById("strategy").style.display = "block"
+    document.getElementById("scan").style.display = "none"
+    document.getElementById("scanBtn").innerHTML = "Scan"
+  }
+}
+
 function moveLeft() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
