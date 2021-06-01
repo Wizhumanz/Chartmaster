@@ -33,7 +33,7 @@ let tickNumProfitY = 8
 let candlestickChartLabelFontSize = "13px"
 let margin = { top: 10, right: 20, bottom: 205, left: 45 },
   w = 1050,
-  h = 685;
+  h = 670;
 let candlesViewBoxHeight = "1000"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
@@ -200,7 +200,7 @@ function connectWs(id) {
           }, 1000)
         }
       }
-      
+
       //candlestick
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Open) > 0) {
         //check if concat needed, or new data
@@ -208,7 +208,7 @@ function connectWs(id) {
           allCandles = JSON.parse(msg.data).Data
           //if candlestick chart empty
           drawChart(0, candleDisplayNumber)
-          
+
           //save res id so next messages with same ID will be concatenated with existing data
           existingWSResID = JSON.parse(msg.data).ResultID
         } else {
@@ -270,6 +270,12 @@ let sizeInput
 getInputValues()
 
 function computeBacktest() {
+  //clear charts
+  allCandles = []
+  allProfitCurve = []
+  allSimTrades = []
+  plotHistory(allSimTrades)
+
   let ticker = document.getElementById("tickerSelect").value
   let period = document.getElementById("periodSelect").value
   let startTimeStr = new Date(Math.abs((new Date(getPickerDateTime("startDateTimePicker")))) + getLocalTimezone()).toISOString().split(".")[0]
@@ -407,7 +413,7 @@ function shareResult() {
     "title": titleText,
     "description": descText,
     "resultFileName": selectedRes,
-    "userID" : userID
+    "userID": userID
   }
 
   let hd = {
@@ -431,10 +437,10 @@ function shareResult() {
 }
 
 function sharedLink() {
-  if (getParams(window.location.href).share){
+  if (getParams(window.location.href).share) {
     console.log(getParams(window.location.href).share)
     let shareLink = getParams(window.location.href).share
-    
+
     let hd = {
       // "Content-Type": "application/json",
       // Authorization: user.password,
@@ -608,7 +614,7 @@ function drawChart(start, end) {
     .enter()
     .append("text")
     .attr("x", (d) => xScale(d.index) - labelXMoveMid - xBand.bandwidth() / 2)
-    .attr("y", d => yScale((d.Open+d.Close)/2))
+    .attr("y", d => yScale((d.Open + d.Close) / 2))
     .attr("stroke", "white")
     .attr("fill", "white")
     .attr("stroke-width", candlestickLabelStroke)
@@ -795,7 +801,7 @@ function drawChart(start, end) {
       labelTextTop.transition().duration(100)
         .attr("y", (d) => yScale(d.High) - labelYMoveTop)
       labelTextMid.transition().duration(100)
-        .attr("y", (d) => yScale((d.Open+d.Close)/2))
+        .attr("y", (d) => yScale((d.Open + d.Close) / 2))
       labelTextBot.transition().duration(100)
         .attr("y", (d) => yScale(d.Low) + labelYMoveBot)
 
@@ -1062,7 +1068,20 @@ function drawPC(data) {
 
 /// SIMULATED TRADES
 function plotHistory(data) {
-  console.log(data)
+  if (data === undefined || !data.length || data.length === 0) {
+    var table = document.getElementById("history")
+    table.innerHTML = ""
+    let row = table.insertRow()
+    let tableHeader = ["Index", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Position Size", "Direction", "Parameter"]
+    tableHeader.forEach(t => {
+      let newCell = row.insertCell()
+      newCell.innerHTML = t
+      newCell.className = "thead"
+    })
+    document.getElementById("numOfRows").innerHTML = "(0)"
+    return
+  }
+
   // Number of rows
   document.getElementById("numOfRows").innerHTML = "(" + data[0].Data.length.toString() + ")"
 
@@ -1112,107 +1131,107 @@ function plotHistory(data) {
 // Scatter plot
 function drawScatterPlot() {
   // set the dimensions and margins of the graph
-  var margin = {top: 10, right: 100, bottom: 30, left: 30},
-  width = 460 - margin.left - margin.right,
-  height = 400 - margin.top - margin.bottom;
+  var margin = { top: 10, right: 100, bottom: 30, left: 30 },
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   var svg = d3.select("#scatterPlot")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")");
 
   //Read the data
-  d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectedscatter.csv", function(data) {
+  d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectedscatter.csv", function (data) {
 
-  // List of groups (here I have one group per column)
-  var allGroup = ["valueA", "valueB", "valueC"]
+    // List of groups (here I have one group per column)
+    var allGroup = ["valueA", "valueB", "valueC"]
 
-  // add the options to the button
-  d3.select("#selectButton")
-    .selectAll('myOptions')
-    .data(allGroup)
-    .enter()
-    .append('option')
-    .text(function (d) { return d; }) // text showed in the menu
-    .attr("value", function (d) { return d; }) // corresponding value returned by the button
+    // add the options to the button
+    d3.select("#selectButton")
+      .selectAll('myOptions')
+      .data(allGroup)
+      .enter()
+      .append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
-  // Add X axis --> it is a date format
-  var x = d3.scaleLinear()
-    .domain([0,10])
-    .range([ 0, width ]);
-  svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x))
-    .attr("stroke", "white")
+    // Add X axis --> it is a date format
+    var x = d3.scaleLinear()
+      .domain([0, 10])
+      .range([0, width]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .attr("stroke", "white")
 
-  // Add Y axis
-  var y = d3.scaleLinear()
-    .domain( [0,20])
-    .range([ height, 0 ]);
-  svg.append("g")
-    .call(d3.axisLeft(y))
-    .attr("stroke", "white")
-    
+    // Add Y axis
+    var y = d3.scaleLinear()
+      .domain([0, 20])
+      .range([height, 0]);
+    svg.append("g")
+      .call(d3.axisLeft(y))
+      .attr("stroke", "white")
 
-  // Initialize line with group a
-  var line = svg
-    .append('g')
-    .append("path")
+
+    // Initialize line with group a
+    var line = svg
+      .append('g')
+      .append("path")
       .datum(data)
       .attr("d", d3.line()
-        .x(function(d) { return x(+d.time) })
-        .y(function(d) { return y(+d.valueA) })
+        .x(function (d) { return x(+d.time) })
+        .y(function (d) { return y(+d.valueA) })
       )
       .attr("stroke", "white")
       .style("stroke-width", 4)
       .style("fill", "none")
 
-  // Initialize dots with group a
-  var dot = svg
-    .selectAll('circle')
-    .data(data)
-    .enter()
-    .append('circle')
-      .attr("cx", function(d) { return x(+d.time) })
-      .attr("cy", function(d) { return y(+d.valueA) })
+    // Initialize dots with group a
+    var dot = svg
+      .selectAll('circle')
+      .data(data)
+      .enter()
+      .append('circle')
+      .attr("cx", function (d) { return x(+d.time) })
+      .attr("cy", function (d) { return y(+d.valueA) })
       .attr("r", 7)
       .style("fill", "#69b3a2")
 
 
-  // A function that update the chart
-  function update(selectedGroup) {
+    // A function that update the chart
+    function update(selectedGroup) {
 
-    // Create new data with the selection?
-    var dataFilter = data.map(function(d){return {time: d.time, value:d[selectedGroup]} })
+      // Create new data with the selection?
+      var dataFilter = data.map(function (d) { return { time: d.time, value: d[selectedGroup] } })
 
-    // Give these new data to update line
-    line
+      // Give these new data to update line
+      line
         .datum(dataFilter)
         .transition()
         .duration(1000)
         .attr("d", d3.line()
-          .x(function(d) { return x(+d.time) })
-          .y(function(d) { return y(+d.value) })
+          .x(function (d) { return x(+d.time) })
+          .y(function (d) { return y(+d.value) })
         )
-    dot
-      .data(dataFilter)
-      .transition()
-      .duration(1000)
-        .attr("cx", function(d) { return x(+d.time) })
-        .attr("cy", function(d) { return y(+d.value) })
-  }
+      dot
+        .data(dataFilter)
+        .transition()
+        .duration(1000)
+        .attr("cx", function (d) { return x(+d.time) })
+        .attr("cy", function (d) { return y(+d.value) })
+    }
 
-  // When the button is changed, run the updateChart function
-  d3.select("#selectButton").on("change", function(d) {
+    // When the button is changed, run the updateChart function
+    d3.select("#selectButton").on("change", function (d) {
       // recover the option that has been chosen
       var selectedOption = d3.select(this).property("value")
       // run the updateChart function with this selected option
       update(selectedOption)
-  })
+    })
   })
 }
 drawScatterPlot()
@@ -1315,16 +1334,16 @@ function processXAxisLabel(d, dates) {
 }
 
 function generateString(length) {
-  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
   let result = ' ';
   const charactersLength = characters.length;
-  for ( let i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result.substring(1);
 }
-  
+
 function getRandomColor() {
   var letters = '0123456789ABCDEF';
   var color = '#';
