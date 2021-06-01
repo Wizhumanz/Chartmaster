@@ -189,9 +189,10 @@ function connectWs(id) {
         return
       }
 
+      console.log(JSON.parse(msg.data))
+
       // Progress bar
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Progress) > 0) {
-        console.log(JSON.parse(msg.data).Data[0].Progress)
         document.getElementById("progress").style.display = "block";
         document.getElementById("progressBar").style = `width: ${JSON.parse(msg.data).Data[0].Progress}%`
         if (JSON.parse(msg.data).Data[0].Progress >= 98) {
@@ -225,9 +226,8 @@ function connectWs(id) {
       }
 
       //profit curve
-      if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Data[0].Equity) > 0) {
+      if (JSON.parse(msg.data) != undefined && (JSON.parse(msg.data).Data.length > 0) && parseFloat(JSON.parse(msg.data).Data[0].Data[0].Equity) > 0) {
         //check if concat needed, or new data
-
         if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
           allProfitCurve = JSON.parse(msg.data).Data
           //if candlestick chart empty
@@ -242,7 +242,9 @@ function connectWs(id) {
       }
 
       //sim trades
-      if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Data[0].EntryPrice) > 0) {
+      if (((JSON.parse(msg.data) != undefined) && (parseFloat(JSON.parse(msg.data).Data[0].Data[0].EntryPrice) > 0))) {
+        console.log(JSON.parse(msg.data))
+
         if (existingWSResIDST === "" || existingWSResIDST !== JSON.parse(msg.data).ResultID) {
           allSimTrades = JSON.parse(msg.data).Data
           //if candlestick chart empty
@@ -1238,14 +1240,14 @@ drawScatterPlot()
 
 // Helper Functions
 function showScanResults() {
-  if (document.getElementById("scanBtn").innerHTML === "Scan") {
+  if (document.getElementById("modeTogglerBtn").innerHTML === "Switch to Scan Mode") {
     document.getElementById("strategy").style.display = "none"
     document.getElementById("scan").style.display = "block"
-    document.getElementById("scanBtn").innerHTML = "Strategy"
+    document.getElementById("modeTogglerBtn").innerHTML = "Switch to Compute Mode"
   } else {
     document.getElementById("strategy").style.display = "block"
     document.getElementById("scan").style.display = "none"
-    document.getElementById("scanBtn").innerHTML = "Scan"
+    document.getElementById("modeTogglerBtn").innerHTML = "Switch to Scan Mode"
   }
 }
 

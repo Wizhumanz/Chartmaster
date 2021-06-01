@@ -48,6 +48,19 @@ html,
   display: none;
 }
 
+#brand-controls {
+  padding: 0.5rem;
+  h4 {
+    display: inline;
+  }
+}
+
+#modeTogglerBtn {
+  margin-top: -0.5rem;
+  font-size: x-small;
+  display: inline;
+}
+
 div#computeControls {
   margin: 0 auto;
   font-size: x-small;
@@ -369,7 +382,7 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 #simTradesDiv {
-  height: 34rem;
+  height: 25rem;
   margin-bottom: 1rem;
 }
 
