@@ -27,15 +27,18 @@
   <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
   <!-- Load d3.js -->
   <script src="https://d3js.org/d3.v4.js"></script>
-  
+
 
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 
-  <h4 id="brand-h">Chartmaster</h4>
+  <div id="brand-controls">
+    <h4 id="brand-h">Chartmaster</h4>
+    <button id="modeTogglerBtn" onclick="showScanResults()">Switch to Scan Mode</button>
+  </div>
 
-  <!-- simon's progress bar -->
-  <div id="progress" class="progress" style="display:block"> 
-    <div id="progressBar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Loading...</div>
+  <div id="progress" class="progress" style="display:block">
+    <div id="progressBar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%"
+      aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Loading...</div>
   </div>
 
   <h4 id="undefinedUserErr">USER ID UNDEFINED</h4>
@@ -59,7 +62,7 @@
                           <label for="startDateTimePicker">Start</label>
                         </div>
                         <div class="col-8">
-                          <input type="datetime-local" id="startDateTimePicker" value="2021-03-01T00:00">
+                          <input type="datetime-local" id="startDateTimePicker" value="2021-03-05T00:00">
                         </div>
                       </div>
                       <div class="row">
@@ -67,7 +70,7 @@
                           <label for="endDateTimePicker">End</label>
                         </div>
                         <div class="col-8">
-                          <input type="datetime-local" id="endDateTimePicker" value="2021-03-01T04:00">
+                          <input type="datetime-local" id="endDateTimePicker" value="2021-03-05T06:30">
                         </div>
                       </div>
                     </div>
@@ -202,7 +205,6 @@
       </div>
       <!-- profit curve + sim trades table col -->
       <div class="col-12 col-lg-4">
-        <button id="scanBtn" onclick="showScanResults()">Scan</button>
         <div id="strategy">
           <h4 class="chartHeader">Profit Curve</h4>
           <div class="inline">
@@ -255,12 +257,12 @@
               <thead id="head">
               </thead>
             </table>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script src="js/index.js"></script>
+    <script src="js/index.js"></script>
 </body>
 
 </html>
