@@ -2,6 +2,7 @@
 let baseURL = "http://localhost:8000"
 let wsStatus = document.getElementById("wsStatus")
 
+
 // Get parameters from a URL string
 let userID = getParams(window.location.href).user
 if (userID === undefined) {
@@ -57,6 +58,7 @@ let candleDrawEndIndex = candleDisplayNumber
 let allCandles = [] // all individual candles
 let allProfitCurve = [] // all individual profits
 let allSimTrades = [] // all individual trades
+let allScatter = []
 
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
@@ -191,13 +193,35 @@ function connectWs(id) {
 
       // Progress bar
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Progress) > 0) {
-        console.log(JSON.parse(msg.data).Data[0].Progress)
         document.getElementById("progress").style.display = "block";
         document.getElementById("progressBar").style = `width: ${JSON.parse(msg.data).Data[0].Progress}%`
         if (JSON.parse(msg.data).Data[0].Progress >= 98) {
           setTimeout(() => {
             document.getElementById("progress").style.display = "none";
           }, 1000)
+        }
+      }
+
+      // Scatter plot
+      if (JSON.parse(msg.data) != undefined && JSON.parse(msg.data).Data[0].Duration > 0) {
+        //check if concat needed, or new data
+        console.log(JSON.parse(msg.data))
+
+        if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
+          allScatter = JSON.parse(msg.data).Data
+          //if candlestick chart empty
+
+          drawScatterPlot(allScatter)
+          histogram(allScatter)
+          console.log("High")
+          //save res id so next messages with same ID will be concatenated with existing data
+          existingWSResIDPC = JSON.parse(msg.data).ResultID
+        } else {
+          //add new data to existing array
+          console.log("Low")
+
+          allScatter[0].Data = allScatter[0].Data.concat(JSON.parse(msg.data).Data[0].Data)
+          // drawScatterPlot(allScatter)
         }
       }
       
@@ -1110,7 +1134,7 @@ function plotHistory(data) {
 }
 
 // Scatter plot
-function drawScatterPlot() {
+function drawScatterPlot(data) {
   // set the dimensions and margins of the graph
   var margin = {top: 10, right: 100, bottom: 30, left: 30},
   width = 460 - margin.left - margin.right,
@@ -1126,10 +1150,10 @@ function drawScatterPlot() {
         "translate(" + margin.left + "," + margin.top + ")");
 
   //Read the data
-  d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectedscatter.csv", function(data) {
+  // d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectedscatter.csv", function(data) {
 
   // List of groups (here I have one group per column)
-  var allGroup = ["valueA", "valueB", "valueC"]
+  var allGroup = ["Duration", "Growth", "EntryTime", "ExtentTime"]
 
   // add the options to the button
   d3.select("#selectButton")
@@ -1140,9 +1164,9 @@ function drawScatterPlot() {
     .text(function (d) { return d; }) // text showed in the menu
     .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
-  // Add X axis --> it is a date format
+    // Add X axis --> it is a date format
   var x = d3.scaleLinear()
-    .domain([0,10])
+    .domain([0,Math.max(...data.map((d) => {return d.Duration}))])
     .range([ 0, width ]);
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -1151,25 +1175,25 @@ function drawScatterPlot() {
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain( [0,20])
+    .domain( [0,Math.max(...data.map((d) => {return d.Growth}))])
     .range([ height, 0 ]);
   svg.append("g")
     .call(d3.axisLeft(y))
     .attr("stroke", "white")
     
 
-  // Initialize line with group a
-  var line = svg
-    .append('g')
-    .append("path")
-      .datum(data)
-      .attr("d", d3.line()
-        .x(function(d) { return x(+d.time) })
-        .y(function(d) { return y(+d.valueA) })
-      )
-      .attr("stroke", "white")
-      .style("stroke-width", 4)
-      .style("fill", "none")
+  // // Initialize line with group a
+  // var line = svg
+  //   .append('g')
+  //   .append("path")
+  //     .datum(data)
+  //     .attr("d", d3.line()
+  //       .x(function(d) { return x(+d.Duration) })
+  //       .y(function(d) { return y(+d.Growth) })
+  //     )
+  //     .attr("stroke", "white")
+  //     .style("stroke-width", 4)
+  //     .style("fill", "none")
 
   // Initialize dots with group a
   var dot = svg
@@ -1177,8 +1201,8 @@ function drawScatterPlot() {
     .data(data)
     .enter()
     .append('circle')
-      .attr("cx", function(d) { return x(+d.time) })
-      .attr("cy", function(d) { return y(+d.valueA) })
+      .attr("cx", function(d) { return x(+d.Duration) })
+      .attr("cy", function(d) { return y(+d.Growth) })
       .attr("r", 7)
       .style("fill", "#69b3a2")
 
@@ -1187,23 +1211,40 @@ function drawScatterPlot() {
   function update(selectedGroup) {
 
     // Create new data with the selection?
-    var dataFilter = data.map(function(d){return {time: d.time, value:d[selectedGroup]} })
+    var dataFilter = data.map(function(d){return {time: d.Duration, value:d[selectedGroup]} })
 
     // Give these new data to update line
-    line
-        .datum(dataFilter)
-        .transition()
-        .duration(1000)
-        .attr("d", d3.line()
-          .x(function(d) { return x(+d.time) })
-          .y(function(d) { return y(+d.value) })
-        )
+    // line
+    //     .datum(dataFilter)
+    //     .transition()
+    //     .duration(1000)
+    //     .attr("d", d3.line()
+    //       .x(function(d) { return x(+d.time) })
+    //       .y(function(d) { return y(+d.value) })
+    //     )
     dot
       .data(dataFilter)
       .transition()
       .duration(1000)
         .attr("cx", function(d) { return x(+d.time) })
         .attr("cy", function(d) { return y(+d.value) })
+
+       // Add X axis --> it is a date format
+    x = d3.scaleLinear()
+      .domain([0,Math.max(...dataFilter.map((d) => {return x(+d.time)}))])
+      .range([ 0, width ]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .attr("stroke", "white")
+
+    // Add Y axis
+    y = d3.scaleLinear()
+      .domain( [0,Math.max(...dataFilter.map((d) => {return y(+d.value)}))])
+      .range([ height, 0 ]);
+    svg.append("g")
+      .call(d3.axisLeft(y))
+      .attr("stroke", "white")
   }
 
   // When the button is changed, run the updateChart function
@@ -1213,9 +1254,104 @@ function drawScatterPlot() {
       // run the updateChart function with this selected option
       update(selectedOption)
   })
-  })
+  // })
 }
+
 drawScatterPlot()
+
+// HISTOGRAM
+
+function histogram(data) {
+  // set the dimensions and margins of the graph
+  var margin = {top: 10, right: 30, bottom: 30, left: 40},
+  width = 460 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
+
+  // append the svg object to the body of the page
+  var svg = d3.select("#histogram")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+  // get the data
+  // d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
+
+  // X axis: scale and draw:
+  var x = d3.scaleLinear()
+    .domain([0, d3.max(data, function(d) { return +d.Growth })])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+    .range([0, width]);
+    svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .attr("stroke", "white")
+
+
+  // Y axis: initialization
+  var y = d3.scaleLinear()
+    .range([height, 0]);
+  var yAxis = svg.append("g")
+                  .attr("stroke", "white")
+
+
+  // A function that builds the graph for a specific value of bin
+  function update(nBin) {
+
+  // set the parameters for the histogram
+  var histogram = d3.histogram()
+    .value(function(d) { return d.Growth; })   // I need to give the vector of value
+    .domain(x.domain())  // then the domain of the graphic
+    .thresholds(x.ticks(nBin)); // then the numbers of bins
+
+  // And apply this function to data to get the bins
+  var bins = histogram(data);
+
+  // Y axis: update now that we know the domain
+  y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+  yAxis
+    .transition()
+    .duration(1000)
+    .call(d3.axisLeft(y));
+
+  // Join the rect with the bins data
+  var u = svg.selectAll("rect")
+    .data(bins)
+
+  // Manage the existing bars and eventually the new ones:
+  u
+    .enter()
+    .append("rect") // Add a new rect for each new elements
+    .merge(u) // get the already existing elements as well
+    .transition() // and apply changes to all of them
+    .duration(1000)
+      .attr("x", 1)
+      .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+      .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+      .attr("height", function(d) { return height - y(d.length); })
+      .style("fill", "#69b3a2")
+
+
+  // If less bar in the new histogram, I delete the ones not in use anymore
+  u
+    .exit()
+    .remove()
+
+  }
+
+
+  // Initialize with 20 bins
+  update(10)
+
+
+  // Listen to the button -> update if user change it
+  d3.select("#nBin").on("input", function() {
+  update(+this.value);
+  });
+
+  // });
+}
 
 // Helper Functions
 function showScanResults() {
