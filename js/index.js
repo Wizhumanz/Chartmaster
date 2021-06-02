@@ -1170,8 +1170,8 @@ function drawScatterPlot(data) {
   console.log(data.map((d) => {return d.EntryTime}))
 
   // set the dimensions and margins of the graph
-  var margin = { top: 10, right: 100, bottom: 30, left: 30 },
-    width = 460 - margin.left - margin.right,
+  var margin = { top: 10, right: 100, bottom: 30, left: 50 },
+    width = 650 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
@@ -1215,6 +1215,7 @@ function drawScatterPlot(data) {
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x))
     .attr("stroke", "white")
+    .attr("font-size", "13px")
 
   // Add Y axis
   var y = d3.scaleLinear()
@@ -1223,6 +1224,7 @@ function drawScatterPlot(data) {
   var yAxis = svg.append("g")
     .call(d3.axisLeft(y))
     .attr("stroke", "white")
+    .attr("font-size", "12px")
 
   // // Initialize line with group a
   // var line = svg
@@ -1245,8 +1247,8 @@ function drawScatterPlot(data) {
     .append('circle')
       .attr("cx", function(d) { return x(+d[currentX]) })
       .attr("cy", function(d) { return y(+d[currentY]) })
-      .attr("r", 7)
-      .style("fill", "#69b3a2")
+      .attr("r", 3)
+      .style("fill", "#ff3bdb")
 
 
   // A function that update the chart
