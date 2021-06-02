@@ -205,15 +205,14 @@ function connectWs(id) {
       // Scatter plot
       if (JSON.parse(msg.data) != undefined && JSON.parse(msg.data).Data[0].Duration > 0) {
         //check if concat needed, or new data
-        console.log(JSON.parse(msg.data))
+        // console.log(JSON.parse(msg.data))
 
         if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
           allScatter = JSON.parse(msg.data).Data
           //if candlestick chart empty
-          console.log("High")
-          console.log(allScatter)
-
           d3.selectAll("#scatterPlot > *").remove();
+          d3.selectAll("#selectButtonY > *").remove();
+          d3.selectAll("#selectButtonX > *").remove();
           d3.selectAll("#histogram > *").remove();
           drawScatterPlot(allScatter)
           histogram(allScatter)
@@ -222,9 +221,9 @@ function connectWs(id) {
         } else {
           //add new data to existing array
           allScatter = allScatter.concat(JSON.parse(msg.data).Data)
-          console.log("Low")
-          console.log(allScatter)
           d3.selectAll("#scatterPlot > *").remove();
+          d3.selectAll("#selectButtonY > *").remove();
+          d3.selectAll("#selectButtonX > *").remove();
           d3.selectAll("#histogram > *").remove();
           drawScatterPlot(allScatter)
           histogram(allScatter)
@@ -1165,10 +1164,12 @@ function plotHistory(data) {
 // Scatter plot
 function drawScatterPlot(data) {
   data.forEach((e) => {
-    e.EntryTime = new Date(Math.abs((new Date(e.EntryTime))) - getLocalTimezone())
-    e.ExtentTime = new Date(Math.abs((new Date(e.ExtentTime))) - getLocalTimezone())
+    e.EntryTime = new Date(Math.abs((new Date(e.EntryTime))) )
+    e.ExtentTime = new Date(Math.abs((new Date(e.ExtentTime))) )
+    // - getLocalTimezone()
   })
 
+  console.log(data)
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 100, bottom: 30, left: 50 },
     width = 650 - margin.left - margin.right,
@@ -1291,6 +1292,7 @@ function drawScatterPlot(data) {
   function updateX(selectedGroup) {
     // Create new data with the selection?
     var dataFilter = data.map(function(d){return {x:d[selectedGroup], y: d[currentY]} })
+    console.log(d3.extent(dataFilter.map((d) => {return d.x})))
     // Add X axis
     if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
       x = d3.scaleTime()
