@@ -311,7 +311,10 @@ function computeBacktest() {
   allCandles = [] // all individual candles
   displayCandlesChunks = [] // chunks of candles for display
 
+  let operation = (document.getElementById("modeTogglerBtn").innerHTML === "Switch to Scan Mode") ? "BACKTEST" : "SCAN"
+
   let backendInfo = {
+    "operation": operation,
     "ticker": ticker,
     "period": period,
     "time_start": startTimeStr,
