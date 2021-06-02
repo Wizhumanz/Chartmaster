@@ -1222,8 +1222,6 @@ function drawScatterPlot(data) {
 
   // A function that update the chart
   function updateY(selectedGroup) {
-    // d3.selectAll("#scatterPlot > g").remove();
-    
     // Create new data with the selection?
     var dataFilter = data.map(function(d){return {x: d[currentX], y:d[selectedGroup]} })
     // Give these new data to update line
@@ -1260,11 +1258,8 @@ function drawScatterPlot(data) {
   }
 
   function updateX(selectedGroup) {
-    // d3.selectAll("#scatterPlot > g").remove();
-    
     // Create new data with the selection?
     var dataFilter = data.map(function(d){return {x:d[selectedGroup], y: d[currentY]} })
-    console.log(Math.max(...dataFilter.map((d) => {return d.x})))
     // Add X axis
     if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
       x = d3.scaleTime()
@@ -1301,8 +1296,7 @@ function drawScatterPlot(data) {
     var selectedOption = d3.select(this).property("value")
     // run the updateChart function with this selected option
     updateX(selectedOption)
-})
-  // })
+  })
 }
 
 drawScatterPlot()
