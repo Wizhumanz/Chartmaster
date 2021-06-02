@@ -641,7 +641,7 @@ function drawChart(start, end) {
     .text(d => d.LabelTop);
 
   // Create Label Middle
-  let labelXMoveMid = 13
+  let labelXMoveMid = 7
   let labelTextMid = chartBody.selectAll("labelTextMid")
     .data(candlesToShow.filter((p) => { return p.LabelMiddle !== "" }))
     .enter()
@@ -1172,8 +1172,8 @@ function drawScatterPlot(data) {
   console.log(data)
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 100, bottom: 30, left: 50 },
-    width = 650 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    width = 750 - margin.left - margin.right,
+    height = 350 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   var svg = d3.select("#scatterPlot")
@@ -1337,8 +1337,8 @@ function drawScatterPlot(data) {
 function histogram(data) {
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 30, bottom: 30, left: 40 },
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    width = 800 - margin.left - margin.right,
+    height = 350 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   var svg = d3.select("#histogram")
@@ -1365,7 +1365,7 @@ function histogram(data) {
     .range([height, 0]);
   var yAxis = svg.append("g")
     .attr("stroke", "white")
-
+    .attr("font-size", "18px")
 
   // A function that builds the graph for a specific value of bin
   function update(nBin) {
@@ -1413,7 +1413,7 @@ function histogram(data) {
       .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
       .attr("width", function(d) { return Math.abs(x(d.x1) - x(d.x0) -1) ; })
       .attr("height", function(d) { return height - y(d.length); })
-      .style("fill", "#69b3a2")
+      .style("fill", "#00ff77")
 
 
     // If less bar in the new histogram, I delete the ones not in use anymore

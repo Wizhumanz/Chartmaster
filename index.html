@@ -204,7 +204,7 @@
         </div>
       </div>
       <!-- profit curve + sim trades table col -->
-      <div class="col-12 col-lg-4">
+      <div id="sideCol" class="col-12 col-lg-4">
         <div id="strategy">
           <h4 class="chartHeader">Profit Curve</h4>
           <div class="inline">
@@ -246,7 +246,7 @@
             <div id="histogram"></div>
             <p>
               <label># bins</label>
-              <input type="number" min="1" max="100" step="10" value="20" id="nBin">
+              <input type="number" min="20" max="100" step="5" value="20" id="nBin">
             </p>
           </div>
           <div class="stacked" id="scanResults">
