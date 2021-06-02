@@ -1140,10 +1140,6 @@ function drawScatterPlot(data) {
     e.ExtentTime = new Date(Math.abs((new Date(e.ExtentTime))) - getLocalTimezone())
   })
 
-  console.log(d3.extent(data.map((d) => {return d.EntryTime})))
-  console.log(d3.min(data.map((d) => {return d.EntryTime})))
-  console.log(data.map((d) => {return d.EntryTime}))
-
   // set the dimensions and margins of the graph
   var margin = {top: 10, right: 100, bottom: 30, left: 30},
   width = 460 - margin.left - margin.right,
@@ -1159,7 +1155,7 @@ function drawScatterPlot(data) {
         "translate(" + margin.left + "," + margin.top + ")");
 
   // List of groups (here I have one group per column)
-  var YOptions = ["Growth", "Duration"]
+  var YOptions = ["Growth", "Duration", "EntryTime", "ExtentTime"]
   var XOptions = ["EntryTime", "ExtentTime", "Growth", "Duration"]
 
   let currentY = YOptions[0]
@@ -1241,15 +1237,17 @@ function drawScatterPlot(data) {
     //     )
 
     // Add Y axis
-    // if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
-    //   y = d3.scaleTime()
-    //     .domain(d3.extent(data.map((d) => {return d.value})))
-    //     .range([ height, 0 ]);
-    //   yAxis.transition().duration(1000).call(d3.axisLeft(y))
-    // } else {
-      y.domain([0,Math.max(...dataFilter.map((d) => {return d.y}))])
-      yAxis.transition().duration(1000).call(d3.axisLeft(y))
-    // }
+    if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
+      y = d3.scaleTime()
+        .domain(d3.extent(dataFilter.map((d) => {return d.y})))
+        .range([ height, 0 ]);
+    } else {
+      y = d3.scaleLinear()
+        .domain([0,d3.max(dataFilter.map((d) => {return d.y}))])
+        .range([ height, 0 ]);
+    }
+
+    yAxis.transition().duration(1000).call(d3.axisLeft(y))
 
     dot
       .data(dataFilter)
@@ -1269,17 +1267,16 @@ function drawScatterPlot(data) {
     console.log(Math.max(...dataFilter.map((d) => {return d.x})))
     // Add X axis
     if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
-      var xChange = d3.scaleTime()
+      x = d3.scaleTime()
           .domain(d3.extent(dataFilter.map((d) => {return d.x})))
           .range([ 0, width ]);
-      xAxis.transition().duration(1000).call(d3.axisBottom(xChange))
     } else {
-      var xChange = d3.scaleLinear()
+      x = d3.scaleLinear()
           .domain([0,d3.max(dataFilter.map((d) => {return d.x}))])
           .range([ 0, width ]);
-      //     x.domain([0,Math.max(...dataFilter.map((d) => {return d.value}))])
-      xAxis.transition().duration(1000).call(d3.axisBottom(xChange))
     }
+
+    xAxis.transition().duration(1000).call(d3.axisBottom(x))
 
     dot
       .data(dataFilter)
@@ -1287,7 +1284,6 @@ function drawScatterPlot(data) {
       .duration(1000)
         .attr("cx", function(d) { return x(+d.x) })
         .attr("cy", function(d) { return y(+d.y) })
-
 
     currentX = selectedGroup
   }
