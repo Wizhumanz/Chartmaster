@@ -1135,6 +1135,14 @@ function plotHistory(data) {
 
 // Scatter plot
 function drawScatterPlot(data) {
+  console.log(getLocalTimezone())
+  data.forEach((e) => {
+    e.EntryTime = new Date(Math.abs((new Date(e.EntryTime))) - getLocalTimezone())
+    e.ExtentTime = new Date(Math.abs((new Date(e.ExtentTime))) - getLocalTimezone())
+  })
+  console.log(d3.extent(data.map((d) => {return d.EntryTime})))
+  console.log(d3.min(data.map((d) => {return d.EntryTime})))
+  console.log(data.map((d) => {return d.EntryTime}))
   // set the dimensions and margins of the graph
   var margin = {top: 10, right: 100, bottom: 30, left: 30},
   width = 460 - margin.left - margin.right,
@@ -1153,7 +1161,7 @@ function drawScatterPlot(data) {
   // d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectedscatter.csv", function(data) {
 
   // List of groups (here I have one group per column)
-  var allGroup = ["Duration", "Growth", "EntryTime", "ExtentTime"]
+  var allGroup = ["Growth", "Duration", "EntryTime", "ExtentTime"]
 
   // add the options to the button
   d3.select("#selectButton")
@@ -1165,8 +1173,8 @@ function drawScatterPlot(data) {
     .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
     // Add X axis --> it is a date format
-  var x = d3.scaleLinear()
-    .domain([0,Math.max(...data.map((d) => {return d.Duration}))])
+  var x = d3.scaleTime()
+    .domain(d3.extent(data.map((d) => {return d.EntryTime})))
     .range([ 0, width ]);
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -1177,7 +1185,7 @@ function drawScatterPlot(data) {
   var y = d3.scaleLinear()
     .domain( [0,Math.max(...data.map((d) => {return d.Growth}))])
     .range([ height, 0 ]);
-  svg.append("g")
+  var yAxis = svg.append("g")
     .call(d3.axisLeft(y))
     .attr("stroke", "white")
     
@@ -1201,7 +1209,7 @@ function drawScatterPlot(data) {
     .data(data)
     .enter()
     .append('circle')
-      .attr("cx", function(d) { return x(+d.Duration) })
+      .attr("cx", function(d) { return x(+d.EntryTime) })
       .attr("cy", function(d) { return y(+d.Growth) })
       .attr("r", 7)
       .style("fill", "#69b3a2")
@@ -1209,10 +1217,11 @@ function drawScatterPlot(data) {
 
   // A function that update the chart
   function update(selectedGroup) {
-
+    d3.selectAll("#scatterPlot > g").remove();
+    
     // Create new data with the selection?
-    var dataFilter = data.map(function(d){return {time: d.Duration, value:d[selectedGroup]} })
-
+    var dataFilter = data.map(function(d){return {time: d.EntryTime, value:d[selectedGroup]} })
+    console.log(Math.max(...dataFilter.map((d) => {return d.value})))
     // Give these new data to update line
     // line
     //     .datum(dataFilter)
@@ -1222,29 +1231,34 @@ function drawScatterPlot(data) {
     //       .x(function(d) { return x(+d.time) })
     //       .y(function(d) { return y(+d.value) })
     //     )
+    
+
+       // Add X axis --> it is a date format
+    // x = d3.scaleLinear()
+    //   .domain([0,Math.max(...dataFilter.map((d) => {return d.time}))])
+    //   .range([ 0, width ]);
+    // svg.append("g")
+    //   .attr("transform", "translate(0," + height + ")")
+    //   .call(d3.axisBottom(x))
+    //   .attr("stroke", "white")
+
+    // Add Y axis
+    y.domain([0,Math.max(...dataFilter.map((d) => {return d.value}))])
+    yAxis.transition().duration(1000).call(d3.axisLeft(y))
+
+    // y = d3.scaleLinear()
+    //   .domain([0,Math.max(...dataFilter.map((d) => {return d.value}))])
+    //   .range([ height, 0 ]);
+    // svg.append("g")
+    //   .call(d3.axisLeft(y))
+    //   .attr("stroke", "white")
+
     dot
       .data(dataFilter)
       .transition()
       .duration(1000)
         .attr("cx", function(d) { return x(+d.time) })
         .attr("cy", function(d) { return y(+d.value) })
-
-       // Add X axis --> it is a date format
-    x = d3.scaleLinear()
-      .domain([0,Math.max(...dataFilter.map((d) => {return x(+d.time)}))])
-      .range([ 0, width ]);
-    svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x))
-      .attr("stroke", "white")
-
-    // Add Y axis
-    y = d3.scaleLinear()
-      .domain( [0,Math.max(...dataFilter.map((d) => {return y(+d.value)}))])
-      .range([ height, 0 ]);
-    svg.append("g")
-      .call(d3.axisLeft(y))
-      .attr("stroke", "white")
   }
 
   // When the button is changed, run the updateChart function
@@ -1282,7 +1296,7 @@ function histogram(data) {
   // X axis: scale and draw:
   var x = d3.scaleLinear()
     .domain([0, d3.max(data, function(d) { return +d.Growth })])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-    .range([0, width]);
+    .range([0, width])
     svg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x))
