@@ -191,8 +191,6 @@ function connectWs(id) {
         return
       }
 
-      console.log(JSON.parse(msg.data))
-
       // Progress bar
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Progress) > 0) {
         document.getElementById("progress").style.display = "block";
@@ -212,18 +210,24 @@ function connectWs(id) {
         if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
           allScatter = JSON.parse(msg.data).Data
           //if candlestick chart empty
+          console.log("High")
+          console.log(allScatter)
 
+          d3.selectAll("#scatterPlot > *").remove();
+          d3.selectAll("#histogram > *").remove();
           drawScatterPlot(allScatter)
           histogram(allScatter)
-          console.log("High")
           //save res id so next messages with same ID will be concatenated with existing data
           existingWSResIDPC = JSON.parse(msg.data).ResultID
         } else {
           //add new data to existing array
+          allScatter = allScatter.concat(JSON.parse(msg.data).Data)
           console.log("Low")
-
-          allScatter[0].Data = allScatter[0].Data.concat(JSON.parse(msg.data).Data[0].Data)
-          // drawScatterPlot(allScatter)
+          console.log(allScatter)
+          d3.selectAll("#scatterPlot > *").remove();
+          d3.selectAll("#histogram > *").remove();
+          drawScatterPlot(allScatter)
+          histogram(allScatter)
         }
       }
 
@@ -1326,8 +1330,6 @@ function drawScatterPlot(data) {
   })
 }
 
-drawScatterPlot()
-
 // HISTOGRAM
 
 function histogram(data) {
@@ -1372,18 +1374,20 @@ function histogram(data) {
       .domain(x.domain())  // then the domain of the graphic
       .thresholds(x.ticks(nBin)); // then the numbers of bins
 
-  // Y axis: update now that we know the domain
-  y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
-  yAxis
-    .transition()
-    .duration(1000)
-    .call(d3.axisLeft(y));
-  
-  // x.domain([0, d3.max(bins, function(d) { return d.Growth; })]);   // d3.hist has to be called before the Y axis obviously
-  xAxis
-    .transition()
-    .duration(1000)
-    .call(d3.axisBottom(x).ticks(nBin));
+    var bins = histogram(data)
+
+    // Y axis: update now that we know the domain
+    y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+    yAxis
+      .transition()
+      .duration(1000)
+      .call(d3.axisLeft(y));
+    
+    // x.domain([0, d3.max(bins, function(d) { return d.Growth; })]);   // d3.hist has to be called before the Y axis obviously
+    xAxis
+      .transition()
+      .duration(1000)
+      .call(d3.axisBottom(x).ticks(nBin));
 
     // Y axis: update now that we know the domain
     y.domain([0, d3.max(bins, function (d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
