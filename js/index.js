@@ -1274,12 +1274,11 @@ function drawScatterPlot(data) {
           .range([ 0, width ]);
       xAxis.transition().duration(1000).call(d3.axisBottom(xChange))
     } else {
-      var xNew = d3.scaleLinear()
-          .domain([0,Math.max(...dataFilter.map((d) => {return d.x}))])
+      var xChange = d3.scaleLinear()
+          .domain([0,d3.max(dataFilter.map((d) => {return d.x}))])
           .range([ 0, width ]);
       //     x.domain([0,Math.max(...dataFilter.map((d) => {return d.value}))])
-      xAxis.transition().duration(1000).call(d3.axisBottom(xNew))
-
+      xAxis.transition().duration(1000).call(d3.axisBottom(xChange))
     }
 
     dot
@@ -1288,6 +1287,7 @@ function drawScatterPlot(data) {
       .duration(1000)
         .attr("cx", function(d) { return x(+d.x) })
         .attr("cy", function(d) { return y(+d.y) })
+
 
     currentX = selectedGroup
   }
@@ -1328,14 +1328,12 @@ function histogram(data) {
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-  // get the data
-  // d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
-
+  
   // X axis: scale and draw:
   var x = d3.scaleLinear()
-    .domain([0, d3.max(data, function(d) { return +d.Growth })])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+    .domain([0, Math.ceil(d3.max(data, function(d) { return +d.Growth }))])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
     .range([0, width])
-    svg.append("g")
+  var xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x))
     .attr("stroke", "white")
@@ -1366,6 +1364,12 @@ function histogram(data) {
     .transition()
     .duration(1000)
     .call(d3.axisLeft(y));
+  
+  // x.domain([0, d3.max(bins, function(d) { return d.Growth; })]);   // d3.hist has to be called before the Y axis obviously
+  xAxis
+    .transition()
+    .duration(1000)
+    .call(d3.axisBottom(x).ticks(nBin));
 
   // Join the rect with the bins data
   var u = svg.selectAll("rect")
@@ -1380,7 +1384,7 @@ function histogram(data) {
     .duration(1000)
       .attr("x", 1)
       .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-      .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+      .attr("width", function(d) { return Math.abs(x(d.x1) - x(d.x0) -1) ; })
       .attr("height", function(d) { return height - y(d.length); })
       .style("fill", "#69b3a2")
 
