@@ -1135,14 +1135,15 @@ function plotHistory(data) {
 
 // Scatter plot
 function drawScatterPlot(data) {
-  console.log(getLocalTimezone())
   data.forEach((e) => {
     e.EntryTime = new Date(Math.abs((new Date(e.EntryTime))) - getLocalTimezone())
     e.ExtentTime = new Date(Math.abs((new Date(e.ExtentTime))) - getLocalTimezone())
   })
+
   console.log(d3.extent(data.map((d) => {return d.EntryTime})))
   console.log(d3.min(data.map((d) => {return d.EntryTime})))
   console.log(data.map((d) => {return d.EntryTime}))
+
   // set the dimensions and margins of the graph
   var margin = {top: 10, right: 100, bottom: 30, left: 30},
   width = 460 - margin.left - margin.right,
@@ -1157,16 +1158,25 @@ function drawScatterPlot(data) {
   .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-  //Read the data
-  // d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_connectedscatter.csv", function(data) {
-
   // List of groups (here I have one group per column)
-  var allGroup = ["Growth", "Duration", "EntryTime", "ExtentTime"]
+  var YOptions = ["Growth", "Duration"]
+  var XOptions = ["EntryTime", "ExtentTime", "Growth", "Duration"]
+
+  let currentY = YOptions[0]
+  let currentX = XOptions[0]
 
   // add the options to the button
-  d3.select("#selectButton")
-    .selectAll('myOptions')
-    .data(allGroup)
+  d3.select("#selectButtonY")
+    .selectAll('myOptionsY')
+    .data(YOptions)
+    .enter()
+    .append('option')
+    .text(function (d) { return d; }) // text showed in the menu
+    .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+  d3.select("#selectButtonX")
+    .selectAll('myOptionsX')
+    .data(XOptions)
     .enter()
     .append('option')
     .text(function (d) { return d; }) // text showed in the menu
@@ -1174,21 +1184,20 @@ function drawScatterPlot(data) {
 
     // Add X axis --> it is a date format
   var x = d3.scaleTime()
-    .domain(d3.extent(data.map((d) => {return d.EntryTime})))
+    .domain(d3.extent(data.map((d) => {return d[currentX]})))
     .range([ 0, width ]);
-  svg.append("g")
+  var xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x))
     .attr("stroke", "white")
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain( [0,Math.max(...data.map((d) => {return d.Growth}))])
+    .domain( [0,Math.max(...data.map((d) => {return d[currentY]}))])
     .range([ height, 0 ]);
   var yAxis = svg.append("g")
     .call(d3.axisLeft(y))
     .attr("stroke", "white")
-    
 
   // // Initialize line with group a
   // var line = svg
@@ -1209,19 +1218,18 @@ function drawScatterPlot(data) {
     .data(data)
     .enter()
     .append('circle')
-      .attr("cx", function(d) { return x(+d.EntryTime) })
-      .attr("cy", function(d) { return y(+d.Growth) })
+      .attr("cx", function(d) { return x(+d[currentX]) })
+      .attr("cy", function(d) { return y(+d[currentY]) })
       .attr("r", 7)
       .style("fill", "#69b3a2")
 
 
   // A function that update the chart
-  function update(selectedGroup) {
-    d3.selectAll("#scatterPlot > g").remove();
+  function updateY(selectedGroup) {
+    // d3.selectAll("#scatterPlot > g").remove();
     
     // Create new data with the selection?
-    var dataFilter = data.map(function(d){return {time: d.EntryTime, value:d[selectedGroup]} })
-    console.log(Math.max(...dataFilter.map((d) => {return d.value})))
+    var dataFilter = data.map(function(d){return {x: d[currentX], y:d[selectedGroup]} })
     // Give these new data to update line
     // line
     //     .datum(dataFilter)
@@ -1231,43 +1239,73 @@ function drawScatterPlot(data) {
     //       .x(function(d) { return x(+d.time) })
     //       .y(function(d) { return y(+d.value) })
     //     )
-    
-
-       // Add X axis --> it is a date format
-    // x = d3.scaleLinear()
-    //   .domain([0,Math.max(...dataFilter.map((d) => {return d.time}))])
-    //   .range([ 0, width ]);
-    // svg.append("g")
-    //   .attr("transform", "translate(0," + height + ")")
-    //   .call(d3.axisBottom(x))
-    //   .attr("stroke", "white")
 
     // Add Y axis
-    y.domain([0,Math.max(...dataFilter.map((d) => {return d.value}))])
-    yAxis.transition().duration(1000).call(d3.axisLeft(y))
-
-    // y = d3.scaleLinear()
-    //   .domain([0,Math.max(...dataFilter.map((d) => {return d.value}))])
-    //   .range([ height, 0 ]);
-    // svg.append("g")
-    //   .call(d3.axisLeft(y))
-    //   .attr("stroke", "white")
+    // if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
+    //   y = d3.scaleTime()
+    //     .domain(d3.extent(data.map((d) => {return d.value})))
+    //     .range([ height, 0 ]);
+    //   yAxis.transition().duration(1000).call(d3.axisLeft(y))
+    // } else {
+      y.domain([0,Math.max(...dataFilter.map((d) => {return d.y}))])
+      yAxis.transition().duration(1000).call(d3.axisLeft(y))
+    // }
 
     dot
       .data(dataFilter)
       .transition()
       .duration(1000)
-        .attr("cx", function(d) { return x(+d.time) })
-        .attr("cy", function(d) { return y(+d.value) })
+        .attr("cx", function(d) { return x(+d.x) })
+        .attr("cy", function(d) { return y(+d.y) })
+
+    currentY = selectedGroup
+  }
+
+  function updateX(selectedGroup) {
+    // d3.selectAll("#scatterPlot > g").remove();
+    
+    // Create new data with the selection?
+    var dataFilter = data.map(function(d){return {x:d[selectedGroup], y: d[currentY]} })
+    console.log(Math.max(...dataFilter.map((d) => {return d.x})))
+    // Add X axis
+    if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
+      var xChange = d3.scaleTime()
+          .domain(d3.extent(dataFilter.map((d) => {return d.x})))
+          .range([ 0, width ]);
+      xAxis.transition().duration(1000).call(d3.axisBottom(xChange))
+    } else {
+      var xNew = d3.scaleLinear()
+          .domain([0,Math.max(...dataFilter.map((d) => {return d.x}))])
+          .range([ 0, width ]);
+      //     x.domain([0,Math.max(...dataFilter.map((d) => {return d.value}))])
+      xAxis.transition().duration(1000).call(d3.axisBottom(xNew))
+
+    }
+
+    dot
+      .data(dataFilter)
+      .transition()
+      .duration(1000)
+        .attr("cx", function(d) { return x(+d.x) })
+        .attr("cy", function(d) { return y(+d.y) })
+
+    currentX = selectedGroup
   }
 
   // When the button is changed, run the updateChart function
-  d3.select("#selectButton").on("change", function(d) {
-      // recover the option that has been chosen
-      var selectedOption = d3.select(this).property("value")
-      // run the updateChart function with this selected option
-      update(selectedOption)
+  d3.select("#selectButtonY").on("change", function(d) {
+    // recover the option that has been chosen
+    var selectedOption = d3.select(this).property("value")
+    // run the updateChart function with this selected option
+    updateY(selectedOption)
   })
+
+  d3.select("#selectButtonX").on("change", function(d) {
+    // recover the option that has been chosen
+    var selectedOption = d3.select(this).property("value")
+    // run the updateChart function with this selected option
+    updateX(selectedOption)
+})
   // })
 }
 
