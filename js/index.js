@@ -1,4 +1,4 @@
-let baseURL = "https://ana-api.myika.co"
+let baseURL = "http://localhost:8000"
 let wsStatus = document.getElementById("wsStatus")
 
 
@@ -172,7 +172,7 @@ function connectWs(id) {
   wsStatus.innerText = "Loading websockets..."
   var socket
   try {
-    socket = new WebSocket("wss://ana-api.myika.co/ws-cm/" + userID);
+    socket = new WebSocket("ws://localhost:8000/ws-cm/" + userID);
   } catch (err) {
     console.log(err);
   }
