@@ -461,6 +461,17 @@ tr:hover {
   background-color: #8a0000 !important;
 }
 
+#histogramBtns button {
+  border: none;
+}
+#histogramBtns p {
+  display: inline;
+  color: #fffdd0;
+  background-color: purple;
+  padding: 0.25rem;
+  margin-left: 0.5rem;
+}
+
 /* d3 */
 .upGreenArrow {
   width: 0;

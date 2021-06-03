@@ -409,6 +409,20 @@ tr:hover {
   background-color: $blood !important;
 }
 
+#histogramBtns {
+  button {
+    border: none;
+  }
+
+  p {
+    display: inline;
+    color: $cream;
+    background-color: purple;
+    padding: 0.25rem;
+    margin-left: 0.5rem;
+  }
+}
+
 /* d3 */
 
 .upGreenArrow {
