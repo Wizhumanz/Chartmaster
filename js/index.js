@@ -1169,7 +1169,6 @@ function drawScatterPlot(data) {
     // - getLocalTimezone()
   })
 
-  console.log(data)
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 100, bottom: 30, left: 50 },
     width = 750 - margin.left - margin.right,
@@ -1220,7 +1219,7 @@ function drawScatterPlot(data) {
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain( [0,Math.max(...data.map((d) => {return d[currentY]}))])
+    .domain(d3.extent(data.map((d) => {return d[currentY]})))
     .range([ height, 0 ]);
   var yAxis = svg.append("g")
     .call(d3.axisLeft(y))
@@ -1273,7 +1272,7 @@ function drawScatterPlot(data) {
         .range([ height, 0 ]);
     } else {
       y = d3.scaleLinear()
-        .domain([0,d3.max(dataFilter.map((d) => {return d.y}))])
+        .domain(d3.extent(dataFilter.map((d) => {return d.y})))
         .range([ height, 0 ]);
     }
 
@@ -1292,7 +1291,6 @@ function drawScatterPlot(data) {
   function updateX(selectedGroup) {
     // Create new data with the selection?
     var dataFilter = data.map(function(d){return {x:d[selectedGroup], y: d[currentY]} })
-    console.log(d3.extent(dataFilter.map((d) => {return d.x})))
     // Add X axis
     if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
       x = d3.scaleTime()
