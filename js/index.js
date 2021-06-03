@@ -1354,7 +1354,7 @@ function histogram(data) {
   
   // X axis: scale and draw:
   var x = d3.scaleLinear()
-    .domain([0, Math.ceil(d3.max(data, function(d) { return +d.Growth }))])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+    .domain([Math.floor(d3.min(data, function(d) { return +d.Growth })), Math.ceil(d3.max(data, function(d) { return +d.Growth }))])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
     .range([0, width])
   var xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
