@@ -1189,8 +1189,8 @@ function drawScatterPlot(data) {
       "translate(" + margin.left + "," + margin.top + ")");
 
   // List of groups (here I have one group per column)
-  var YOptions = ["Growth", "Duration", "EntryTime", "ExtentTime"]
-  var XOptions = ["EntryTime", "ExtentTime", "Growth", "Duration"]
+  var YOptions = ["Growth", "Duration", "EntryTime", "ExtentTime", "EntryPivotsPriceDiffPerc"]
+  var XOptions = ["EntryTime", "ExtentTime", "Growth", "Duration", "EntryPivotsPriceDiffPerc"]
 
   let currentY = YOptions[0]
   let currentX = XOptions[0]
@@ -1252,7 +1252,7 @@ function drawScatterPlot(data) {
     .append('circle')
       .attr("cx", function(d) { return x(+d[currentX]) })
       .attr("cy", function(d) { return y(+d[currentY]) })
-      .attr("r", 3)
+      .attr("r", 2)
       .style("fill", "#ff3bdb")
 
 
@@ -1414,7 +1414,7 @@ function histogram(data) {
       .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
       .attr("width", function(d) { return Math.abs(x(d.x1) - x(d.x0) -1) ; })
       .attr("height", function(d) { return height - y(d.length); })
-      .style("fill", function(d) { return d==histBins[histIndex]? "#FFFF00" : "#00ff77"})
+      .style("fill", function(d) { return d==histBins[histIndex]? "#fff94d" : "#00a123"})
 
     // If less bar in the new histogram, I delete the ones not in use anymore
     u
