@@ -1,11 +1,23 @@
 let baseURL = "https://ana-api.myika.co"
 let wsStatus = document.getElementById("wsStatus")
 
+
 // Get parameters from a URL string
 let userID = getParams(window.location.href).user
 if (userID === undefined) {
   document.getElementById("undefinedUserErr").style.display = "block"
 }
+
+// Histogram Btns
+let histBins
+let histIndex = 0
+let u
+
+// Progress bar
+document.getElementById("progress").style.display = "none";
+
+// Scan view
+document.getElementById("scan").style.display = "none"
 
 // Simulated Trades index
 let indexST = 1
@@ -23,12 +35,12 @@ let candleDrawStartIndex = 0
 let tickNumCandles = 10
 let tickNumProfitX = 6
 let tickNumProfitY = 8
-let candlestickChartLabelFontSize = "11px"
+let candlestickChartLabelFontSize = "13px"
 let margin = { top: 10, right: 20, bottom: 205, left: 45 },
   w = 1050,
-  h = 700;
+  h = 670;
 let candlesViewBoxHeight = "1000"
-let candlestickLabelStroke = "1px"
+let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
 
 let labelXMove = 4
@@ -57,6 +69,7 @@ let candleDrawEndIndex = candleDisplayNumber
 let allCandles = [] // all individual candles
 let allProfitCurve = [] // all individual profits
 let allSimTrades = [] // all individual trades
+let allScatter = []
 
 let wholeStartTime = getPickerDateTime("startDateTimePicker")
 let wholeEndTime = getPickerDateTime("endDateTimePicker")
@@ -81,6 +94,29 @@ allProfitCurve = [{ "DataLabel": "strat1", "Data": [{ "DateTime": "2021-05-01T00
 drawPC(allProfitCurve)
 allSimTrades = [{ "DataLabel": "strat1", "Data": [{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 }, { "DateTime": "2021-05-01T01:27:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57769.140625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.13197549962733782 }, { "DateTime": "2021-05-01T01:32:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57949.640625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.44483841193905677 }, { "DateTime": "2021-05-01T01:41:00", "Direction": "LONG", "EntryPrice": 57848.19921875, "ExitPrice": 57975.76171875, "PosSize": 0.11402694777476709, "RiskedEquity": 6596.253591180728, "RawProfitPerc": 0.22051248219089578 }, { "DateTime": "2021-05-01T02:10:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57863.03125, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.00537339274127546 }, { "DateTime": "2021-05-01T02:18:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57807.6484375, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.10108188807519942 }, { "DateTime": "2021-05-01T02:19:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57803.5703125, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.10812940317807829 }, { "DateTime": "2021-05-01T02:33:00", "Direction": "LONG", "EntryPrice": 57787.28125, "ExitPrice": 57619.859375, "PosSize": 0.10230792286941753, "RiskedEquity": 5912.096712958338, "RawProfitPerc": -0.2897209755823216 }, { "DateTime": "2021-05-01T02:35:00", "Direction": "LONG", "EntryPrice": 57609.19140625, "ExitPrice": 57640.609375, "PosSize": 0.20273213225103942, "RiskedEquity": 11679.234211047318, "RawProfitPerc": 0.05453638209994296 }, { "DateTime": "2021-05-01T02:38:00", "Direction": "LONG", "EntryPrice": 57609.19140625, "ExitPrice": 57710.73046875, "PosSize": 0.20273213225103942, "RiskedEquity": 11679.234211047318, "RawProfitPerc": 0.17625496907943766 }] }]
 plotHistory(allSimTrades)
+
+function getAllShareResults() {
+  return new Promise((resolve, reject) => {
+    let hd = {
+      // "Content-Type": "application/json",
+      // Authorization: user.password,
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
+      Expires: "0",
+    }
+    axios
+      .get(baseURL + "/getallshareresults?user=" + userID, {
+        headers: hd,
+        mode: "cors",
+      })
+      .then((res) => {
+        resolve(res.data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  })
+}
 
 function loadResult() {
   let hd = {
@@ -109,7 +145,14 @@ function loadResult() {
         // create new option element
         let opt = document.createElement('option');
         // create text node to add to option element (opt)
-        opt.appendChild(document.createTextNode(l));
+        getAllShareResults().then((result) => {
+          if (result.includes(l.split(".")[0])) {
+            opt.appendChild(document.createTextNode(l + " (Shared)"));
+          } else {
+            opt.appendChild(document.createTextNode(l));
+          }
+        })
+
         // set value property of opt
         opt.value = l.split(".")[0];
         // add opt to end of select box (sel)
@@ -124,7 +167,8 @@ function loadResult() {
 
 loadResult()
 
-function connectWs() {
+function connectWs(id) {
+  console.log(id)
   wsStatus.innerText = "Loading websockets..."
   var socket
   try {
@@ -157,6 +201,45 @@ function connectWs() {
         return
       }
 
+      // Progress bar
+      if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Progress) > 0) {
+        document.getElementById("progress").style.display = "block";
+        document.getElementById("progressBar").style = `width: ${JSON.parse(msg.data).Data[0].Progress}%`
+        if (JSON.parse(msg.data).Data[0].Progress >= 98) {
+          setTimeout(() => {
+            document.getElementById("progress").style.display = "none";
+          }, 1000)
+        }
+      }
+
+      // Scatter plot
+      if (JSON.parse(msg.data) != undefined && JSON.parse(msg.data).Data[0].Duration > 0) {
+        //check if concat needed, or new data
+        // console.log(JSON.parse(msg.data))
+
+        if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
+          allScatter = JSON.parse(msg.data).Data
+          //if candlestick chart empty
+          d3.selectAll("#scatterPlot > *").remove();
+          d3.selectAll("#selectButtonY > *").remove();
+          d3.selectAll("#selectButtonX > *").remove();
+          d3.selectAll("#histogram > *").remove();
+          drawScatterPlot(allScatter)
+          histogram(allScatter)
+          //save res id so next messages with same ID will be concatenated with existing data
+          existingWSResIDPC = JSON.parse(msg.data).ResultID
+        } else {
+          //add new data to existing array
+          allScatter = allScatter.concat(JSON.parse(msg.data).Data)
+          d3.selectAll("#scatterPlot > *").remove();
+          d3.selectAll("#selectButtonY > *").remove();
+          d3.selectAll("#selectButtonX > *").remove();
+          d3.selectAll("#histogram > *").remove();
+          drawScatterPlot(allScatter)
+          histogram(allScatter)
+        }
+      }
+
       //candlestick
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Open) > 0) {
         //check if concat needed, or new data
@@ -164,8 +247,6 @@ function connectWs() {
           allCandles = JSON.parse(msg.data).Data
           //if candlestick chart empty
           drawChart(0, candleDisplayNumber)
-          //show right arrow btn
-          document.getElementById("panCandlesRightBtn").style.display = "inline"
 
           //save res id so next messages with same ID will be concatenated with existing data
           existingWSResID = JSON.parse(msg.data).ResultID
@@ -174,13 +255,16 @@ function connectWs() {
           JSON.parse(msg.data).Data.forEach(newData => {
             allCandles.push(newData)
           })
-          console.log(msg.data)
+          if (candleDisplayNumber < allCandles.length) {
+            //show right arrow btn
+            document.getElementById("panCandlesRightBtn").style.display = "inline"
+          }
           drawChart(0, candleDisplayNumber)
         }
       }
 
       //profit curve
-      if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Data[0].Equity) > 0) {
+      if (JSON.parse(msg.data) != undefined && (JSON.parse(msg.data).Data.length > 0) && parseFloat(JSON.parse(msg.data).Data[0].Data[0].Equity) > 0) {
         //check if concat needed, or new data
         if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
           allProfitCurve = JSON.parse(msg.data).Data
@@ -196,10 +280,13 @@ function connectWs() {
       }
 
       //sim trades
-      if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Data[0].EntryPrice) > 0) {
+      if (((JSON.parse(msg.data) != undefined) && (parseFloat(JSON.parse(msg.data).Data[0].Data[0].EntryPrice) > 0))) {
+        console.log(JSON.parse(msg.data))
+
         if (existingWSResIDST === "" || existingWSResIDST !== JSON.parse(msg.data).ResultID) {
           allSimTrades = JSON.parse(msg.data).Data
           //if candlestick chart empty
+          indexST = 1
           plotHistory(JSON.parse(msg.data).Data)
 
           //save res id so next messages with same ID will be concatenated with existing data
@@ -215,7 +302,7 @@ function connectWs() {
     };
   }
 }
-connectWs()
+connectWs(userID)
 
 let riskInput
 let leverageInput
@@ -223,6 +310,12 @@ let sizeInput
 getInputValues()
 
 function computeBacktest() {
+  //clear charts
+  allCandles = []
+  allProfitCurve = []
+  allSimTrades = []
+  plotHistory(allSimTrades)
+
   let ticker = document.getElementById("tickerSelect").value
   let period = document.getElementById("periodSelect").value
   let startTimeStr = new Date(Math.abs((new Date(getPickerDateTime("startDateTimePicker")))) + getLocalTimezone()).toISOString().split(".")[0]
@@ -231,7 +324,10 @@ function computeBacktest() {
   allCandles = [] // all individual candles
   displayCandlesChunks = [] // chunks of candles for display
 
+  let operation = (document.getElementById("modeTogglerBtn").innerHTML === "Switch to Scan Mode") ? "BACKTEST" : "SCAN"
+
   let backendInfo = {
+    "operation": operation,
     "ticker": ticker,
     "period": period,
     "time_start": startTimeStr,
@@ -360,6 +456,7 @@ function shareResult() {
     "title": titleText,
     "description": descText,
     "resultFileName": selectedRes,
+    "userID": userID
   }
 
   let hd = {
@@ -381,6 +478,38 @@ function shareResult() {
       console.log(error);
     });
 }
+
+function sharedLink() {
+  if (getParams(window.location.href).share) {
+    console.log(getParams(window.location.href).share)
+    let shareLink = getParams(window.location.href).share
+
+    let hd = {
+      // "Content-Type": "application/json",
+      // Authorization: user.password,
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
+      Expires: "0",
+    }
+    axios
+      .get(baseURL + "/getshareresult?share=" + shareLink, {
+        headers: hd,
+        // mode: "cors",
+      })
+      .then((res) => {
+        console.log(res.data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    let randomID = Date.now().toString().concat(generateString(20))
+    console.log(randomID)
+    connectWs(randomID)
+  }
+}
+
+sharedLink()
 
 function drawChart(start, end) {
   console.log(start + " - " + end)
@@ -520,10 +649,15 @@ function drawChart(start, end) {
   // Create Label
   let labelText = chartBody.selectAll("labelText")
     .data(candlesToShow.filter((p) => { return p.Label !== "" }))
+  // Create Label Top
+  let labelXMoveTop = 4
+  let labelYMoveTop = 10
+  let labelTextTop = chartBody.selectAll("labelTextTop")
+    .data(candlesToShow.filter((p) => { return p.LabelTop !== "" }))
     .enter()
     .append("text")
-    .attr("x", (d) => xScale(d.index) - labelXMove - xBand.bandwidth() / 2)
-    .attr("y", d => yScale(d.High) - labelYMove)
+    .attr("x", (d) => xScale(d.index) - labelXMoveTop - xBand.bandwidth() / 2)
+    .attr("y", d => yScale(d.High) - labelYMoveTop)
     .attr("stroke", "white")
     .attr("fill", "white")
     .attr("stroke-width", candlestickLabelStroke)
@@ -531,7 +665,42 @@ function drawChart(start, end) {
     .attr("font-size", candlestickChartLabelFontSize)
     .attr("font-weight", "bold")
     .attr("z-index", "100")
-    .text(d => d.Label);
+    .text(d => d.LabelTop);
+
+  // Create Label Middle
+  let labelXMoveMid = 7
+  let labelTextMid = chartBody.selectAll("labelTextMid")
+    .data(candlesToShow.filter((p) => { return p.LabelMiddle !== "" }))
+    .enter()
+    .append("text")
+    .attr("x", (d) => xScale(d.index) - labelXMoveMid - xBand.bandwidth() / 2)
+    .attr("y", d => yScale((d.Open + d.Close) / 2))
+    .attr("stroke", "white")
+    .attr("fill", "white")
+    .attr("stroke-width", candlestickLabelStroke)
+    .attr("font-family", "Courier")
+    .attr("font-size", candlestickChartLabelFontSize)
+    .attr("font-weight", "bold")
+    .attr("z-index", "100")
+    .text(d => d.LabelMiddle);
+
+  // Create Label Bottom
+  let labelXMoveBot = 4
+  let labelYMoveBot = 30
+  let labelTextBot = chartBody.selectAll("labelTextBot")
+    .data(candlesToShow.filter((p) => { return p.LabelBottom !== "" }))
+    .enter()
+    .append("text")
+    .attr("x", (d) => xScale(d.index) - labelXMoveBot - xBand.bandwidth() / 2)
+    .attr("y", d => yScale(d.Low) + labelYMoveBot)
+    .attr("stroke", "white")
+    .attr("fill", "white")
+    .attr("stroke-width", candlestickLabelStroke)
+    .attr("font-family", "Courier")
+    .attr("font-size", candlestickChartLabelFontSize)
+    .attr("font-weight", "bold")
+    .attr("z-index", "100")
+    .text(d => d.LabelBottom);
 
   // Enter and Exit Pointers
   let pointerWidth = 7
@@ -630,7 +799,9 @@ function drawChart(start, end) {
     changeStemsX()
 
     // Label X Zooming
-    labelText.attr("x", (d, i) => xScaleZ(d.index) - labelXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+    labelTextTop.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveTop - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+    labelTextMid.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveMid - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+    labelTextBot.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveBot - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
     // Pointers X Zooming
     enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
@@ -675,14 +846,18 @@ function drawChart(start, end) {
       //   .attr("y", (d) => yScale(d.High) - 100)
 
       // Label Y Zooming
-      labelText.transition().duration(100)
-        .attr("y", (d) => yScale(d.High) - labelYMove)
+      labelTextTop.transition().duration(100)
+        .attr("y", (d) => yScale(d.High) - labelYMoveTop)
+      labelTextMid.transition().duration(100)
+        .attr("y", (d) => yScale((d.Open + d.Close) / 2))
+      labelTextBot.transition().duration(100)
+        .attr("y", (d) => yScale(d.Low) + labelYMoveBot)
 
       // Pointers Y Zooming
       enterPointer.transition().duration(100)
-        .attr("y", (d) => yScale(d.Low) + labelYMove)
+        .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
       exitPointer.transition().duration(100)
-        .attr("y", (d) => yScale(d.Low) + labelYMove)
+        .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
 
       gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
 
@@ -767,6 +942,17 @@ function wrap(text, width) {
 
 /// PROFIT CURVE
 function drawPC(data) {
+  //  Calculate starting, ending, and Growth
+  document.getElementById("startingCapital").innerHTML = data[0].Data[0].Equity.toFixed(2)
+
+  data.forEach(function (d) {
+    d.Data.forEach(function (point) {
+      document.getElementById("endingCapital").innerHTML = point.Equity.toFixed(2)
+    })
+  })
+
+  document.getElementById("growth").innerHTML = ((document.getElementById("endingCapital").innerHTML - document.getElementById("startingCapital").innerHTML) / document.getElementById("startingCapital").innerHTML * 100).toFixed(2) + "%"
+
   // console.log(JSON.stringify(data))
   d3.selectAll("#profit > *").remove();
   var pcMargin = { top: 0, right: 20, bottom: 30, left: 45 },
@@ -899,16 +1085,36 @@ function drawPC(data) {
     .style("font-size", pcFontSz)
     .call(d3.axisBottom(x).ticks(tickNumProfitX))
     .style("color", "white")
+    .attr("stroke", "white")
+
   // Add the Y Axis
   pcSvg.append("g")
     .call(d3.axisLeft(y).ticks(tickNumProfitY))
     .style("color", "white")
     .style("font-size", pcFontSz)
+    .attr("stroke", "white")
+
 }
 
 /// SIMULATED TRADES
 function plotHistory(data) {
-  // console.log(JSON.stringify(data))
+  if (data === undefined || !data.length || data.length === 0) {
+    var table = document.getElementById("history")
+    table.innerHTML = ""
+    let row = table.insertRow()
+    let tableHeader = ["Index", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Position Size", "Direction", "Parameter"]
+    tableHeader.forEach(t => {
+      let newCell = row.insertCell()
+      newCell.innerHTML = t
+      newCell.className = "thead"
+    })
+    document.getElementById("numOfRows").innerHTML = "(0)"
+    return
+  }
+
+  // Number of rows
+  document.getElementById("numOfRows").innerHTML = "(" + data[0].Data.length.toString() + ")"
+
   var table = document.getElementById("history")
   table.innerHTML = ""
   let row = table.insertRow()
@@ -922,6 +1128,7 @@ function plotHistory(data) {
   data.forEach((d) => {
     //for each trade history item in that param
     d.Data.forEach((s, i) => {
+      // console.log(s)
       let row = table.insertRow()
       row.insertCell().innerHTML = indexST
       row.insertCell().innerHTML = s.RawProfitPerc.toFixed(2)
@@ -951,7 +1158,310 @@ function plotHistory(data) {
   })
 }
 
+// Scatter plot
+function drawScatterPlot(data) {
+  data.forEach((e) => {
+    e.EntryTime = new Date(Math.abs((new Date(e.EntryTime))) )
+    e.ExtentTime = new Date(Math.abs((new Date(e.ExtentTime))) )
+    // - getLocalTimezone()
+  })
+
+  // set the dimensions and margins of the graph
+  var margin = { top: 10, right: 100, bottom: 30, left: 50 },
+    width = 750 - margin.left - margin.right,
+    height = 350 - margin.top - margin.bottom;
+
+  // append the svg object to the body of the page
+  var svg = d3.select("#scatterPlot")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")");
+
+  // List of groups (here I have one group per column)
+  var YOptions = ["Growth", "Duration", "EntryTime", "ExtentTime"]
+  var XOptions = ["EntryTime", "ExtentTime", "Growth", "Duration"]
+
+  let currentY = YOptions[0]
+  let currentX = XOptions[0]
+
+  // add the options to the button
+  d3.select("#selectButtonY")
+    .selectAll('myOptionsY')
+    .data(YOptions)
+    .enter()
+    .append('option')
+    .text(function (d) { return d; }) // text showed in the menu
+    .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+  d3.select("#selectButtonX")
+    .selectAll('myOptionsX')
+    .data(XOptions)
+    .enter()
+    .append('option')
+    .text(function (d) { return d; }) // text showed in the menu
+    .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+    // Add X axis --> it is a date format
+  var x = d3.scaleTime()
+    .domain(d3.extent(data.map((d) => {return d[currentX]})))
+    .range([ 0, width ]);
+  var xAxis = svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .attr("stroke", "white")
+    .attr("font-size", "13px")
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain(d3.extent(data.map((d) => {return d[currentY]})))
+    .range([ height, 0 ]);
+  var yAxis = svg.append("g")
+    .call(d3.axisLeft(y))
+    .attr("stroke", "white")
+    .attr("font-size", "12px")
+
+  // // Initialize line with group a
+  // var line = svg
+  //   .append('g')
+  //   .append("path")
+  //     .datum(data)
+  //     .attr("d", d3.line()
+  //       .x(function(d) { return x(+d.Duration) })
+  //       .y(function(d) { return y(+d.Growth) })
+  //     )
+  //     .attr("stroke", "white")
+  //     .style("stroke-width", 4)
+  //     .style("fill", "none")
+
+  // Initialize dots with group a
+  var dot = svg
+    .selectAll('circle')
+    .data(data)
+    .enter()
+    .append('circle')
+      .attr("cx", function(d) { return x(+d[currentX]) })
+      .attr("cy", function(d) { return y(+d[currentY]) })
+      .attr("r", 3)
+      .style("fill", "#ff3bdb")
+
+
+  // A function that update the chart
+  function updateY(selectedGroup) {
+    // Create new data with the selection?
+    var dataFilter = data.map(function(d){return {x: d[currentX], y:d[selectedGroup]} })
+    // Give these new data to update line
+    // line
+    //     .datum(dataFilter)
+    //     .transition()
+    //     .duration(1000)
+    //     .attr("d", d3.line()
+    //       .x(function(d) { return x(+d.time) })
+    //       .y(function(d) { return y(+d.value) })
+    //     )
+
+    // Add Y axis
+    if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
+      y = d3.scaleTime()
+        .domain(d3.extent(dataFilter.map((d) => {return d.y})))
+        .range([ height, 0 ]);
+    } else {
+      y = d3.scaleLinear()
+        .domain(d3.extent(dataFilter.map((d) => {return d.y})))
+        .range([ height, 0 ]);
+    }
+
+    yAxis.transition().duration(1000).call(d3.axisLeft(y))
+
+    dot
+      .data(dataFilter)
+      .transition()
+      .duration(1000)
+        .attr("cx", function(d) { return x(+d.x) })
+        .attr("cy", function(d) { return y(+d.y) })
+
+    currentY = selectedGroup
+  }
+
+  function updateX(selectedGroup) {
+    // Create new data with the selection?
+    var dataFilter = data.map(function(d){return {x:d[selectedGroup], y: d[currentY]} })
+    // Add X axis
+    if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
+      x = d3.scaleTime()
+          .domain(d3.extent(dataFilter.map((d) => {return d.x})))
+          .range([ 0, width ]);
+    } else {
+      x = d3.scaleLinear()
+          .domain([0,d3.max(dataFilter.map((d) => {return d.x}))])
+          .range([ 0, width ]);
+    }
+
+    xAxis.transition().duration(1000).call(d3.axisBottom(x))
+
+    dot
+      .data(dataFilter)
+      .transition()
+      .duration(1000)
+        .attr("cx", function(d) { return x(+d.x) })
+        .attr("cy", function(d) { return y(+d.y) })
+
+    currentX = selectedGroup
+  }
+
+  // When the button is changed, run the updateChart function
+  d3.select("#selectButtonY").on("change", function(d) {
+    // recover the option that has been chosen
+    var selectedOption = d3.select(this).property("value")
+    // run the updateChart function with this selected option
+    updateY(selectedOption)
+  })
+
+  d3.select("#selectButtonX").on("change", function(d) {
+    // recover the option that has been chosen
+    var selectedOption = d3.select(this).property("value")
+    // run the updateChart function with this selected option
+    updateX(selectedOption)
+  })
+}
+
+// HISTOGRAM
+function histogram(data) {
+  // set the dimensions and margins of the graph
+  var margin = { top: 10, right: 30, bottom: 30, left: 40 },
+    width = 800 - margin.left - margin.right,
+    height = 350 - margin.top - margin.bottom;
+
+  // append the svg object to the body of the page
+  var svg = d3.select("#histogram")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")");
+
+  
+  // X axis: scale and draw:
+  var x = d3.scaleLinear()
+    .domain([0, Math.ceil(d3.max(data, function(d) { return +d.Growth }))])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+    .range([0, width])
+  var xAxis = svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .attr("stroke", "white")
+
+
+  // Y axis: initialization
+  var y = d3.scaleLinear()
+    .range([height, 0]);
+  var yAxis = svg.append("g")
+    .attr("stroke", "white")
+    .attr("font-size", "18px")
+
+  // A function that builds the graph for a specific value of bin
+  function update(nBin) {
+
+    // set the parameters for the histogram
+    var histogram = d3.histogram()
+      .value(function (d) { return d.Growth; })   // I need to give the vector of value
+      .domain(x.domain())  // then the domain of the graphic
+      .thresholds(x.ticks(nBin)); // then the numbers of bins
+
+    var bins = histogram(data)
+
+    histBins = bins
+    if (histIndex === 0) {
+      document.getElementById("histRange").innerText = histBins[histIndex].x0 + " to " + histBins[histIndex].x1
+      document.getElementById("histFrequency").innerText = histBins[histIndex].length
+    }
+
+    // Y axis: update now that we know the domain
+    y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+    yAxis
+      .transition()
+      .duration(0)
+      .call(d3.axisLeft(y));
+    
+    // x.domain([0, d3.max(bins, function(d) { return d.Growth; })]);   // d3.hist has to be called before the Y axis obviously
+    xAxis
+      .transition()
+      .duration(0)
+      .call(d3.axisBottom(x).ticks(nBin));
+
+    // Join the rect with the bins data
+    u = svg.selectAll("rect")
+      .data(bins)
+
+    // Manage the existing bars and eventually the new ones:
+    u
+      .enter()
+      .append("rect") // Add a new rect for each new elements
+      .merge(u) // get the already existing elements as well
+      .transition() // and apply changes to all of them
+      .duration(0)
+      .attr("x", 1)
+      .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+      .attr("width", function(d) { return Math.abs(x(d.x1) - x(d.x0) -1) ; })
+      .attr("height", function(d) { return height - y(d.length); })
+      .style("fill", function(d) { return d==histBins[histIndex]? "#FFFF00" : "#00ff77"})
+
+    // If less bar in the new histogram, I delete the ones not in use anymore
+    u
+      .exit()
+      .remove()
+
+  }
+
+
+  // Initialize with 10 bins
+  update(document.getElementById("nBin").value)
+
+
+  // Listen to the button -> update if user change it
+  d3.select("#nBin").on("input", function () {
+    histIndex = 0
+    update(+this.value);
+  });
+
+  // });
+}
+
+function histMoveRight() {
+  if (histIndex+1 < histBins.length) {
+    histIndex += 1
+    document.getElementById("histRange").innerText = histBins[histIndex].x0 + " to " + histBins[histIndex].x1
+    document.getElementById("histFrequency").innerText = histBins[histIndex].length
+    d3.selectAll("#histogram > *").remove();
+    histogram(allScatter)
+  }
+}
+
+function histMoveLeft() {
+  if (histIndex-1 >= 0) {
+    histIndex -= 1
+    document.getElementById("histRange").innerText = histBins[histIndex].x0 + " to " + histBins[histIndex].x1
+    document.getElementById("histFrequency").innerText = histBins[histIndex].length
+    d3.selectAll("#histogram > *").remove();
+    histogram(allScatter)
+  }
+}
+
 // Helper Functions
+function showScanResults() {
+  if (document.getElementById("modeTogglerBtn").innerHTML === "Switch to Scan Mode") {
+    document.getElementById("strategy").style.display = "none"
+    document.getElementById("scan").style.display = "block"
+    document.getElementById("modeTogglerBtn").innerHTML = "Switch to Compute Mode"
+  } else {
+    document.getElementById("strategy").style.display = "block"
+    document.getElementById("scan").style.display = "none"
+    document.getElementById("modeTogglerBtn").innerHTML = "Switch to Scan Mode"
+  }
+}
+
 function moveLeft() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
@@ -1034,6 +1544,17 @@ function processXAxisLabel(d, dates) {
     return hours + ':' + minutes + amPM + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear()
   }
 
+}
+
+function generateString(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+  let result = ' ';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result.substring(1);
 }
 
 function getRandomColor() {

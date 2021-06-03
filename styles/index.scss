@@ -23,7 +23,7 @@ html,
 .container-fluid,
 .row {
   background-color: black !important;
-  overflow: hidden;
+  // overflow: hidden;
 
   @media only screen and (max-width: 700px) {
     overflow: scroll;
@@ -46,6 +46,19 @@ html,
   font-family: $body-font;
   margin-left: 1rem;
   display: none;
+}
+
+#brand-controls {
+  padding: 0.5rem;
+  h4 {
+    display: inline;
+  }
+}
+
+#modeTogglerBtn {
+  margin-top: -0.5rem;
+  font-size: x-small;
+  display: inline;
 }
 
 div#computeControls {
@@ -74,6 +87,10 @@ h4.chartHeader#optionsH {
     margin: 0.5rem;
     text-align: right;
   }
+}
+
+#sideCol {
+  margin-top: -2.5rem;
 }
 
 .topControls {
@@ -325,6 +342,20 @@ label {
   left: 1%;
 }
 
+div.inline {
+  margin: 0.5rem auto;
+  color: $cream;
+
+  h4, h5, p {
+    font-family: $title-font;
+    display: inline;
+  }
+  h5.value {
+    background-color: $blood;
+    padding: 0.1rem;
+  }
+}
+
 div.stacked {
   overflow: scroll;
   // border-left: $blood 3px solid;
@@ -355,7 +386,7 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 #simTradesDiv {
-  height: 34rem;
+  height: 25rem;
   margin-bottom: 1rem;
 }
 
@@ -376,6 +407,20 @@ td {
 
 tr:hover {
   background-color: $blood !important;
+}
+
+#histogramBtns {
+  button {
+    border: none;
+  }
+
+  p {
+    display: inline;
+    color: $cream;
+    background-color: purple;
+    padding: 0.25rem;
+    margin-left: 0.5rem;
+  }
 }
 
 /* d3 */

@@ -23,9 +23,23 @@
 
 <body>
   <script src="https://d3js.org/d3.v5.min.js"></script>
+  <!-- Color Scale -->
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <!-- Load d3.js -->
+  <script src="https://d3js.org/d3.v4.js"></script>
+
+
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 
-  <h4 id="brand-h">Chartmaster</h4>
+  <div id="brand-controls">
+    <h4 id="brand-h">Chartmaster</h4>
+    <button id="modeTogglerBtn" onclick="showScanResults()">Switch to Scan Mode</button>
+  </div>
+
+  <div id="progress" class="progress" style="display:block">
+    <div id="progressBar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%"
+      aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Loading...</div>
+  </div>
 
   <h4 id="undefinedUserErr">USER ID UNDEFINED</h4>
 
@@ -48,7 +62,7 @@
                           <label for="startDateTimePicker">Start</label>
                         </div>
                         <div class="col-8">
-                          <input type="datetime-local" id="startDateTimePicker" value="2021-03-03T00:00">
+                          <input type="datetime-local" id="startDateTimePicker" value="2021-03-05T00:00">
                         </div>
                       </div>
                       <div class="row">
@@ -56,7 +70,7 @@
                           <label for="endDateTimePicker">End</label>
                         </div>
                         <div class="col-8">
-                          <input type="datetime-local" id="endDateTimePicker" value="2021-05-01T00:00">
+                          <input type="datetime-local" id="endDateTimePicker" value="2021-03-05T06:30">
                         </div>
                       </div>
                     </div>
@@ -95,7 +109,7 @@
                         <label>Risk/Trade(%)</label>
                       </div>
                       <div class="col-8">
-                        <input class="computeInputs" id="risk" type="number" value="1">
+                        <input class="computeInputs" id="risk" type="number" value="10">
                       </div>
                     </div>
                     <div class="row">
@@ -103,7 +117,7 @@
                         <label>Leverage</label>
                       </div>
                       <div class="col-8">
-                        <input class="computeInputs" id="leverage" type="number" value="5">
+                        <input class="computeInputs" id="leverage" type="number" value="10">
                       </div>
                     </div>
                     <div class="row">
@@ -190,24 +204,76 @@
         </div>
       </div>
       <!-- profit curve + sim trades table col -->
-      <div class="col-12 col-lg-4">
-        <h4 class="chartHeader">Profit Curve</h4>
-        <div class="stacked" id="profitCurveDiv">
-          <!-- <h4>Profit Curve</h4> -->
-          <div id="profit"></div>
+      <div id="sideCol" class="col-12 col-lg-4">
+        <div id="strategy">
+          <h4 class="chartHeader">Profit Curve</h4>
+          <div class="inline">
+            <h5>Starting capital:</h5>
+            <h5 class="value" id="startingCapital">$450</h5>
+          </div>
+          <div class="inline">
+            <h5>Ending capital:</h5>
+            <h5 class="value" id="endingCapital">$757.21</h5>
+          </div>
+          <div class="inline">
+            <h5>Growth:</h5>
+            <h5 class="value" id="growth">68.26%</h5>
+          </div>
+          <div class="stacked" id="profitCurveDiv">
+            <!-- <h4>Profit Curve</h4> -->
+            <div id="profit"></div>
+          </div>
+          <div class="stacked" id="simTradesDiv">
+            <div class="inline">
+              <h4 class="chartHeader">Backtest Trades</h4>
+              <p id="numOfRows">(57)</p>
+            </div>
+            <table id="history">
+              <thead id="head">
+              </thead>
+            </table>
+          </div>
         </div>
-        <div class="stacked" id="simTradesDiv">
-          <h4 class="chartHeader">Backtest Trades</h4>
-          <table id="history">
-            <thead id="head">
-            </thead>
-          </table>
+
+        <div id="scan">
+          <h4 class="chartHeader">Scatter Plot</h4>
+          <div class="stacked" id="scatterPlotDiv">
+            <select id="selectButtonY"></select>
+            <div id="scatterPlot"></div>
+            <select id="selectButtonX"></select>
+          </div>
+          <div class="stacked" id="histogramDiv">
+            <div id="histogram"></div>
+            <div>
+              <label># bins</label>
+              <input type="number" min="0" max="100" step="5" value="10" id="nBin">
+            </div>
+            <div id="histogramBtns">
+              <button onclick="histMoveLeft()">
+                <h3><i class="bi bi-arrow-left-circle-fill"></i></h3>
+              </button>
+              <button onclick="histMoveRight()">
+                <h3><i class="bi bi-arrow-right-circle-fill"></i></h3>
+              </button>
+              <p id="histRange"></p>
+              <p id="histFrequency"></p>
+            </div>
+          </div>
+          <div class="stacked" id="scanResults">
+            <div class="inline">
+              <h4 class="chartHeader">Scan Results</h4>
+              <!-- <p id="numOfRows">(57)</p> -->
+            </div>
+            <table id="scan history">
+              <thead id="head">
+              </thead>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script src="js/index.js"></script>
+    <script src="js/index.js"></script>
 </body>
 
 </html>
