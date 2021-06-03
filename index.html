@@ -246,17 +246,17 @@
             <div id="histogram"></div>
             <div>
               <label># bins</label>
-              <input type="number" min="20" max="100" step="5" value="20" id="nBin">
+              <input type="number" min="0" max="100" step="5" value="10" id="nBin">
             </div>
             <div id="histogramBtns">
-              <button>
+              <button onclick="histMoveLeft()">
                 <h3><i class="bi bi-arrow-left-circle-fill"></i></h3>
               </button>
-              <button>
+              <button onclick="histMoveRight()">
                 <h3><i class="bi bi-arrow-right-circle-fill"></i></h3>
               </button>
-              <p>0.05 to 0.1</p>
-              <p>83</p>
+              <p id="histRange"></p>
+              <p id="histFrequency"></p>
             </div>
           </div>
           <div class="stacked" id="scanResults">

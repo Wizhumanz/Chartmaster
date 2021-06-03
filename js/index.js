@@ -9,6 +9,11 @@ if (userID === undefined) {
   document.getElementById("undefinedUserErr").style.display = "block"
 }
 
+// Histogram Btns
+let histBins
+let histIndex = 0
+let u
+
 // Progress bar
 document.getElementById("progress").style.display = "none";
 
@@ -1331,7 +1336,6 @@ function drawScatterPlot(data) {
 }
 
 // HISTOGRAM
-
 function histogram(data) {
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 30, bottom: 30, left: 40 },
@@ -1376,28 +1380,27 @@ function histogram(data) {
 
     var bins = histogram(data)
 
+    histBins = bins
+    if (histIndex === 0) {
+      document.getElementById("histRange").innerText = histBins[histIndex].x0 + " to " + histBins[histIndex].x1
+      document.getElementById("histFrequency").innerText = histBins[histIndex].length
+    }
+
     // Y axis: update now that we know the domain
     y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
     yAxis
       .transition()
-      .duration(1000)
+      .duration(0)
       .call(d3.axisLeft(y));
     
     // x.domain([0, d3.max(bins, function(d) { return d.Growth; })]);   // d3.hist has to be called before the Y axis obviously
     xAxis
       .transition()
-      .duration(1000)
+      .duration(0)
       .call(d3.axisBottom(x).ticks(nBin));
 
-    // Y axis: update now that we know the domain
-    y.domain([0, d3.max(bins, function (d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
-    yAxis
-      .transition()
-      .duration(1000)
-      .call(d3.axisLeft(y));
-
     // Join the rect with the bins data
-    var u = svg.selectAll("rect")
+    u = svg.selectAll("rect")
       .data(bins)
 
     // Manage the existing bars and eventually the new ones:
@@ -1406,13 +1409,12 @@ function histogram(data) {
       .append("rect") // Add a new rect for each new elements
       .merge(u) // get the already existing elements as well
       .transition() // and apply changes to all of them
-      .duration(1000)
+      .duration(0)
       .attr("x", 1)
       .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
       .attr("width", function(d) { return Math.abs(x(d.x1) - x(d.x0) -1) ; })
       .attr("height", function(d) { return height - y(d.length); })
-      .style("fill", "#00ff77")
-
+      .style("fill", function(d) { return d==histBins[histIndex]? "#FFFF00" : "#00ff77"})
 
     // If less bar in the new histogram, I delete the ones not in use anymore
     u
@@ -1422,16 +1424,37 @@ function histogram(data) {
   }
 
 
-  // Initialize with 20 bins
-  update(10)
+  // Initialize with 10 bins
+  update(document.getElementById("nBin").value)
 
 
   // Listen to the button -> update if user change it
   d3.select("#nBin").on("input", function () {
+    histIndex = 0
     update(+this.value);
   });
 
   // });
+}
+
+function histMoveRight() {
+  if (histIndex+1 < histBins.length) {
+    histIndex += 1
+    document.getElementById("histRange").innerText = histBins[histIndex].x0 + " to " + histBins[histIndex].x1
+    document.getElementById("histFrequency").innerText = histBins[histIndex].length
+    d3.selectAll("#histogram > *").remove();
+    histogram(allScatter)
+  }
+}
+
+function histMoveLeft() {
+  if (histIndex-1 >= 0) {
+    histIndex -= 1
+    document.getElementById("histRange").innerText = histBins[histIndex].x0 + " to " + histBins[histIndex].x1
+    document.getElementById("histFrequency").innerText = histBins[histIndex].length
+    d3.selectAll("#histogram > *").remove();
+    histogram(allScatter)
+  }
 }
 
 // Helper Functions
