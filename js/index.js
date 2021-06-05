@@ -1169,11 +1169,13 @@ function plotHistory(data) {
 // Scatter plot
 function drawScatterPlot(data) {
   data.forEach((e) => {
-    e.EntryTime = new Date(Math.abs((new Date(e.EntryTime))))
-    e.ExtentTime = new Date(Math.abs((new Date(e.ExtentTime))))
+    e["EntryDate"] = new Date(Math.abs((new Date(e.EntryTime))) )
+    e["ExtentDate"] = new Date(Math.abs((new Date(e.ExtentTime))) )
+    e.Entry = new Date(Math.abs((new Date(e.EntryTime))) ).getHours() + (new Date(Math.abs((new Date(e.EntryTime))) ).getMinutes()/60)
+    e.Extent = new Date(Math.abs((new Date(e.ExtentTime))) ).getHours() + (new Date(Math.abs((new Date(e.ExtentTime))) ).getMinutes()/60)
     // - getLocalTimezone()
   })
-
+console.log(data)
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 100, bottom: 30, left: 50 },
     width = 750 - margin.left - margin.right,
@@ -1189,8 +1191,8 @@ function drawScatterPlot(data) {
       "translate(" + margin.left + "," + margin.top + ")");
 
   // List of groups (here I have one group per column)
-  var YOptions = ["Growth", "Duration", "EntryTime", "ExtentTime", "EntryPivotsPriceDiffPerc"]
-  var XOptions = ["EntryTime", "ExtentTime", "Growth", "Duration", "EntryPivotsPriceDiffPerc"]
+  var YOptions = ["Growth", "Duration", "EntryDate", "ExtentDate", "Entry", "Extent", "EntryPivotsPriceDiffPerc"]
+  var XOptions = ["EntryDate", "ExtentDate", "Entry", "Extent", "Growth", "Duration", "EntryPivotsPriceDiffPerc"]
 
   let currentY = YOptions[0]
   let currentX = XOptions[0]
@@ -1271,7 +1273,7 @@ function drawScatterPlot(data) {
     //     )
 
     // Add Y axis
-    if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
+    if (selectedGroup == "EntryDate" || selectedGroup == "ExtentDate") {
       y = d3.scaleTime()
         .domain(d3.extent(dataFilter.map((d) => { return d.y })))
         .range([height, 0]);
@@ -1297,7 +1299,7 @@ function drawScatterPlot(data) {
     // Create new data with the selection?
     var dataFilter = data.map(function (d) { return { x: d[selectedGroup], y: d[currentY] } })
     // Add X axis
-    if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
+    if (selectedGroup == "EntryDate" || selectedGroup == "ExtentDate") {
       x = d3.scaleTime()
         .domain(d3.extent(dataFilter.map((d) => { return d.x })))
         .range([0, width]);
