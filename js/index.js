@@ -1192,7 +1192,7 @@ console.log(data)
 
   // List of groups (here I have one group per column)
   var YOptions = ["Growth", "Duration", "EntryDate", "ExtentDate", "Entry", "Extent", "EntryPivotsPriceDiffPerc"]
-  var XOptions = ["EntryDate", "ExtentDate", "Entry", "Extent", "Growth", "Duration", "EntryPivotsPriceDiffPerc"]
+  var XOptions = ["Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "Duration", "EntryPivotsPriceDiffPerc"]
 
   let currentY = YOptions[0]
   let currentX = XOptions[0]
