@@ -172,7 +172,8 @@ function connectWs(id) {
   wsStatus.innerText = "Loading websockets..."
   var socket
   try {
-    socket = new WebSocket("ws://localhost:8000/ws-cm/" + userID);
+    socket = new WebSocket("ws://localhost:8001/ws-cm/" + "5632499082330112");
+    console.log(socket)
   } catch (err) {
     console.log(err);
   }
@@ -1161,11 +1162,13 @@ function plotHistory(data) {
 // Scatter plot
 function drawScatterPlot(data) {
   data.forEach((e) => {
-    e.EntryTime = new Date(Math.abs((new Date(e.EntryTime))) )
-    e.ExtentTime = new Date(Math.abs((new Date(e.ExtentTime))) )
+    e["EntryDate"] = new Date(Math.abs((new Date(e.EntryTime))) )
+    e["ExtentDate"] = new Date(Math.abs((new Date(e.ExtentTime))) )
+    e.Entry = new Date(Math.abs((new Date(e.EntryTime))) ).getHours() + (new Date(Math.abs((new Date(e.EntryTime))) ).getMinutes()/60)
+    e.Extent = new Date(Math.abs((new Date(e.ExtentTime))) ).getHours() + (new Date(Math.abs((new Date(e.ExtentTime))) ).getMinutes()/60)
     // - getLocalTimezone()
   })
-
+console.log(data)
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 100, bottom: 30, left: 50 },
     width = 750 - margin.left - margin.right,
@@ -1181,8 +1184,8 @@ function drawScatterPlot(data) {
       "translate(" + margin.left + "," + margin.top + ")");
 
   // List of groups (here I have one group per column)
-  var YOptions = ["Growth", "Duration", "EntryTime", "ExtentTime"]
-  var XOptions = ["EntryTime", "ExtentTime", "Growth", "Duration"]
+  var YOptions = ["Growth", "Duration", "EntryDate", "ExtentDate", "Entry", "Extent", "EntryPivotsPriceDiffPerc"]
+  var XOptions = ["EntryDate", "ExtentDate", "Entry", "Extent", "Growth", "Duration", "EntryPivotsPriceDiffPerc"]
 
   let currentY = YOptions[0]
   let currentX = XOptions[0]
@@ -1204,10 +1207,10 @@ function drawScatterPlot(data) {
     .text(function (d) { return d; }) // text showed in the menu
     .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
-    // Add X axis --> it is a date format
+  // Add X axis --> it is a date format
   var x = d3.scaleTime()
-    .domain(d3.extent(data.map((d) => {return d[currentX]})))
-    .range([ 0, width ]);
+    .domain(d3.extent(data.map((d) => { return d[currentX] })))
+    .range([0, width]);
   var xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x))
@@ -1216,8 +1219,8 @@ function drawScatterPlot(data) {
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain(d3.extent(data.map((d) => {return d[currentY]})))
-    .range([ height, 0 ]);
+    .domain(d3.extent(data.map((d) => { return d[currentY] })))
+    .range([height, 0]);
   var yAxis = svg.append("g")
     .call(d3.axisLeft(y))
     .attr("stroke", "white")
@@ -1242,16 +1245,16 @@ function drawScatterPlot(data) {
     .data(data)
     .enter()
     .append('circle')
-      .attr("cx", function(d) { return x(+d[currentX]) })
-      .attr("cy", function(d) { return y(+d[currentY]) })
-      .attr("r", 3)
-      .style("fill", "#ff3bdb")
+    .attr("cx", function (d) { return x(+d[currentX]) })
+    .attr("cy", function (d) { return y(+d[currentY]) })
+    .attr("r", 2)
+    .style("fill", "#ff3bdb")
 
 
   // A function that update the chart
   function updateY(selectedGroup) {
     // Create new data with the selection?
-    var dataFilter = data.map(function(d){return {x: d[currentX], y:d[selectedGroup]} })
+    var dataFilter = data.map(function (d) { return { x: d[currentX], y: d[selectedGroup] } })
     // Give these new data to update line
     // line
     //     .datum(dataFilter)
@@ -1263,14 +1266,14 @@ function drawScatterPlot(data) {
     //     )
 
     // Add Y axis
-    if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
+    if (selectedGroup == "EntryDate" || selectedGroup == "ExtentDate") {
       y = d3.scaleTime()
-        .domain(d3.extent(dataFilter.map((d) => {return d.y})))
-        .range([ height, 0 ]);
+        .domain(d3.extent(dataFilter.map((d) => { return d.y })))
+        .range([height, 0]);
     } else {
       y = d3.scaleLinear()
-        .domain(d3.extent(dataFilter.map((d) => {return d.y})))
-        .range([ height, 0 ]);
+        .domain(d3.extent(dataFilter.map((d) => { return d.y })))
+        .range([height, 0]);
     }
 
     yAxis.transition().duration(1000).call(d3.axisLeft(y))
@@ -1279,24 +1282,24 @@ function drawScatterPlot(data) {
       .data(dataFilter)
       .transition()
       .duration(1000)
-        .attr("cx", function(d) { return x(+d.x) })
-        .attr("cy", function(d) { return y(+d.y) })
+      .attr("cx", function (d) { return x(+d.x) })
+      .attr("cy", function (d) { return y(+d.y) })
 
     currentY = selectedGroup
   }
 
   function updateX(selectedGroup) {
     // Create new data with the selection?
-    var dataFilter = data.map(function(d){return {x:d[selectedGroup], y: d[currentY]} })
+    var dataFilter = data.map(function (d) { return { x: d[selectedGroup], y: d[currentY] } })
     // Add X axis
-    if (selectedGroup == "EntryTime" || selectedGroup == "ExtentTime") {
+    if (selectedGroup == "EntryDate" || selectedGroup == "ExtentDate") {
       x = d3.scaleTime()
-          .domain(d3.extent(dataFilter.map((d) => {return d.x})))
-          .range([ 0, width ]);
+        .domain(d3.extent(dataFilter.map((d) => { return d.x })))
+        .range([0, width]);
     } else {
       x = d3.scaleLinear()
-          .domain([0,d3.max(dataFilter.map((d) => {return d.x}))])
-          .range([ 0, width ]);
+        .domain([0, d3.max(dataFilter.map((d) => { return d.x }))])
+        .range([0, width]);
     }
 
     xAxis.transition().duration(1000).call(d3.axisBottom(x))
@@ -1305,21 +1308,21 @@ function drawScatterPlot(data) {
       .data(dataFilter)
       .transition()
       .duration(1000)
-        .attr("cx", function(d) { return x(+d.x) })
-        .attr("cy", function(d) { return y(+d.y) })
+      .attr("cx", function (d) { return x(+d.x) })
+      .attr("cy", function (d) { return y(+d.y) })
 
     currentX = selectedGroup
   }
 
   // When the button is changed, run the updateChart function
-  d3.select("#selectButtonY").on("change", function(d) {
+  d3.select("#selectButtonY").on("change", function (d) {
     // recover the option that has been chosen
     var selectedOption = d3.select(this).property("value")
     // run the updateChart function with this selected option
     updateY(selectedOption)
   })
 
-  d3.select("#selectButtonX").on("change", function(d) {
+  d3.select("#selectButtonX").on("change", function (d) {
     // recover the option that has been chosen
     var selectedOption = d3.select(this).property("value")
     // run the updateChart function with this selected option
@@ -1343,10 +1346,10 @@ function histogram(data) {
     .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
 
-  
+
   // X axis: scale and draw:
   var x = d3.scaleLinear()
-    .domain([0, Math.ceil(d3.max(data, function(d) { return +d.Growth }))])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+    .domain([Math.floor(d3.min(data, function (d) { return +d.Growth })), Math.ceil(d3.max(data, function (d) { return +d.Growth }))])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
     .range([0, width])
   var xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -1379,12 +1382,12 @@ function histogram(data) {
     }
 
     // Y axis: update now that we know the domain
-    y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+    y.domain([0, d3.max(bins, function (d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
     yAxis
       .transition()
       .duration(0)
       .call(d3.axisLeft(y));
-    
+
     // x.domain([0, d3.max(bins, function(d) { return d.Growth; })]);   // d3.hist has to be called before the Y axis obviously
     xAxis
       .transition()
@@ -1403,10 +1406,10 @@ function histogram(data) {
       .transition() // and apply changes to all of them
       .duration(0)
       .attr("x", 1)
-      .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-      .attr("width", function(d) { return Math.abs(x(d.x1) - x(d.x0) -1) ; })
-      .attr("height", function(d) { return height - y(d.length); })
-      .style("fill", function(d) { return d==histBins[histIndex]? "#FFFF00" : "#00ff77"})
+      .attr("transform", function (d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+      .attr("width", function (d) { return Math.abs(x(d.x1) - x(d.x0) - 1); })
+      .attr("height", function (d) { return height - y(d.length); })
+      .style("fill", function (d) { return d == histBins[histIndex] ? "#fff94d" : "#00a123" })
 
     // If less bar in the new histogram, I delete the ones not in use anymore
     u
@@ -1430,7 +1433,7 @@ function histogram(data) {
 }
 
 function histMoveRight() {
-  if (histIndex+1 < histBins.length) {
+  if (histIndex + 1 < histBins.length) {
     histIndex += 1
     document.getElementById("histRange").innerText = histBins[histIndex].x0 + " to " + histBins[histIndex].x1
     document.getElementById("histFrequency").innerText = histBins[histIndex].length
@@ -1440,7 +1443,7 @@ function histMoveRight() {
 }
 
 function histMoveLeft() {
-  if (histIndex-1 >= 0) {
+  if (histIndex - 1 >= 0) {
     histIndex -= 1
     document.getElementById("histRange").innerText = histBins[histIndex].x0 + " to " + histBins[histIndex].x1
     document.getElementById("histFrequency").innerText = histBins[histIndex].length
