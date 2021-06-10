@@ -1,5 +1,5 @@
 
-let baseURL = "http://localhost:8000"
+let baseURL = "http://localhost:8001"
 let wsStatus = document.getElementById("wsStatus")
 
 
@@ -166,7 +166,7 @@ function connectWs(id) {
   wsStatus.innerText = "Loading websockets..."
   var socket
   try {
-    socket = new WebSocket("ws://localhost:8000/ws-cm/" + "5632499082330112");
+    socket = new WebSocket("ws://localhost:8001/ws-cm/" + "5632499082330112");
     console.log(socket)
   } catch (err) {
     console.log(err);
