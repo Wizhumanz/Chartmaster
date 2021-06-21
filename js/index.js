@@ -1050,7 +1050,18 @@ function drawPC(data) {
 
   // Scale the range of the data
   x.domain(d3.extent(data, function (d) { return d.date; }));
-  y.domain([0, d3.max(data, function (d) {
+  y.domain([d3.min(data, function (d) {
+      let minValue = []
+      let findMin = (key, value) => {
+        if (key !== "date") {
+          minValue.push(value)
+        }
+      }
+      useKeyAndValue(findMin, d)
+      console.log(minValue)
+      return 0.85 * (Math.min(...minValue));
+    })
+    , d3.max(data, function (d) {
     let maxValue = []
     let findMax = (key, value) => {
       if (key !== "date") {
