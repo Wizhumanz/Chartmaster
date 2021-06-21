@@ -1059,7 +1059,7 @@ function drawPC(data) {
       }
       useKeyAndValue(findMin, d)
       console.log(minValue)
-      return 0.96 * (Math.min(...minValue));
+      return 0.98 * (Math.min(...minValue));
     })
     , d3.max(data, function (d) {
     let maxValue = []
