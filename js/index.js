@@ -1121,7 +1121,7 @@ function plotHistory(data) {
     var table = document.getElementById("history")
     table.innerHTML = ""
     let row = table.insertRow()
-    let tableHeader = ["Index", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Position Size", "Direction", "Parameter"]
+    let tableHeader = ["Index", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Fees", "Position Size", "Direction", "Parameter"]
     tableHeader.forEach(t => {
       let newCell = row.insertCell()
       newCell.innerHTML = t
@@ -1137,7 +1137,7 @@ function plotHistory(data) {
   var table = document.getElementById("history")
   table.innerHTML = ""
   let row = table.insertRow()
-  let tableHeader = ["Index", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Position Size", "Direction", "Parameter"]
+  let tableHeader = ["Index", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Fees", "Position Size", "Direction", "Parameter"]
   tableHeader.forEach(t => {
     let newCell = row.insertCell()
     newCell.innerHTML = t
@@ -1156,6 +1156,7 @@ function plotHistory(data) {
       row.insertCell().innerHTML = s.RiskedEquity.toFixed(2)
       dateStrs = s.DateTime.split("T")
       row.insertCell().innerHTML = dateStrs[0] + " | " + dateStrs[1]
+      row.insertCell().innerHTML = s.TotalFees
       row.insertCell().innerHTML = s.PosSize
       row.insertCell().innerHTML = s.Direction
       row.style.color = "white"
@@ -1202,8 +1203,8 @@ console.log(data)
       "translate(" + margin.left + "," + margin.top + ")");
 
   // List of groups (here I have one group per column)
-  var YOptions = ["Growth", "Duration", "EntryDate", "ExtentDate", "Entry", "Extent", "EntryPivotsPriceDiffPerc"]
-  var XOptions = ["Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "Duration", "EntryPivotsPriceDiffPerc"]
+  var YOptions = ["Growth", "Duration", "EntryDate", "ExtentDate", "Entry", "Extent", "MaxDrawdownPerc", "EntryPivotsPriceDiffPerc"]
+  var XOptions = ["Duration", "MaxDrawdownPerc", "Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "EntryPivotsPriceDiffPerc"]
 
   let currentY = YOptions[0]
   let currentX = XOptions[0]
