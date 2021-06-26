@@ -1077,7 +1077,7 @@ function drawPC(data) {
       }
     }
     useKeyAndValue(findMax, d)
-    return 1.1 * (Math.max(...maxValue));
+    return 1.03 * (Math.max(...maxValue));
   })]);
 
   let valueline = []
@@ -1164,7 +1164,7 @@ function plotHistory(data) {
       row.insertCell().innerHTML = s.RiskedEquity.toFixed(2)
       dateStrs = s.DateTime.split("T")
       row.insertCell().innerHTML = dateStrs[0] + " | " + dateStrs[1]
-      row.insertCell().innerHTML = s.PosSize.toFixed(2)
+      row.insertCell().innerHTML = s.PosSize
       row.insertCell().innerHTML = s.Direction
       row.style.color = "white"
       //param name
