@@ -233,6 +233,8 @@ function connectWs(id) {
           indexScan = 1
           //add new data to existing array
           allScatter = allScatter.concat(JSON.parse(msg.data).Data)
+          console.log(allScatter)
+
           d3.selectAll("#scatterPlot > *").remove();
           d3.selectAll("#selectButtonY > *").remove();
           d3.selectAll("#selectButtonX > *").remove();
@@ -1188,6 +1190,7 @@ function plotHistory(data) {
 
 /// SCAN HISTORY
 function scanHistory(data) {
+  console.log(data)
   if (data === undefined || !data.length || data.length === 0) {
     var table = document.getElementById("scanHistory")
     table.innerHTML = ""
@@ -1215,28 +1218,21 @@ function scanHistory(data) {
     newCell.className = "thead"
   })
   //for each param
-  data.forEach((d) => {
+  data.forEach((s) => {
     //for each trade history item in that param
-    d.Data.forEach((s, i) => {
-      // console.log(s)
-      let row = table.insertRow()
-      row.insertCell().innerHTML = indexScan
-      row.insertCell().innerHTML = s.EntryTime
-      row.insertCell().innerHTML = s.MaxDrawdownPerc
-      row.insertCell().innerHTML = s.EntryLastPLIndex
-      row.insertCell().innerHTML = s.ActualEntryIndex
-      row.insertCell().innerHTML = s.ExtentTime
-      row.insertCell().innerHTML = s.Duration
-      row.insertCell().innerHTML = s.Growth
-      row.insertCell().innerHTML = s.BreakIndex
-      row.style.color = "white"
-      //param name
-      let param = row.insertCell()
-      param.innerHTML = d.DataLabel
-      param.style.color = "white"
+    let row = table.insertRow()
+    row.insertCell().innerHTML = indexScan
+    row.insertCell().innerHTML = s.EntryTime
+    row.insertCell().innerHTML = s.MaxDrawdownPerc.toFixed(5)
+    row.insertCell().innerHTML = s.EntryLastPLIndex
+    row.insertCell().innerHTML = s.ActualEntryIndex
+    row.insertCell().innerHTML = s.ExtentTime
+    row.insertCell().innerHTML = s.Duration
+    row.insertCell().innerHTML = s.Growth.toFixed(5)
+    row.insertCell().innerHTML = s.BreakIndex
+    row.style.color = "white"
 
-      indexScan += 1
-    })
+    indexScan += 1
   })
 }
 
@@ -1249,7 +1245,6 @@ function drawScatterPlot(data) {
     e.Extent = new Date(Math.abs((new Date(e.ExtentTime))) ).getHours() + (new Date(Math.abs((new Date(e.ExtentTime))) ).getMinutes()/60)
     // - getLocalTimezone()
   })
-console.log(data)
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 100, bottom: 30, left: 50 },
     width = 750 - margin.left - margin.right,
