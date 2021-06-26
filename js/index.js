@@ -23,6 +23,9 @@ document.getElementById("scan").style.display = "none"
 // Simulated Trades index
 let indexST = 1
 
+// Scan History index
+let indexScan = 1
+
 // History json name
 var selectedRes
 
@@ -162,7 +165,6 @@ function loadResult() {
 loadResult()
 
 function connectWs(id) {
-  console.log(id)
   wsStatus.innerText = "Loading websockets..."
   var socket
   try {
@@ -214,22 +216,28 @@ function connectWs(id) {
 
         if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
           allScatter = JSON.parse(msg.data).Data
+
+          indexScan = 1
           //if candlestick chart empty
           d3.selectAll("#scatterPlot > *").remove();
           d3.selectAll("#selectButtonY > *").remove();
           d3.selectAll("#selectButtonX > *").remove();
           d3.selectAll("#histogram > *").remove();
+          scanHistory(allScatter)
           drawScatterPlot(allScatter)
           histogram(allScatter)
           //save res id so next messages with same ID will be concatenated with existing data
           existingWSResIDPC = JSON.parse(msg.data).ResultID
         } else {
+
+          indexScan = 1
           //add new data to existing array
           allScatter = allScatter.concat(JSON.parse(msg.data).Data)
           d3.selectAll("#scatterPlot > *").remove();
           d3.selectAll("#selectButtonY > *").remove();
           d3.selectAll("#selectButtonX > *").remove();
           d3.selectAll("#histogram > *").remove();
+          scanHistory(allScatter)
           drawScatterPlot(allScatter)
           histogram(allScatter)
         }
@@ -260,6 +268,7 @@ function connectWs(id) {
 
       //profit curve
       if (JSON.parse(msg.data) != undefined && (JSON.parse(msg.data).Data.length > 0) && parseFloat(JSON.parse(msg.data).Data[0].Data[0].Equity) > 0) {
+
         //check if concat needed, or new data
         if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
           allProfitCurve = JSON.parse(msg.data).Data
@@ -1058,7 +1067,6 @@ function drawPC(data) {
         }
       }
       useKeyAndValue(findMin, d)
-      console.log(minValue)
       return 0.85 * (Math.min(...minValue));
     })
     , d3.max(data, function (d) {
@@ -1173,6 +1181,60 @@ function plotHistory(data) {
         row.style.backgroundColor = "#1a0000"
       }
       indexST += 1
+    })
+  })
+}
+
+/// SCAN HISTORY
+function scanHistory(data) {
+  if (data === undefined || !data.length || data.length === 0) {
+    var table = document.getElementById("scanHistory")
+    table.innerHTML = ""
+    let row = table.insertRow()
+    let tableHeader = ["Index", "Entry Time", "Entry Trade Open Candle", "Entry Last PL Index", "Actual Entry Index", "Extent Time", "Duration", "Growth", "Break Index"]
+    tableHeader.forEach(t => {
+      let newCell = row.insertCell()
+      newCell.innerHTML = t
+      newCell.className = "thead"
+    })
+    document.getElementById("scanNumOfRows").innerHTML = "(0)"
+    return
+  }
+
+  // Number of rows
+  document.getElementById("scanNumOfRows").innerHTML = "(" + data.length.toString() + ")"
+
+  var table = document.getElementById("scanHistory")
+  table.innerHTML = ""
+  let row = table.insertRow()
+  let tableHeader = ["Index", "Entry Time", "Max Drawdown Perc", "Entry Last PL Index", "Actual Entry Index", "Extent Time", "Duration", "Growth", "Break Index"]
+  tableHeader.forEach(t => {
+    let newCell = row.insertCell()
+    newCell.innerHTML = t
+    newCell.className = "thead"
+  })
+  //for each param
+  data.forEach((d) => {
+    //for each trade history item in that param
+    d.Data.forEach((s, i) => {
+      // console.log(s)
+      let row = table.insertRow()
+      row.insertCell().innerHTML = indexScan
+      row.insertCell().innerHTML = s.EntryTime
+      row.insertCell().innerHTML = s.MaxDrawdownPerc
+      row.insertCell().innerHTML = s.EntryLastPLIndex
+      row.insertCell().innerHTML = s.ActualEntryIndex
+      row.insertCell().innerHTML = s.ExtentTime
+      row.insertCell().innerHTML = s.Duration
+      row.insertCell().innerHTML = s.Growth
+      row.insertCell().innerHTML = s.BreakIndex
+      row.style.color = "white"
+      //param name
+      let param = row.insertCell()
+      param.innerHTML = d.DataLabel
+      param.style.color = "white"
+
+      indexScan += 1
     })
   })
 }
