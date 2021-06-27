@@ -1211,7 +1211,7 @@ function scanHistory(data) {
   var table = document.getElementById("scanHistory")
   table.innerHTML = ""
   let row = table.insertRow()
-  let tableHeader = ["Index", "Entry Time", "Max Drawdown Perc", "Entry Last PL Index", "Actual Entry Index", "Extent Time", "Duration", "Growth", "Break Index"]
+  let tableHeader = ["i", "Entry", "Growth", "Extent", "Duration to Extent(candles)", "BreakTime", "Max Drawdown (%)", "Last PL Index", "Actual Entry Index", "Break Index", "PL1-PL2", "PL2-PL3", "PL1-PL3"]
   tableHeader.forEach(t => {
     let newCell = row.insertCell()
     newCell.innerHTML = t
@@ -1223,13 +1223,17 @@ function scanHistory(data) {
     let row = table.insertRow()
     row.insertCell().innerHTML = indexScan
     row.insertCell().innerHTML = s.EntryTime
-    row.insertCell().innerHTML = s.MaxDrawdownPerc.toFixed(5)
-    row.insertCell().innerHTML = s.EntryLastPLIndex
-    row.insertCell().innerHTML = s.ActualEntryIndex
+    row.insertCell().innerHTML = s.Growth.toFixed(5)
     row.insertCell().innerHTML = s.ExtentTime
     row.insertCell().innerHTML = s.Duration
-    row.insertCell().innerHTML = s.Growth.toFixed(5)
+    row.insertCell().innerHTML = s.BreakTime
+    row.insertCell().innerHTML = s.MaxDrawdownPerc.toFixed(3)
+    row.insertCell().innerHTML = s.EntryLastPLIndex
+    row.insertCell().innerHTML = s.ActualEntryIndex
     row.insertCell().innerHTML = s.BreakIndex
+    row.insertCell().innerHTML = s.FirstSecondEntryPivotPriceDiffPerc
+    row.insertCell().innerHTML = s.SecondThirdEntryPivotPriceDiffPerc
+    row.insertCell().innerHTML = s.FirstThirdEntryPivotPriceDiffPerc
     row.style.color = "white"
 
     indexScan += 1
@@ -1260,8 +1264,8 @@ function drawScatterPlot(data) {
       "translate(" + margin.left + "," + margin.top + ")");
 
   // List of groups (here I have one group per column)
-  var YOptions = ["Growth", "Duration", "EntryDate", "ExtentDate", "Entry", "Extent", "MaxDrawdownPerc", "EntryPivotsPriceDiffPerc"]
-  var XOptions = ["Duration", "MaxDrawdownPerc", "Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "EntryPivotsPriceDiffPerc"]
+  var YOptions = ["Growth", "Duration", "EntryDate", "ExtentDate", "Entry", "Extent", "MaxDrawdownPerc", "EntryPivotsPriceDiffPerc", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
+  var XOptions = ["Duration", "MaxDrawdownPerc", "Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "EntryPivotsPriceDiffPerc", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
 
   let currentY = YOptions[0]
   let currentX = XOptions[0]
