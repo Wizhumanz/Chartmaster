@@ -233,7 +233,6 @@ function connectWs(id) {
           indexScan = 1
           //add new data to existing array
           allScatter = allScatter.concat(JSON.parse(msg.data).Data)
-          console.log(allScatter)
 
           d3.selectAll("#scatterPlot > *").remove();
           d3.selectAll("#selectButtonY > *").remove();
@@ -1218,6 +1217,8 @@ function scanHistory(data) {
     newCell.className = "thead"
   })
 
+  let removedData = data
+
   //for each param
   data.forEach((s) => {
     // creating checkbox element
@@ -1227,13 +1228,37 @@ function scanHistory(data) {
     checkbox.type = "checkbox";
     checkbox.value = "value";
     checkbox.class = "checkBoxTable";
-    checkbox.id = "checkBox"+indexScan;
+    checkbox.id = s.EntryTime;
     checkbox.checked = true
+
     checkbox.addEventListener('change', function() {
       if (this.checked) {
         console.log(checkbox.id+" is checked..");
+        data.forEach((s) => {
+          if (s.EntryTime == checkbox.id) {
+            removedData.push(s)
+            d3.selectAll("#scatterPlot > *").remove();
+            d3.selectAll("#selectButtonY > *").remove();
+            d3.selectAll("#selectButtonX > *").remove();
+            d3.selectAll("#histogram > *").remove();
+            drawScatterPlot(removedData)
+            histogram(removedData)
+          }
+        })
       } else {
-        console.log(checkbox.id+" is not checked..");
+        data.forEach((s) => {
+          if (s.EntryTime == checkbox.id) {
+            removedData = removedData.filter(d => {
+              return d != s
+            })
+            d3.selectAll("#scatterPlot > *").remove();
+            d3.selectAll("#selectButtonY > *").remove();
+            d3.selectAll("#selectButtonX > *").remove();
+            d3.selectAll("#histogram > *").remove();
+            drawScatterPlot(removedData)
+            histogram(removedData)
+          }
+        })
       }
     });
 
