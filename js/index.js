@@ -1231,9 +1231,9 @@ function scanHistory(data) {
     checkbox.id = s.EntryTime;
     checkbox.checked = true
 
+    // If checkbox is unchecked, remove the data and display. If it's checked, add the data and display.
     checkbox.addEventListener('change', function() {
       if (this.checked) {
-        console.log(checkbox.id+" is checked..");
         data.forEach((s) => {
           if (s.EntryTime == checkbox.id) {
             removedData.push(s)
