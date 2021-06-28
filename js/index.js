@@ -1211,16 +1211,35 @@ function scanHistory(data) {
   var table = document.getElementById("scanHistory")
   table.innerHTML = ""
   let row = table.insertRow()
-  let tableHeader = ["Entry Index", "Entry Time", "Growth", "MaxDrawdownExtent(%)", "Extent", "Duration to Extent(candles)", "BreakTime", "Max Raw Drawdown (%)", "Last PL Index", "Break Index", "PL1-PL2", "PL2-PL3", "PL1-PL3", "i"]
+  let tableHeader = ["Checkbox", "Entry Index", "Entry Time", "Growth", "MaxDrawdownExtent(%)", "Extent", "Duration to Extent(candles)", "BreakTime", "Max Raw Drawdown (%)", "Last PL Index", "Break Index", "PL1-PL2", "PL2-PL3", "PL1-PL3", "i"]
   tableHeader.forEach(t => {
     let newCell = row.insertCell()
     newCell.innerHTML = t
     newCell.className = "thead"
   })
+
   //for each param
   data.forEach((s) => {
+    // creating checkbox element
+    var checkbox = document.createElement('input');
+              
+    // Assigning the attributes to created checkbox
+    checkbox.type = "checkbox";
+    checkbox.value = "value";
+    checkbox.class = "checkBoxTable";
+    checkbox.id = "checkBox"+indexScan;
+    checkbox.checked = true
+    checkbox.addEventListener('change', function() {
+      if (this.checked) {
+        console.log(checkbox.id+" is checked..");
+      } else {
+        console.log(checkbox.id+" is not checked..");
+      }
+    });
+
     //for each trade history item in that param
     let row = table.insertRow()
+    row.insertCell().appendChild(checkbox)
     row.insertCell().innerHTML = s.ActualEntryIndex
     row.insertCell().innerHTML = s.EntryTime
     row.insertCell().innerHTML = s.Growth.toFixed(5)
