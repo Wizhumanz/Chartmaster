@@ -1266,8 +1266,8 @@ function drawScatterPlot(data) {
       "translate(" + margin.left + "," + margin.top + ")");
 
   // List of groups (here I have one group per column)
-  var YOptions = ["Growth", "Duration", "EntryDate", "ExtentDate", "Entry", "Extent", "MaxDrawdownPerc", "EntryPivotsPriceDiffPerc", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
-  var XOptions = ["Duration", "MaxDrawdownPerc", "Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "EntryPivotsPriceDiffPerc", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
+  var YOptions = ["Growth", "Duration", "TrailingMaxDrawdownPercTillExtent", "EntryDate", "ExtentDate", "Entry", "Extent", "MaxDrawdownPerc", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
+  var XOptions = ["Duration", "TrailingMaxDrawdownPercTillExtent", "MaxDrawdownPerc", "Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
 
   let currentY = YOptions[0]
   let currentX = XOptions[0]
