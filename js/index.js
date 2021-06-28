@@ -1211,7 +1211,7 @@ function scanHistory(data) {
   var table = document.getElementById("scanHistory")
   table.innerHTML = ""
   let row = table.insertRow()
-  let tableHeader = ["i", "Entry", "Growth", "Extent", "Duration to Extent(candles)", "BreakTime", "Max Drawdown (%)", "Last PL Index", "Actual Entry Index", "Break Index", "PL1-PL2", "PL2-PL3", "PL1-PL3"]
+  let tableHeader = ["Entry Index", "Entry Time", "Growth", "MaxDrawdownExtent(%)", "Extent", "Duration to Extent(candles)", "BreakTime", "Max Raw Drawdown (%)", "Last PL Index", "Break Index", "PL1-PL2", "PL2-PL3", "PL1-PL3", "i"]
   tableHeader.forEach(t => {
     let newCell = row.insertCell()
     newCell.innerHTML = t
@@ -1221,19 +1221,21 @@ function scanHistory(data) {
   data.forEach((s) => {
     //for each trade history item in that param
     let row = table.insertRow()
-    row.insertCell().innerHTML = indexScan
+    row.insertCell().innerHTML = s.ActualEntryIndex
     row.insertCell().innerHTML = s.EntryTime
     row.insertCell().innerHTML = s.Growth.toFixed(5)
+    row.insertCell().innerHTML = s.TrailingMaxDrawdownPercTillExtent
     row.insertCell().innerHTML = s.ExtentTime
     row.insertCell().innerHTML = s.Duration
     row.insertCell().innerHTML = s.BreakTime
     row.insertCell().innerHTML = s.MaxDrawdownPerc.toFixed(3)
     row.insertCell().innerHTML = s.EntryLastPLIndex
-    row.insertCell().innerHTML = s.ActualEntryIndex
     row.insertCell().innerHTML = s.BreakIndex
     row.insertCell().innerHTML = s.FirstSecondEntryPivotPriceDiffPerc
     row.insertCell().innerHTML = s.SecondThirdEntryPivotPriceDiffPerc
     row.insertCell().innerHTML = s.FirstThirdEntryPivotPriceDiffPerc
+    row.insertCell().innerHTML = indexScan
+
     row.style.color = "white"
 
     indexScan += 1
