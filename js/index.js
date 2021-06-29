@@ -1127,7 +1127,7 @@ function plotHistory(data) {
     var table = document.getElementById("history")
     table.innerHTML = ""
     let row = table.insertRow()
-    let tableHeader = ["Index", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Fees", "Position Size", "Direction", "Parameter"]
+    let tableHeader = ["Index", "Profit", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Fees", "Position Size", "Direction", "Parameter"]
     tableHeader.forEach(t => {
       let newCell = row.insertCell()
       newCell.innerHTML = t
@@ -1143,7 +1143,7 @@ function plotHistory(data) {
   var table = document.getElementById("history")
   table.innerHTML = ""
   let row = table.insertRow()
-  let tableHeader = ["Index", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Fees", "Position Size", "Direction", "Parameter"]
+  let tableHeader = ["Index", "Profit($)", "EntryDateTime", "ExitDateTime", "Raw Profit(%)", "Entry Price", "Exit Price", "Risked Equity", "Fees($)", "Position Size", "Direction", "Parameter"]
   tableHeader.forEach(t => {
     let newCell = row.insertCell()
     newCell.innerHTML = t
@@ -1156,14 +1156,15 @@ function plotHistory(data) {
       // console.log(s)
       let row = table.insertRow()
       row.insertCell().innerHTML = indexST
-      row.insertCell().innerHTML = s.RawProfitPerc.toFixed(2)
-      row.insertCell().innerHTML = s.EntryPrice.toFixed(2)
-      row.insertCell().innerHTML = s.ExitPrice.toFixed(2)
-      row.insertCell().innerHTML = s.RiskedEquity.toFixed(2)
-      dateStrs = s.DateTime.split("T")
-      row.insertCell().innerHTML = dateStrs[0] + " | " + dateStrs[1]
-      row.insertCell().innerHTML = s.TotalFees
-      row.insertCell().innerHTML = s.PosSize
+      row.insertCell().innerHTML = s.Profit != undefined ? s.Profit.toFixed(4) : s.Profit
+      row.insertCell().innerHTML = s.EntryDateTime
+      row.insertCell().innerHTML = s.ExitDateTime
+      row.insertCell().innerHTML = s.RawProfitPerc != undefined ? s.RawProfitPerc.toFixed(2) : s.RawProfitPerc
+      row.insertCell().innerHTML = s.EntryPrice != undefined ? s.EntryPrice.toFixed(4) : s.EntryPrice
+      row.insertCell().innerHTML = s.ExitPrice != undefined ? s.ExitPrice.toFixed(2) : s.ExitPrice
+      row.insertCell().innerHTML = s.RiskedEquity != undefined ? s.RiskedEquity.toFixed(3) : s.RiskedEquity
+      row.insertCell().innerHTML = s.TotalFees != undefined ? s.TotalFees.toFixed(3) : s.TotalFees
+      row.insertCell().innerHTML = s.PosSize != undefined ? s.PosSize.toFixed(6) : s.PosSize
       row.insertCell().innerHTML = s.Direction
       row.style.color = "white"
       //param name
@@ -1307,8 +1308,8 @@ function drawScatterPlot(data) {
       "translate(" + margin.left + "," + margin.top + ")");
 
   // List of groups (here I have one group per column)
-  var YOptions = ["Growth", "Duration", "EntryDate", "ExtentDate", "Entry", "Extent", "MaxDrawdownPerc", "EntryPivotsPriceDiffPerc", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
-  var XOptions = ["Duration", "MaxDrawdownPerc", "Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "EntryPivotsPriceDiffPerc", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
+  var YOptions = ["Growth", "Duration", "TrailingMaxDrawdownPercTillExtent", "EntryDate", "ExtentDate", "Entry", "Extent", "MaxDrawdownPerc", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
+  var XOptions = ["Duration", "TrailingMaxDrawdownPercTillExtent", "MaxDrawdownPerc", "Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
 
   let currentY = YOptions[0]
   let currentX = XOptions[0]
