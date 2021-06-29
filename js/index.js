@@ -268,8 +268,7 @@ function connectWs(id) {
       }
 
       //profit curve
-      if (JSON.parse(msg.data) != undefined && (JSON.parse(msg.data).Data.length > 0) && parseFloat(JSON.parse(msg.data).Data[0].Data[0].Equity) > 0) {
-
+      if (JSON.parse(msg.data) != undefined && (JSON.parse(msg.data).Data[0].Data != null) && parseFloat(JSON.parse(msg.data).Data[0].Data[0].Equity) > 0) {
         //check if concat needed, or new data
         if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
           allProfitCurve = JSON.parse(msg.data).Data
@@ -285,9 +284,7 @@ function connectWs(id) {
       }
 
       //sim trades
-      if (((JSON.parse(msg.data) != undefined) && (parseFloat(JSON.parse(msg.data).Data[0].Data[0].EntryPrice) > 0))) {
-        console.log(JSON.parse(msg.data))
-
+      if (((JSON.parse(msg.data) != undefined) && (JSON.parse(msg.data).Data[0].Data != null) && (parseFloat(JSON.parse(msg.data).Data[0].Data[0].EntryPrice) > 0))) {
         if (existingWSResIDST === "" || existingWSResIDST !== JSON.parse(msg.data).ResultID) {
           allSimTrades = JSON.parse(msg.data).Data
           //if candlestick chart empty
@@ -517,7 +514,6 @@ function sharedLink() {
 sharedLink()
 
 function drawChart(start, end) {
-  console.log(start + " - " + end)
   let candlesToShow = allCandles.slice(start, end)
   // console.log(JSON.stringify(candlesToShow))
   if (!candlesToShow || candlesToShow.length == 0) {
@@ -1126,6 +1122,7 @@ function drawPC(data) {
 
 /// SIMULATED TRADES
 function plotHistory(data) {
+  console.log(data)
   if (data === undefined || !data.length || data.length === 0) {
     var table = document.getElementById("history")
     table.innerHTML = ""
