@@ -327,8 +327,10 @@ function computeBacktest() {
   displayCandlesChunks = [] // chunks of candles for display
 
   let operation = (document.getElementById("modeTogglerBtn").innerHTML === "Switch to Scan Mode") ? "BACKTEST" : "SCAN"
+  let chunkProcessOption = (document.getElementById("chunkProcessTogglerBtn").innerHTML === "Switch to Waterfall") ? "RAINDROPS" : "WATERFALL"
 
   let backendInfo = {
+    "process" : chunkProcessOption,
     "operation": operation,
     "ticker": ticker,
     "period": period,
@@ -452,7 +454,6 @@ function loadBacktestRes() {
 function shareResult() {
   var titleText = document.getElementById("shareTitle").value
   var descText = document.getElementById("shareDesc").value
-  console.log(titleText, descText)
 
   let result = {
     "title": titleText,
@@ -1612,6 +1613,14 @@ function showScanResults() {
     document.getElementById("strategy").style.display = "block"
     document.getElementById("scan").style.display = "none"
     document.getElementById("modeTogglerBtn").innerHTML = "Switch to Scan Mode"
+  }
+}
+
+function chunkProcessOption() {
+  if (document.getElementById("chunkProcessTogglerBtn").innerHTML === "Switch to Waterfall") {
+    document.getElementById("chunkProcessTogglerBtn").innerHTML = "Switch to Rain Drops"
+  } else {
+    document.getElementById("chunkProcessTogglerBtn").innerHTML = "Switch to Waterfall"
   }
 }
 
