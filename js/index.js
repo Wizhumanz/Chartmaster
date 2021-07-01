@@ -1151,6 +1151,8 @@ function plotHistory(data) {
   })
   //for each param
   data.forEach((d) => {
+    console.log(d)
+    
     //for each trade history item in that param
     d.Data.forEach((s, i) => {
       // console.log(s)
@@ -1175,10 +1177,10 @@ function plotHistory(data) {
       //color row based on profitability
       var entry = parseFloat(s.EntryPrice)
       var exit = parseFloat(s.ExitPrice)
-      if ((s.Direction == "LONG") && (exit > entry)) {
-        row.style.backgroundColor = "#001204"
-      } else if ((s.Direction == "LONG") && (exit < entry)) {
-        row.style.backgroundColor = "#1a0000"
+      if (s.RawProfitPerc > 0) {
+        row.style.backgroundColor = "#005e03"
+      } else if (s.RawProfitPerc < 0) {
+        row.style.backgroundColor = "#ad0000"
       }
       indexST += 1
     })

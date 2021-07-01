@@ -437,7 +437,7 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 #simTradesDiv {
-  height: 25rem;
+  height: 28rem;
   margin-bottom: 1rem;
 }
 
@@ -458,7 +458,7 @@ td {
 }
 
 tr:hover {
-  background-color: #8a0000 !important;
+  background-color: #0000bd !important;
 }
 
 #histogramBtns button {
