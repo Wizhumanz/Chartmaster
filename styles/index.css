@@ -449,7 +449,7 @@ div.stacked::-webkit-scrollbar-thumb {
 
 td {
   padding: 0.5rem;
-  font-size: small;
+  font-size: x-small;
 }
 @media only screen and (max-width: 700px) {
   td {
