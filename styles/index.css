@@ -406,7 +406,7 @@ div.inline h5.value {
 }
 
 div.stacked {
-  overflow: scroll;
+  /* overflow: scroll; */
   padding: 0.75rem;
 }
 

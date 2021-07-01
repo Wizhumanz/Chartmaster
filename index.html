@@ -228,8 +228,12 @@
             <div class="inline">
               <h4 class="chartHeader">Backtest Trades</h4>
               <p id="numOfRows">(57)</p>
+              <table id="historyHeader">
+                <thead>
+                </thead>
+              </table>
             </div>
-            <table id="history">
+            <table class="table table-striped table-fixed" id="history">
               <thead id="head">
               </thead>
             </table>
@@ -282,5 +286,15 @@
 <style>
   td {
     border: darkblue 1px solid;
+  }
+
+  .table-fixed tbody {
+    display:block;
+    height:85vh;
+    overflow:auto;
+  }
+  .table-fixed thead, .table-fixed tbody tr {
+    display:table;
+    width:100%;
   }
 </style>
