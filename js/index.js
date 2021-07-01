@@ -712,6 +712,26 @@ function drawChart(start, end) {
     .attr("width", pointerWidth)
     .attr("height", pointerHeight)
     .attr("fill", "hotpink")
+  
+  let entryLine = chartBody.selectAll("entryLine")
+    .data(candlesToShow.filter((p) => { return p.StratEnterPrice != 0 }))
+    .enter()
+    .append("rect")
+    .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+    .attr("y", d => yScale(d.StratEnterPrice) + pointerYMove)
+    .attr("width", pointerWidth+6)
+    .attr("height", 2)
+    .attr("fill", "white")
+
+  let exitLine = chartBody.selectAll("exitLine")
+    .data(candlesToShow.filter((p) => { return p.StratExitPrice != 0 }))
+    .enter()
+    .append("rect")
+    .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+    .attr("y", d => yScale(d.StratExitPrice) + pointerYMove)
+    .attr("width", pointerWidth+6)
+    .attr("height", 2)
+    .attr("fill", "white")
   // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
 
   // draw high and low
@@ -802,6 +822,8 @@ function drawChart(start, end) {
     // Pointers X Zooming
     enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
     exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+    entryLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+    exitLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
     hideTicksWithoutLabel();
 
@@ -854,6 +876,10 @@ function drawChart(start, end) {
         .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
       exitPointer.transition().duration(100)
         .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
+      entryLine.transition().duration(100)
+        .attr("y", (d) => yScale(d.StratEnterPrice) + labelYMoveTop)
+      exitLine.transition().duration(100)
+        .attr("y", (d) => yScale(d.StratExitPrice) + labelYMoveTop)
 
       gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
 
