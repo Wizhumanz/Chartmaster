@@ -1189,8 +1189,8 @@ function plotHistory(data) {
     //for each trade history item in that param
     d.Data.forEach((s, i) => {
       let row = table.insertRow()
-      row.insertCell().innerHTML = s.EntryDateTime ? s.EntryDateTime : "D.N.E"
-      row.insertCell().innerHTML = s.ExitDateTime ? s.ExitDateTime : "D.N.E"
+      row.insertCell().innerHTML = s.EntryDateTime
+      row.insertCell().innerHTML = s.ExitDateTime
       row.insertCell().innerHTML = s.Profit != undefined ? s.Profit.toFixed(4) : s.Profit
       row.insertCell().innerHTML = s.PosSize != undefined ? s.PosSize.toFixed(6) : s.PosSize
       row.insertCell().innerHTML = s.ExitPrice != undefined ? s.ExitPrice.toFixed(2) : s.ExitPrice
@@ -1198,7 +1198,7 @@ function plotHistory(data) {
       row.insertCell().innerHTML = s.EntryPrice != undefined ? s.EntryPrice.toFixed(4) : s.EntryPrice
       row.insertCell().innerHTML = s.RiskedEquity != undefined ? s.RiskedEquity.toFixed(3) : s.RiskedEquity
       row.insertCell().innerHTML = s.TotalFees != undefined ? s.TotalFees.toFixed(3) : s.TotalFees
-      row.insertCell().innerHTML = s.Direction ? s.Direction : "D.N.E"
+      row.insertCell().innerHTML = s.Direction
       row.insertCell().innerHTML = indexST
       row.style.color = "white"
       //param name
