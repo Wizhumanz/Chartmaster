@@ -1149,20 +1149,20 @@ function drawPC(data) {
 
 /// SIMULATED TRADES
 function plotHistory(data) {
-  console.log(data)
-  if (data === undefined || !data.length || data.length === 0) {
-    var table = document.getElementById("history")
-    table.innerHTML = ""
-    let row = table.insertRow()
-    let tableHeader = ["Index", "Profit", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Fees", "Position Size", "Direction", "Parameter"]
-    tableHeader.forEach(t => {
-      let newCell = row.insertCell()
-      newCell.innerHTML = t
-      newCell.className = "thead"
-    })
-    document.getElementById("numOfRows").innerHTML = "(0)"
-    return
-  }
+  // console.log(data)
+  // if (data === undefined || !data.length || data.length === 0) {
+  //   var table = document.getElementById("history")
+  //   table.innerHTML = ""
+  //   let row = table.insertRow()
+  //   let tableHeader = ["Index", "Profit", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Fees", "Position Size", "Direction", "Parameter"]
+  //   tableHeader.forEach(t => {
+  //     let newCell = row.insertCell()
+  //     newCell.innerHTML = t
+  //     newCell.className = "thead"
+  //   })
+  //   document.getElementById("numOfRows").innerHTML = "(0)"
+  //   return
+  // }
 
   // Number of rows
   document.getElementById("numOfRows").innerHTML = "(" + data[0].Data.length.toString() + ")"
@@ -1170,7 +1170,8 @@ function plotHistory(data) {
   var tableHeader = document.getElementById("historyHeader")
   tableHeader.innerHTML = ""
   let row = tableHeader.insertRow()
-  let tableHeaderEle = ["Index", "Profit($)", "EntryDateTime", "ExitDateTime", "Raw Profit(%)", "Entry Price", "Exit Price", "Risked Equity", "Fees($)", "Position Size", "Direction", "Parameter"]
+  let tableHeaderEle = ["EntryDateTime", "ExitDateTime", "Profit($)", "Position Size", "Exit Price", "Raw Profit(%)", "Entry Price", "Risked Equity", "Fees($)", "Direction", "Index", "Parameter"]
+  
   tableHeaderEle.forEach(t => {
     let newCell = row.insertCell()
     newCell.innerHTML = t
@@ -1185,17 +1186,17 @@ function plotHistory(data) {
     d.Data.forEach((s, i) => {
       // console.log(s)
       let row = table.insertRow()
-      row.insertCell().innerHTML = indexST
-      row.insertCell().innerHTML = s.Profit != undefined ? s.Profit.toFixed(4) : s.Profit
       row.insertCell().innerHTML = s.EntryDateTime
       row.insertCell().innerHTML = s.ExitDateTime
+      row.insertCell().innerHTML = s.Profit != undefined ? s.Profit.toFixed(4) : s.Profit
+      row.insertCell().innerHTML = s.PosSize != undefined ? s.PosSize.toFixed(6) : s.PosSize
+      row.insertCell().innerHTML = s.ExitPrice != undefined ? s.ExitPrice.toFixed(2) : s.ExitPrice
       row.insertCell().innerHTML = s.RawProfitPerc != undefined ? s.RawProfitPerc.toFixed(2) : s.RawProfitPerc
       row.insertCell().innerHTML = s.EntryPrice != undefined ? s.EntryPrice.toFixed(4) : s.EntryPrice
-      row.insertCell().innerHTML = s.ExitPrice != undefined ? s.ExitPrice.toFixed(2) : s.ExitPrice
       row.insertCell().innerHTML = s.RiskedEquity != undefined ? s.RiskedEquity.toFixed(3) : s.RiskedEquity
       row.insertCell().innerHTML = s.TotalFees != undefined ? s.TotalFees.toFixed(3) : s.TotalFees
-      row.insertCell().innerHTML = s.PosSize != undefined ? s.PosSize.toFixed(6) : s.PosSize
       row.insertCell().innerHTML = s.Direction
+      row.insertCell().innerHTML = indexST
       row.style.color = "white"
       //param name
       let param = row.insertCell()
@@ -1205,10 +1206,10 @@ function plotHistory(data) {
       //color row based on profitability
       var entry = parseFloat(s.EntryPrice)
       var exit = parseFloat(s.ExitPrice)
-      if ((s.Direction == "LONG") && (exit > entry)) {
-        row.style.backgroundColor = "#001204"
-      } else if ((s.Direction == "LONG") && (exit < entry)) {
-        row.style.backgroundColor = "#1a0000"
+      if (s.RawProfitPerc > 0) {
+        row.style.backgroundColor = "#005e03"
+      } else if (s.RawProfitPerc < 0) {
+        row.style.backgroundColor = "#ad0000"
       }
       indexST += 1
     })

@@ -386,7 +386,7 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 #simTradesDiv {
-  height: 25rem;
+  height: 28rem;
   margin-bottom: 1rem;
 }
 
@@ -398,7 +398,7 @@ div.stacked::-webkit-scrollbar-thumb {
 
 td {
   padding: 0.5rem;
-  font-size: small;
+  font-size: x-small;
 
   @media only screen and (max-width: 700px) {
     font-size: x-small;
@@ -406,7 +406,7 @@ td {
 }
 
 tr:hover {
-  background-color: $blood !important;
+  background-color: #0000bd !important;
 }
 
 #histogramBtns {
