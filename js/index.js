@@ -1171,7 +1171,7 @@ function plotHistory(data) {
   // Number of rows
   document.getElementById("numOfRows").innerHTML = "(" + data[0].Data.length.toString() + ")"
 
-  var tableHeader = document.getElementById("historyHeader")
+  var tableHeader = document.getElementById("history")
   tableHeader.innerHTML = ""
   let row = tableHeader.insertRow()
   let tableHeaderEle = ["EntryDateTime", "ExitDateTime", "Profit($)", "Position Size", "Exit Price", "Raw Profit(%)", "Entry Price", "Risked Equity", "Fees($)", "Direction", "Index", "Parameter"]
