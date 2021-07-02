@@ -289,6 +289,8 @@ function connectWs(id) {
           allSimTrades = JSON.parse(msg.data).Data
           //if candlestick chart empty
           indexST = 1
+          d3.selectAll("#history > *").remove();
+
           plotHistory(JSON.parse(msg.data).Data)
 
           //save res id so next messages with same ID will be concatenated with existing data
@@ -297,6 +299,8 @@ function connectWs(id) {
           //add new data to existing array
           indexST = 1
           allSimTrades[0].Data = allSimTrades[0].Data.concat(JSON.parse(msg.data).Data[0].Data)
+          d3.selectAll("#history > *").remove();
+
           plotHistory(allSimTrades)
         }
       }
@@ -1149,20 +1153,20 @@ function drawPC(data) {
 
 /// SIMULATED TRADES
 function plotHistory(data) {
-  // console.log(data)
-  // if (data === undefined || !data.length || data.length === 0) {
-  //   var table = document.getElementById("history")
-  //   table.innerHTML = ""
-  //   let row = table.insertRow()
-  //   let tableHeader = ["Index", "Profit", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Fees", "Position Size", "Direction", "Parameter"]
-  //   tableHeader.forEach(t => {
-  //     let newCell = row.insertCell()
-  //     newCell.innerHTML = t
-  //     newCell.className = "thead"
-  //   })
-  //   document.getElementById("numOfRows").innerHTML = "(0)"
-  //   return
-  // }
+  console.log(data)
+  if (data === undefined || !data.length || data.length === 0) {
+    var table = document.getElementById("history")
+    table.innerHTML = ""
+    // let row = table.insertRow()
+    // let tableHeader = ["Index", "Profit", "Raw Profit Perc", "Entry Price", "Exit Price", "Risked Equity", "Date", "Fees", "Position Size", "Direction", "Parameter"]
+    // tableHeader.forEach(t => {
+    //   let newCell = row.insertCell()
+    //   newCell.innerHTML = t
+    //   newCell.className = "thead"
+    // })
+    document.getElementById("numOfRows").innerHTML = "(0)"
+    return
+  }
 
   // Number of rows
   document.getElementById("numOfRows").innerHTML = "(" + data[0].Data.length.toString() + ")"
@@ -1184,10 +1188,9 @@ function plotHistory(data) {
   data.forEach((d) => {
     //for each trade history item in that param
     d.Data.forEach((s, i) => {
-      // console.log(s)
       let row = table.insertRow()
-      row.insertCell().innerHTML = s.EntryDateTime
-      row.insertCell().innerHTML = s.ExitDateTime
+      row.insertCell().innerHTML = s.EntryDateTime ? s.EntryDateTime : "D.N.E"
+      row.insertCell().innerHTML = s.ExitDateTime ? s.ExitDateTime : "D.N.E"
       row.insertCell().innerHTML = s.Profit != undefined ? s.Profit.toFixed(4) : s.Profit
       row.insertCell().innerHTML = s.PosSize != undefined ? s.PosSize.toFixed(6) : s.PosSize
       row.insertCell().innerHTML = s.ExitPrice != undefined ? s.ExitPrice.toFixed(2) : s.ExitPrice
@@ -1195,7 +1198,7 @@ function plotHistory(data) {
       row.insertCell().innerHTML = s.EntryPrice != undefined ? s.EntryPrice.toFixed(4) : s.EntryPrice
       row.insertCell().innerHTML = s.RiskedEquity != undefined ? s.RiskedEquity.toFixed(3) : s.RiskedEquity
       row.insertCell().innerHTML = s.TotalFees != undefined ? s.TotalFees.toFixed(3) : s.TotalFees
-      row.insertCell().innerHTML = s.Direction
+      row.insertCell().innerHTML = s.Direction ? s.Direction : "D.N.E"
       row.insertCell().innerHTML = indexST
       row.style.color = "white"
       //param name
