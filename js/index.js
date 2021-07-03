@@ -251,6 +251,10 @@ function connectWs(id) {
           allCandles = JSON.parse(msg.data).Data
           //if candlestick chart empty
           drawChart(0, candleDisplayNumber)
+          if (candleDisplayNumber < allCandles.length) {
+            //show right arrow btn
+            document.getElementById("panCandlesRightBtn").style.display = "inline"
+          }
 
           //save res id so next messages with same ID will be concatenated with existing data
           existingWSResID = JSON.parse(msg.data).ResultID
@@ -269,6 +273,7 @@ function connectWs(id) {
 
       //profit curve
       if (JSON.parse(msg.data) != undefined && (JSON.parse(msg.data).Data[0].Data != null) && parseFloat(JSON.parse(msg.data).Data[0].Data[0].Equity) > 0) {
+
         //check if concat needed, or new data
         if (existingWSResIDPC === "" || existingWSResIDPC !== JSON.parse(msg.data).ResultID) {
           allProfitCurve = JSON.parse(msg.data).Data
@@ -733,6 +738,7 @@ function drawChart(start, end) {
     .enter()
     .append("rect")
     .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+    // .attr("y", d => console.log(d))
     .attr("y", d => yScale(d.StratExitPrice) + pointerYMove)
     .attr("width", pointerWidth+6)
     .attr("height", 2)
