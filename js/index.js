@@ -34,7 +34,7 @@ document.getElementById("panCandlesLeftBtn").style.display = "none"
 document.getElementById("panCandlesRightBtn").style.display = "none"
 
 /// CANDLESTICKS
-let candleDisplayNumber = 170
+let candleDisplayNumber = 260
 let candleDrawStartIndex = 0
 let tickNumCandles = 10
 let tickNumProfitX = 6
