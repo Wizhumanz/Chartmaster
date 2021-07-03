@@ -1002,12 +1002,12 @@ function drawPC(data) {
     })
   })
 
-  document.getElementById("growth").innerHTML = ((document.getElementById("endingCapital").innerHTML - document.getElementById("startingCapital").innerHTML) / document.getElementById("startingCapital").innerHTML * 100).toFixed(2) + "%"
+  document.getElementById("growth").innerHTML = ((document.getElementById("endingCapital").innerHTML - document.getElementById("startingCapital").innerHTML) / document.getElementById("startingCapital").innerHTML * 100).toFixed(3) + "%"
 
   // console.log(JSON.stringify(data))
   d3.selectAll("#profit > *").remove();
   var pcMargin = { top: 0, right: 20, bottom: 30, left: 45 },
-    width = 550 - pcMargin.left - pcMargin.right,
+    width = 600 - pcMargin.left - pcMargin.right,
     height = 300 - pcMargin.top - pcMargin.bottom;
 
   //mobile display options
