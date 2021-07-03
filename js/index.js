@@ -1669,8 +1669,8 @@ function moveLeft() {
   let rBtn = document.getElementById("panCandlesRightBtn")
 
   lBtn.style.display = "inline"
-  candleDrawStartIndex -= candleDisplayNumber
-  candleDrawEndIndex -= candleDisplayNumber
+  candleDrawStartIndex -= candleDisplayNumber /2
+  candleDrawEndIndex -= candleDisplayNumber /2
   if (candleDrawStartIndex <= 0) {
     lBtn.style.display = "none"
   }
@@ -1685,8 +1685,8 @@ function moveRight() {
   let rBtn = document.getElementById("panCandlesRightBtn")
 
   rBtn.style.display = "inline"
-  candleDrawStartIndex += candleDisplayNumber
-  candleDrawEndIndex += candleDisplayNumber
+  candleDrawStartIndex += candleDisplayNumber /2
+  candleDrawEndIndex += candleDisplayNumber /2
   if (candleDrawEndIndex >= allCandles.length) {
     rBtn.style.display = "none"
   }
