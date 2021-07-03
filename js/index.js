@@ -34,7 +34,7 @@ document.getElementById("panCandlesLeftBtn").style.display = "none"
 document.getElementById("panCandlesRightBtn").style.display = "none"
 
 /// CANDLESTICKS
-let candleDisplayNumber = 170
+let candleDisplayNumber = 260
 let candleDrawStartIndex = 0
 let tickNumCandles = 10
 let tickNumProfitX = 6
@@ -733,17 +733,44 @@ function drawChart(start, end) {
     .attr("height", 2)
     .attr("fill", "white")
 
-  let exitLine = chartBody.selectAll("exitLine")
-    .data(candlesToShow.filter((p) => { return p.StratExitPrice != 0 }))
-    .enter()
-    .append("rect")
-    .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-    // .attr("y", d => console.log(d))
-    .attr("y", d => yScale(d.StratExitPrice) + pointerYMove)
-    .attr("width", pointerWidth+6)
-    .attr("height", 2)
-    .attr("fill", "white")
-  // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
+  let exitLine 
+  candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
+    if (c.StratExitPrice.length > 1) {
+      c.StratExitPrice.forEach((g) => {
+        exitLine = chartBody.selectAll("exitLine")
+        .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
+        .enter()
+        .append("rect")
+        .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+        .attr("y", (d) => yScale(g) + pointerYMove)
+        .attr("width", pointerWidth+6)
+        .attr("height", 2)
+        .attr("fill", "white")
+      // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
+      })
+    } else {
+      exitLine = chartBody.selectAll("exitLine")
+        .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
+        .enter()
+        .append("rect")
+        .attr("x",(d) =>  xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+        .attr("y", (d) => yScale(c.StratExitPrice[0]) + pointerYMove)
+        .attr("width", pointerWidth+6)
+        .attr("height", 2)
+        .attr("fill", "white")
+    }
+  })
+
+  // exitLine = chartBody.selectAll("exitLine")
+  // .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
+  // .enter()
+  // .append("rect")
+  // .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+  // // .attr("y", d => console.log(d))
+  // .attr("y", d => yScale(d.StratExitPrice) + pointerYMove)
+  // .attr("width", pointerWidth+6)
+  // .attr("height", 2)
+  // .attr("fill", "white")
 
   // draw high and low
   let stems = chartBody.selectAll("g.line")
@@ -757,15 +784,11 @@ function drawChart(start, end) {
     .attr("y2", d => yScale(d.Low))
     .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "darkgreen");
 
-  // console.log(stems.selectAll("g.line").select(".stem"))
-  // console.log(stems.selectAll(".stem"))
 
   let stemsXArray = []
   stems.selectAll(".stem")._parents.forEach(e => {
     stemsXArray.push(e.x1.baseVal.value)
   });
-  // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
-  // console.log(parseInt(kms.select("#doge").attr("x")))
 
   svg.append("defs")
     .append("clipPath")
@@ -786,8 +809,6 @@ function drawChart(start, end) {
   svg.call(zoom)
 
   function zoomed() {
-    // if (d3.event.sourceEvent && d3.event.sourceEvent.type === 'wheel') { return; }
-    // console.log(d3.event.sourceEvent.deltaX)
     var t = d3.event.transform;
     let xScaleZ = t.rescaleX(xScale);
 
@@ -889,8 +910,15 @@ function drawChart(start, end) {
         .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
       entryLine.transition().duration(100)
         .attr("y", (d) => yScale(d.StratEnterPrice) + labelYMoveTop)
-      exitLine.transition().duration(100)
-        .attr("y", (d) => yScale(d.StratExitPrice) + labelYMoveTop)
+
+      candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
+        c.StratExitPrice.forEach((g) => {
+          console.log(g)
+          exitLine.transition().duration(100)
+            .attr("y", (d) => yScale(g) + labelYMoveTop)
+        })
+      })
+      
 
       gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
 
@@ -1159,7 +1187,6 @@ function drawPC(data) {
 
 /// SIMULATED TRADES
 function plotHistory(data) {
-  console.log(data)
   if (data === undefined || !data.length || data.length === 0) {
     var table = document.getElementById("history")
     table.innerHTML = ""
@@ -1642,8 +1669,8 @@ function moveLeft() {
   let rBtn = document.getElementById("panCandlesRightBtn")
 
   lBtn.style.display = "inline"
-  candleDrawStartIndex -= candleDisplayNumber
-  candleDrawEndIndex -= candleDisplayNumber
+  candleDrawStartIndex -= candleDisplayNumber /2
+  candleDrawEndIndex -= candleDisplayNumber /2
   if (candleDrawStartIndex <= 0) {
     lBtn.style.display = "none"
   }
@@ -1658,8 +1685,8 @@ function moveRight() {
   let rBtn = document.getElementById("panCandlesRightBtn")
 
   rBtn.style.display = "inline"
-  candleDrawStartIndex += candleDisplayNumber
-  candleDrawEndIndex += candleDisplayNumber
+  candleDrawStartIndex += candleDisplayNumber /2
+  candleDrawEndIndex += candleDisplayNumber /2
   if (candleDrawEndIndex >= allCandles.length) {
     rBtn.style.display = "none"
   }
