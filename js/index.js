@@ -1100,12 +1100,12 @@ function drawPC(data) {
     })
   })
 
-  document.getElementById("growth").innerHTML = ((document.getElementById("endingCapital").innerHTML - document.getElementById("startingCapital").innerHTML) / document.getElementById("startingCapital").innerHTML * 100).toFixed(2) + "%"
+  document.getElementById("growth").innerHTML = ((document.getElementById("endingCapital").innerHTML - document.getElementById("startingCapital").innerHTML) / document.getElementById("startingCapital").innerHTML * 100).toFixed(3) + "%"
 
   // console.log(JSON.stringify(data))
   d3.selectAll("#profit > *").remove();
   var pcMargin = { top: 0, right: 20, bottom: 30, left: 45 },
-    width = 550 - pcMargin.left - pcMargin.right,
+    width = 600 - pcMargin.left - pcMargin.right,
     height = 300 - pcMargin.top - pcMargin.bottom;
 
   //mobile display options
@@ -1345,7 +1345,7 @@ function scanHistory(data) {
   var table = document.getElementById("scanHistory")
   table.innerHTML = ""
   let row = table.insertRow()
-  let tableHeader = ["Checkbox", "Entry Index", "Entry Time", "Growth", "MaxDrawdownExtent(%)", "Extent", "Duration to Extent(candles)", "BreakTime", "Max Raw Drawdown (%)", "Last PL Index", "Break Index", "PL1-PL2", "PL2-PL3", "PL1-PL3", "i"]
+  let tableHeader = ["Checkbox", "Entry Index", "Entry Time", "Growth", "FirstLastPriceDiff", "FirstLastDuration", "AvgPivotsPriceDiffPerc", "MaxDrawdownTrailExtent(%)", "Extent", "Duration to Extent(candles)", "BreakTime", "Max Raw Drawdown (%)", "Last PL Index", "Break Index", "i"]
   tableHeader.forEach(t => {
     let newCell = row.insertCell()
     newCell.innerHTML = t
@@ -1402,7 +1402,10 @@ function scanHistory(data) {
     row.insertCell().appendChild(checkbox)
     row.insertCell().innerHTML = s.ActualEntryIndex
     row.insertCell().innerHTML = s.EntryTime
-    row.insertCell().innerHTML = s.Growth.toFixed(5)
+    row.insertCell().innerHTML = s.Growth.toFixed(4)
+    row.insertCell().innerHTML = s.FirstLastEntryPivotPriceDiffPerc > 0 ? s.FirstLastEntryPivotPriceDiffPerc.toFixed(4) : s.FirstLastEntryPivotPriceDiffPerc
+    row.insertCell().innerHTML = s.FirstToLastEntryPivotDuration > 0 ? s.FirstToLastEntryPivotDuration.toFixed(4) : s.FirstToLastEntryPivotDuration
+    row.insertCell().innerHTML = s.AveragePriceDiffPercEntryPivots > 0 ? s.AveragePriceDiffPercEntryPivots.toFixed(4) : s.AveragePriceDiffPercEntryPivots
     row.insertCell().innerHTML = s.TrailingMaxDrawdownPercTillExtent
     row.insertCell().innerHTML = s.ExtentTime
     row.insertCell().innerHTML = s.Duration
@@ -1410,9 +1413,6 @@ function scanHistory(data) {
     row.insertCell().innerHTML = s.MaxDrawdownPerc.toFixed(3)
     row.insertCell().innerHTML = s.EntryLastPLIndex
     row.insertCell().innerHTML = s.BreakIndex
-    row.insertCell().innerHTML = s.FirstSecondEntryPivotPriceDiffPerc
-    row.insertCell().innerHTML = s.SecondThirdEntryPivotPriceDiffPerc
-    row.insertCell().innerHTML = s.FirstThirdEntryPivotPriceDiffPerc
     row.insertCell().innerHTML = indexScan
 
     row.style.color = "white"
@@ -1445,8 +1445,8 @@ function drawScatterPlot(data) {
       "translate(" + margin.left + "," + margin.top + ")");
 
   // List of groups (here I have one group per column)
-  var YOptions = ["Growth", "Duration", "TrailingMaxDrawdownPercTillExtent", "EntryDate", "ExtentDate", "Entry", "Extent", "MaxDrawdownPerc", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
-  var XOptions = ["Duration", "TrailingMaxDrawdownPercTillExtent", "MaxDrawdownPerc", "Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "FirstSecondEntryPivotPriceDiffPerc", "SecondThirdEntryPivotPriceDiffPerc", "FirstThirdEntryPivotPriceDiffPerc"]
+  var YOptions = ["Growth", "Duration", "TrailingMaxDrawdownPercTillExtent", "EntryDate", "ExtentDate", "Entry", "Extent", "MaxDrawdownPerc", "FirstLastEntryPivotPriceDiffPerc", "FirstToLastEntryPivotDuration", "AveragePriceDiffPercEntryPivots"]
+  var XOptions = ["Duration", "TrailingMaxDrawdownPercTillExtent", "MaxDrawdownPerc", "Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "FirstLastEntryPivotPriceDiffPerc", "FirstToLastEntryPivotDuration", "AveragePriceDiffPercEntryPivots"]
 
   let currentY = YOptions[0]
   let currentX = XOptions[0]
