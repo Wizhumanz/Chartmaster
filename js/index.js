@@ -185,21 +185,22 @@ function loadSavedCandles() {
       opt.appendChild(document.createTextNode("Candles..."));
       sel.appendChild(opt);
       // console.log(res.data)
-      res.data.forEach((l) => {
-        // get reference to select element
-        let sel = document.getElementById('candlesSelect');
-        // create new option element
-        let opt = document.createElement('option');
-        // create text node to add to option element (opt)
+      if (res.data != null) {
+        res.data.forEach((l) => {
+          // get reference to select element
+          let sel = document.getElementById('candlesSelect');
+          // create new option element
+          let opt = document.createElement('option');
+          // create text node to add to option element (opt)
 
-        opt.appendChild(document.createTextNode(l));
+          opt.appendChild(document.createTextNode(l));
 
-        // set value property of opt
-        opt.value = l.split(".")[0];
-        // add opt to end of select box (sel)
-        sel.appendChild(opt);
-      })
-
+          // set value property of opt
+          opt.value = l.split(".")[0];
+          // add opt to end of select box (sel)
+          sel.appendChild(opt);
+        })
+      }
     })
     .catch((error) => {
       console.log(error);
@@ -1781,13 +1782,18 @@ function tickerSelectChanged() {
 tickerSelectChanged()
 
 function saveCandlesChanged() {
-  var s = document.getElementById("candlesSelect")
-  var btn = document.getElementById("saveCandlesBtn")
-  if (s.value !== "") {
-    btn.style.display = "inline"
-  } else {
-    btn.style.display = "none"
-  }
+  var selectedOption = document.getElementById("candlesSelect")
+  var selectedOptionText = selectedOption.options[selectedOption.selectedIndex].text;
+
+  var startTimeInput = document.getElementById("startDateTimePicker")
+  var endTimeInput = document.getElementById("endDateTimePicker")
+  var periodInput = document.getElementById("periodSelect")
+  var tickerInput = document.getElementById("tickerSelect")
+
+  startTimeInput.value = selectedOptionText.substring(0, selectedOptionText.indexOf("~")).replace("_", "T").slice(0, -3)
+  endTimeInput.value = selectedOptionText.substring(selectedOptionText.indexOf("~")+1, selectedOptionText.indexOf("(")).replace("_", "T").slice(0, -3)
+  periodInput.value = selectedOptionText.substring(selectedOptionText.indexOf("(")+1, selectedOptionText.indexOf(","))
+  tickerInput.value = selectedOptionText.substring(selectedOptionText.indexOf(" ")+1, selectedOptionText.indexOf(")"))
 }
 saveCandlesChanged()
 
