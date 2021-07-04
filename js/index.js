@@ -29,6 +29,9 @@ let indexScan = 1
 // History json name
 var selectedRes
 
+// Saved Candles in JSON
+let retrieveCandles = false
+
 // Disable btns initially
 document.getElementById("panCandlesLeftBtn").style.display = "none"
 document.getElementById("panCandlesRightBtn").style.display = "none"
@@ -163,6 +166,51 @@ function loadResult() {
 }
 
 loadResult()
+
+function loadSavedCandles() {
+  let hd = {
+    // "Content-Type": "application/json",
+    // Authorization: user.password,
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+    Expires: "0",
+  }
+  axios
+    .get(baseURL + "/savedCandlesHistory?user=" + userID, {
+      headers: hd,
+      mode: "cors",
+    })
+    .then((res) => {
+      let sel = document.getElementById('candlesSelect');
+      let opt = document.createElement('option');
+      sel.length = 0
+
+      opt.appendChild(document.createTextNode("Candles..."));
+      sel.appendChild(opt);
+      // console.log(res.data)
+      if (res.data != null) {
+        res.data.forEach((l) => {
+          // get reference to select element
+          let sel = document.getElementById('candlesSelect');
+          // create new option element
+          let opt = document.createElement('option');
+          // create text node to add to option element (opt)
+
+          opt.appendChild(document.createTextNode(l));
+
+          // set value property of opt
+          opt.value = l.split(".")[0];
+          // add opt to end of select box (sel)
+          sel.appendChild(opt);
+        })
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+loadSavedCandles()
 
 function connectWs(id) {
   wsStatus.innerText = "Loading websockets..."
@@ -340,6 +388,7 @@ function computeBacktest() {
 
   let backendInfo = {
     "process" : chunkProcessOption,
+    "retrieveCandles" : retrieveCandles,
     "operation": operation,
     "ticker": ticker,
     "period": period,
@@ -522,6 +571,27 @@ function sharedLink() {
 }
 
 sharedLink()
+
+function saveCandlesToJson() {
+  let hd = {
+    "Content-Type": "application/json",
+    // Authorization: user.password,
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+    Expires: "0",
+  }
+  axios
+    .post(baseURL + "/saveCandlesToJson", allCandles, {
+      headers: hd,
+      mode: "cors",
+    })
+    .then((res) => {
+      console.log(res.data)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 
 function drawChart(start, end) {
   let candlesToShow = allCandles.slice(start, end)
@@ -1715,6 +1785,25 @@ function tickerSelectChanged() {
   }
 }
 tickerSelectChanged()
+
+function saveCandlesChanged() {
+  var selectedOption = document.getElementById("candlesSelect")
+  var selectedOptionText = selectedOption.options[selectedOption.selectedIndex].text;
+
+  var startTimeInput = document.getElementById("startDateTimePicker")
+  var endTimeInput = document.getElementById("endDateTimePicker")
+  var periodInput = document.getElementById("periodSelect")
+  var tickerInput = document.getElementById("tickerSelect")
+
+  startTimeInput.value = selectedOptionText.substring(0, selectedOptionText.indexOf("~")).replace("_", "T").slice(0, -3)
+  endTimeInput.value = selectedOptionText.substring(selectedOptionText.indexOf("~")+1, selectedOptionText.indexOf("(")).replace("_", "T").slice(0, -3)
+  periodInput.value = selectedOptionText.substring(selectedOptionText.indexOf("(")+1, selectedOptionText.indexOf(","))
+  tickerInput.value = selectedOptionText.substring(selectedOptionText.indexOf(" ")+1, selectedOptionText.indexOf(")"))
+
+  retrieveCandles = true
+}
+saveCandlesChanged()
+
 function processXAxisLabel(d, dates) {
   d = new Date(dates[d])
   if (d.toString() !== "Invalid Date") {
