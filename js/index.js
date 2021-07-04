@@ -29,6 +29,9 @@ let indexScan = 1
 // History json name
 var selectedRes
 
+// Saved Candles in JSON
+let retrieveCandles = false
+
 // Disable btns initially
 document.getElementById("panCandlesLeftBtn").style.display = "none"
 document.getElementById("panCandlesRightBtn").style.display = "none"
@@ -385,6 +388,7 @@ function computeBacktest() {
 
   let backendInfo = {
     "process" : chunkProcessOption,
+    "retrieveCandles" : retrieveCandles,
     "operation": operation,
     "ticker": ticker,
     "period": period,
@@ -1794,6 +1798,8 @@ function saveCandlesChanged() {
   endTimeInput.value = selectedOptionText.substring(selectedOptionText.indexOf("~")+1, selectedOptionText.indexOf("(")).replace("_", "T").slice(0, -3)
   periodInput.value = selectedOptionText.substring(selectedOptionText.indexOf("(")+1, selectedOptionText.indexOf(","))
   tickerInput.value = selectedOptionText.substring(selectedOptionText.indexOf(" ")+1, selectedOptionText.indexOf(")"))
+
+  retrieveCandles = true
 }
 saveCandlesChanged()
 
