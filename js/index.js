@@ -592,7 +592,10 @@ function saveCandlesToJson() {
       mode: "cors",
     })
     .then((res) => {
-      console.log(res.data)
+      setTimeout(() => {
+        loadResult()
+        document.getElementById("saveCandles").style.display = "none"
+      }, 500)
     })
     .catch((error) => {
       console.log(error);
