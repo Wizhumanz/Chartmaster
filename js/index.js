@@ -32,6 +32,9 @@ var selectedRes
 // Saved Candles in JSON
 let retrieveCandles = false
 
+// Disable btn until computeBacktest
+document.getElementById("saveCandles").style.display = "none"
+
 // Disable btns initially
 document.getElementById("panCandlesLeftBtn").style.display = "none"
 document.getElementById("panCandlesRightBtn").style.display = "none"
@@ -414,6 +417,9 @@ function computeBacktest() {
       mode: "cors",
     })
     .then(() => {
+      if (!retrieveCandles) {
+        document.getElementById("saveCandles").style.display = "block"
+      }
       setTimeout(() => {
         loadResult()
         document.getElementById("shareResult").style = "display: inline;"
@@ -586,7 +592,10 @@ function saveCandlesToJson() {
       mode: "cors",
     })
     .then((res) => {
-      console.log(res.data)
+      setTimeout(() => {
+        loadResult()
+        document.getElementById("saveCandles").style.display = "none"
+      }, 500)
     })
     .catch((error) => {
       console.log(error);
