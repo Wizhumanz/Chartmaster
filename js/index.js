@@ -1356,7 +1356,7 @@ function scanHistory(data) {
   var table = document.getElementById("scanHistory")
   table.innerHTML = ""
   let row = table.insertRow()
-  let tableHeader = ["Checkbox", "Entry Index", "Entry Time", "Growth", "FirstLastPriceDiff", "FirstLastDuration", "AvgPivotsPriceDiffPerc", "MaxDrawdownTrailExtent(%)", "Extent", "Duration to Extent(candles)", "BreakTime", "Max Raw Drawdown (%)", "Last PL Index", "Break Index", "i"]
+  let tableHeader = ["Checkbox", "Entry Time", "Growth", "FirstLastPriceDiff", "AvgPivotsPriceDiffPerc", "FirstLastDuration", "EndAction", "MaxDrawdownTrailExtent(%)", "Duration to Extent(candles)", "Entry Index", "ExtentTime", "BreakTime", "Max Raw Drawdown (%)", "Last PL Index", "Break Index", "i"]
   tableHeader.forEach(t => {
     let newCell = row.insertCell()
     newCell.innerHTML = t
@@ -1411,15 +1411,16 @@ function scanHistory(data) {
     //for each trade history item in that param
     let row = table.insertRow()
     row.insertCell().appendChild(checkbox)
-    row.insertCell().innerHTML = s.ActualEntryIndex
     row.insertCell().innerHTML = s.EntryTime
     row.insertCell().innerHTML = s.Growth.toFixed(4)
     row.insertCell().innerHTML = s.FirstLastEntryPivotPriceDiffPerc > 0 ? s.FirstLastEntryPivotPriceDiffPerc.toFixed(4) : s.FirstLastEntryPivotPriceDiffPerc
-    row.insertCell().innerHTML = s.FirstToLastEntryPivotDuration > 0 ? s.FirstToLastEntryPivotDuration.toFixed(4) : s.FirstToLastEntryPivotDuration
     row.insertCell().innerHTML = s.AveragePriceDiffPercEntryPivots > 0 ? s.AveragePriceDiffPercEntryPivots.toFixed(4) : s.AveragePriceDiffPercEntryPivots
+    row.insertCell().innerHTML = s.FirstToLastEntryPivotDuration
+    row.insertCell().innerHTML = s.EndAction
     row.insertCell().innerHTML = s.TrailingMaxDrawdownPercTillExtent
-    row.insertCell().innerHTML = s.ExtentTime
     row.insertCell().innerHTML = s.Duration
+    row.insertCell().innerHTML = s.ActualEntryIndex
+    row.insertCell().innerHTML = s.ExtentTime
     row.insertCell().innerHTML = s.BreakTime
     row.insertCell().innerHTML = s.MaxDrawdownPerc.toFixed(3)
     row.insertCell().innerHTML = s.EntryLastPLIndex
