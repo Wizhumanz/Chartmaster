@@ -1538,7 +1538,6 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
 
       chunkStart = chunkEnd
       chunkEnd = (chunkEnd * 1000000 + chunkRange * 1000000) / 1000000
-      console.log(chunkEnd)
     }
     barGraph(barGraphData)
   }
