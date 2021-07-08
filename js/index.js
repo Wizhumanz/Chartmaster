@@ -302,6 +302,7 @@ function connectWs(id) {
         //check if concat needed, or new data
         if (existingWSResID === "" || existingWSResID !== JSON.parse(msg.data).ResultID) {
           allCandles = JSON.parse(msg.data).Data
+
           //if candlestick chart empty
           drawChart(0, candleDisplayNumber)
           if (candleDisplayNumber < allCandles.length) {
@@ -581,6 +582,10 @@ function sharedLink() {
 sharedLink()
 
 function saveCandlesToJson() {
+  setTimeout(() => {
+    loadResult()
+    document.getElementById("saveCandles").style.display = "none"
+  }, 500)
   let hd = {
     "Content-Type": "application/json",
     // Authorization: user.password,
@@ -594,10 +599,6 @@ function saveCandlesToJson() {
       mode: "cors",
     })
     .then((res) => {
-      setTimeout(() => {
-        loadResult()
-        document.getElementById("saveCandles").style.display = "none"
-      }, 500)
     })
     .catch((error) => {
       console.log(error);
@@ -1335,7 +1336,6 @@ function plotHistory(data) {
 
 /// SCAN HISTORY
 function scanHistory(data) {
-  console.log(data)
   if (data === undefined || !data.length || data.length === 0) {
     var table = document.getElementById("scanHistory")
     table.innerHTML = ""
@@ -1436,7 +1436,6 @@ var selectedOptionX
 
 // Scatter plot
 function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
-  console.log(currentX)
   data.forEach((e) => {
     e["EntryDate"] = new Date(Math.abs((new Date(e.EntryTime))) )
     e["ExtentDate"] = new Date(Math.abs((new Date(e.ExtentTime))) )
@@ -1501,19 +1500,49 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
     .attr("stroke", "white")
     .attr("font-size", "12px")
 
-  // // Initialize line with group a
-  // var line = svg
-  //   .append('g')
-  //   .append("path")
-  //     .datum(data)
-  //     .attr("d", d3.line()
-  //       .x(function(d) { return x(+d.Duration) })
-  //       .y(function(d) { return y(+d.Growth) })
-  //     )
-  //     .attr("stroke", "white")
-  //     .style("stroke-width", 4)
-  //     .style("fill", "none")
+  // Create bar graph
+  let chunkNumElement = document.getElementById("chunkNum")
+  let minimumYElement = document.getElementById("minimumY")
+  let chunkNum = 10
+  let minimumY = 2
+  calculateBarGraph()
   
+  chunkNumElement.addEventListener('change', function() {
+    chunkNum = chunkNumElement.value
+    calculateBarGraph()
+  })
+
+  minimumYElement.addEventListener('change', function() {
+    minimumY = minimumYElement.value
+    calculateBarGraph()
+  })
+
+  function calculateBarGraph() {
+    let dataPoints = data.map(function (d) { return { x: parseFloat(d[currentX]), y: parseFloat(d[currentY]) } })
+    let chunkRange = parseFloat((d3.max(data.map(d => {return d[currentX]})) / chunkNum).toFixed(2))
+    let chunkStart = 0
+    let chunkEnd = chunkRange
+    let barGraphData = []
+
+    // Loop until the end of xAxis
+    while (true) {
+      let filteredX = dataPoints.filter((d) => {return d.x >= chunkStart && d.x <= chunkEnd})
+      let barGraphObj = {}
+      barGraphObj.y = filteredX.filter((d) => {return d.y <= minimumY}).length / filteredX.length * 100
+      barGraphObj.x = chunkStart + "~" + chunkEnd
+      barGraphData.push(barGraphObj)
+
+      if (chunkEnd + chunkRange > chunkRange * chunkNum) {
+        break
+      }
+
+      chunkStart = chunkEnd
+      chunkEnd = (chunkEnd * 1000000 + chunkRange * 1000000) / 1000000
+      console.log(chunkEnd)
+    }
+    barGraph(barGraphData)
+  }
+
   // Initialize dots with group a
   var dot = svg
     .selectAll('circle')
@@ -1561,6 +1590,7 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
       .attr("cy", function (d) { return y(+d.y) })
 
     currentY = selectedGroup
+    calculateBarGraph()
   }
 
   function updateX(selectedGroup) {
@@ -1590,6 +1620,7 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
       .attr("cy", function (d) { return y(+d.y) })
 
     currentX = selectedGroup
+    calculateBarGraph()
   }
 
   var selectedOptionY
@@ -1664,6 +1695,68 @@ function scatterPlotWindow(data) {
   }
 }
 
+// Second Graph for scatterplot
+function barGraph(data) {
+  d3.selectAll("#barGraph > *").remove();
+  // set the dimensions and margins of the graph
+  var margin = {top: 10, right: 30, bottom: 90, left: 40},
+      width = 460 - margin.left - margin.right,
+      height = 450 - margin.top - margin.bottom;
+
+  // append the svg object to the body of the page
+  var svg = d3.select("#barGraph")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+  // X axis
+  var x = d3.scaleBand()
+    .range([ 0, width ])
+    .domain(data.map(function(d) { return d.x; }))
+    .padding(0.2);
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end")
+      .attr("stroke", "white")
+      .style("font", "16px times")
+
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, d3.max(data.map((d) => { return d.y }))])
+    .range([ height, 0]);
+  svg.append("g")
+    .call(d3.axisLeft(y))
+    .attr("stroke", "white")
+
+
+  // Bars
+  svg.selectAll("mybar")
+    .data(data)
+    .enter()
+    .append("rect")
+      .attr("x", function(d) { return x(d.x); })
+      .attr("width", x.bandwidth())
+      .attr("fill", "#69b3a2")
+      // no bar at the beginning thus:
+      .attr("height", function(d) { return height - y(0); }) // always equal to 0
+      .attr("y", function(d) { return y(0); })
+
+  // Animation
+  svg.selectAll("rect")
+    .transition()
+    .duration(800)
+    .attr("y", function(d) { return y(d.y); })
+    .attr("height", function(d) { return height - y(d.y); })
+    .delay(function(d,i){ return(i*100)})
+
+}
 
 // HISTOGRAM
 function histogram(data) {
