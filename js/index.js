@@ -1431,11 +1431,9 @@ function scanHistory(data) {
     indexScan += 1
   })
 }
-var selectedOptionX
 
 // Scatter plot
-function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
-  console.log(currentX)
+function drawScatterPlot(data) {
   data.forEach((e) => {
     e["EntryDate"] = new Date(Math.abs((new Date(e.EntryTime))) )
     e["ExtentDate"] = new Date(Math.abs((new Date(e.ExtentTime))) )
@@ -1462,8 +1460,13 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
   var XOptions = ["Duration", "TrailingMaxDrawdownPercTillExtent", "MaxDrawdownPerc", "Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "FirstLastEntryPivotPriceDiffPerc", "FirstToLastEntryPivotDuration", "AveragePriceDiffPercEntryPivots"]
 
   let currentY = YOptions[0]
-  // let currentX = XOptions[0]
+  let currentX = XOptions[0]
 
+  // Window variables
+  let startWindow = document.getElementById("startWindow")
+  let endWindow = document.getElementById("endWindow")
+  let startValue
+  let endValue
   // add the options to the button
   d3.select("#selectButtonY")
     .selectAll('myOptionsY')
@@ -1483,7 +1486,7 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
     
   // Add X axis --> it is a date format
   var x = d3.scaleLinear()
-    .domain(d3.extent(data.filter((d) => { return d[currentX] >= start && d[currentX] <= end}).map((d) => { return d[currentX]})))
+    .domain(d3.extent(data.map((d) => { return d[currentX]})))
     .range([0, width]);
   var xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -1499,24 +1502,11 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
     .call(d3.axisLeft(y))
     .attr("stroke", "white")
     .attr("font-size", "12px")
-
-  // // Initialize line with group a
-  // var line = svg
-  //   .append('g')
-  //   .append("path")
-  //     .datum(data)
-  //     .attr("d", d3.line()
-  //       .x(function(d) { return x(+d.Duration) })
-  //       .y(function(d) { return y(+d.Growth) })
-  //     )
-  //     .attr("stroke", "white")
-  //     .style("stroke-width", 4)
-  //     .style("fill", "none")
   
   // Initialize dots with group a
   var dot = svg
     .selectAll('circle')
-    .data(data.filter((d) => { return d[currentX] >= start && d[currentX] <= end}))
+    .data(data)
     .enter()
     .append('circle')
     .attr("cx", function (d) { return x(+d[currentX]) })
@@ -1529,15 +1519,6 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
   function updateY(selectedGroup) {
     // Create new data with the selection?
     var dataFilter = data.map(function (d) { return { x: d[currentX], y: d[selectedGroup] } })
-    // Give these new data to update line
-    // line
-    //     .datum(dataFilter)
-    //     .transition()
-    //     .duration(1000)
-    //     .attr("d", d3.line()
-    //       .x(function(d) { return x(+d.time) })
-    //       .y(function(d) { return y(+d.value) })
-    //     )
 
     // Add Y axis
     if (selectedGroup == "EntryDate" || selectedGroup == "ExtentDate") {
@@ -1562,31 +1543,35 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
     currentY = selectedGroup
   }
 
-  function updateX(selectedGroup) {
+  function updateX(selectedGroup, start = 0, end = 100000) {
+
     // Create new data with the selection?
-    var dataFilter = data.map(function (d) { return { x: d[selectedGroup], y: d[currentY]}})
-    
+    var dataFilter = data.map(function (d) { return { x: d[selectedGroup], y: d[currentY]}}).filter((d) => { return d.x >= start && d.x <= end})
     // Add X axis
     if (selectedGroup == "EntryDate" || selectedGroup == "ExtentDate") {
       x = d3.scaleTime()
         .domain(d3.extent(dataFilter.map((d) => { return d.x })))
         .range([0, width]);
     } else {
-      let max = d3.max(dataFilter.map((d) => { return d.x }))
-      let min = d3.min(dataFilter.map((d) => { return d.x }))
       x = d3.scaleLinear()
-        .domain([min, max])
+        .domain(d3.extent(dataFilter.map((d) => { return d.x })))
         .range([0, width]);
     }
 
     xAxis.transition().duration(1000).call(d3.axisBottom(x))
 
-    dot
+    // Deleting the old dots and making new ones
+    d3.selectAll("circle").remove()
+
+    svg
+      .selectAll('circle')
       .data(dataFilter)
-      .transition()
-      .duration(1000)
-      .attr("cx", function (d) { return x(+d.x) })
-      .attr("cy", function (d) { return y(+d.y) })
+      .enter()
+      .append('circle')
+      .attr("cx", function (d) { return x(parseFloat(d.x)) })
+      .attr("cy", function (d) { return y(parseFloat(d.y)) })
+      .attr("r", 2)
+      .style("fill", "#ff3bdb")
 
     currentX = selectedGroup
   }
@@ -1600,48 +1585,18 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
     updateY(selectedOptionY)
   })
 
-  // var selectedOptionX
+  var selectedOptionX = "Duration"
   d3.select("#selectButtonX").on("change", function (d) {
+    // Clean all window values
+    startWindow.value = ""
+    endWindow.value = ""
+    startValue = null
+    endValue = null
     // recover the option that has been chosen
     selectedOptionX = d3.select(this).property("value")
     // run the updateChart function with this selected option
     updateX(selectedOptionX)
   })
-
-  // let startWindow = document.getElementById("startWindow")
-  // let endWindow = document.getElementById("endWindow")
-  // let startValue
-  // let endValue
-  // startWindow.addEventListener('change', function() {
-  //   startValue = startWindow.value
-  //   updateWindow()
-  // })
-
-  // endWindow.addEventListener('change', function() {
-  //   endValue = endWindow.value
-  //   updateWindow()
-  // })
-
-  // function updateWindow() {
-  //   if (parseFloat(startValue) < parseFloat(endValue)) {
-  //     updateX(selectedOptionX, startValue, endValue)
-  //   }
-  // }
-}
-
-function scatterPlotWindow(data) {
-  let startWindow = document.getElementById("startWindow")
-  let endWindow = document.getElementById("endWindow")
-  let startValue
-  let endValue
-  // var selectedOptionX
-
-  // d3.select("#selectButtonX").on("change", function (d) {
-  //   // recover the option that has been chosen
-  //   selectedOptionX = d3.select(this).property("value")
-  //   // run the updateChart function with this selected option
-  //   console.log(selectedOptionX)
-  // })
 
   startWindow.addEventListener('change', function() {
     startValue = startWindow.value
@@ -1655,14 +1610,10 @@ function scatterPlotWindow(data) {
 
   function updateWindow() {
     if (parseFloat(startValue) < parseFloat(endValue)) {
-      d3.selectAll("#scatterPlot > *").remove();
-      d3.selectAll("#selectButtonY > *").remove();
-      d3.selectAll("#selectButtonX > *").remove();
-      drawScatterPlot(data, parseFloat(startValue), parseFloat(endValue), selectedOptionX)
+      updateX(selectedOptionX, startValue, endValue)
     }
   }
 }
-
 
 // HISTOGRAM
 function histogram(data) {
