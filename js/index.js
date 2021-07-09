@@ -1433,7 +1433,7 @@ function scanHistory(data) {
 var selectedOptionX
 
 // Scatter plot
-function drawScatterPlot(data, start = 0, end = 100000) {
+function drawScatterPlot(data) {
   data.forEach((e) => {
     e["EntryDate"] = new Date(Math.abs((new Date(e.EntryTime))) )
     e["ExtentDate"] = new Date(Math.abs((new Date(e.ExtentTime))) )
@@ -1462,6 +1462,12 @@ function drawScatterPlot(data, start = 0, end = 100000) {
   let currentY = YOptions[0]
   let currentX = XOptions[0]
 
+  // Window variables
+  let startWindow = document.getElementById("startWindow")
+  let endWindow = document.getElementById("endWindow")
+  let startValue
+  let endValue
+
   // add the options to the button
   d3.select("#selectButtonY")
     .selectAll('myOptionsY')
@@ -1481,7 +1487,7 @@ function drawScatterPlot(data, start = 0, end = 100000) {
     
   // Add X axis --> it is a date format
   var x = d3.scaleLinear()
-    .domain(d3.extent(data.filter((d) => { return d[currentX]})))
+    .domain(d3.extent(data.map((d) => { return d[currentX]})))
     .range([0, width]);
   var xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -1498,52 +1504,10 @@ function drawScatterPlot(data, start = 0, end = 100000) {
     .attr("stroke", "white")
     .attr("font-size", "12px")
 
-  // Create bar graph
-  let chunkNumElement = document.getElementById("chunkNum")
-  let minimumYElement = document.getElementById("minimumY")
-  let chunkNum = 10
-  let minimumY = 2
-  calculateBarGraph()
-  
-  chunkNumElement.addEventListener('change', function() {
-    chunkNum = chunkNumElement.value
-    calculateBarGraph()
-  })
-
-  minimumYElement.addEventListener('change', function() {
-    minimumY = minimumYElement.value
-    calculateBarGraph()
-  })
-
-  function calculateBarGraph() {
-    let dataPoints = data.map(function (d) { return { x: parseFloat(d[currentX]), y: parseFloat(d[currentY]) } })
-    let chunkRange = parseFloat((d3.max(data.map(d => {return d[currentX]})) / chunkNum).toFixed(2))
-    let chunkStart = 0
-    let chunkEnd = chunkRange
-    let barGraphData = []
-
-    // Loop until the end of xAxis
-    while (true) {
-      let filteredX = dataPoints.filter((d) => {return d.x >= chunkStart && d.x <= chunkEnd})
-      let barGraphObj = {}
-      barGraphObj.y = filteredX.filter((d) => {return d.y <= minimumY}).length / filteredX.length * 100
-      barGraphObj.x = chunkStart + "~" + chunkEnd
-      barGraphData.push(barGraphObj)
-
-      if (chunkEnd + chunkRange > chunkRange * chunkNum) {
-        break
-      }
-
-      chunkStart = chunkEnd
-      chunkEnd = (chunkEnd * 1000000 + chunkRange * 1000000) / 1000000
-    }
-    barGraph(barGraphData)
-  }
-
   // Initialize dots with group a
   var dot = svg
     .selectAll('circle')
-    .data(data.filter((d) => { return d[currentX] >= start && d[currentX] <= end}))
+    .data(data)
     .enter()
     .append('circle')
     .attr("cx", function (d) { return x(+d[currentX]) })
@@ -1590,9 +1554,9 @@ function drawScatterPlot(data, start = 0, end = 100000) {
     calculateBarGraph()
   }
 
-  function updateX(selectedGroup) {
+  function updateX(selectedGroup, start = 0, end = 100000) {
     // Create new data with the selection?
-    var dataFilter = data.map(function (d) { return { x: d[selectedGroup], y: d[currentY]}})
+    var dataFilter = data.map(function (d) { return { x: d[selectedGroup], y: d[currentY]}}).filter((d) => { return d.x >= start && d.x <= end})
     
     // Add X axis
     if (selectedGroup == "EntryDate" || selectedGroup == "ExtentDate") {
@@ -1600,21 +1564,25 @@ function drawScatterPlot(data, start = 0, end = 100000) {
         .domain(d3.extent(dataFilter.map((d) => { return d.x })))
         .range([0, width]);
     } else {
-      let max = d3.max(dataFilter.map((d) => { return d.x }))
-      let min = d3.min(dataFilter.map((d) => { return d.x }))
       x = d3.scaleLinear()
-        .domain([min, max])
+        .domain(d3.extent(dataFilter.map((d) => { return d.x })))
         .range([0, width]);
     }
 
     xAxis.transition().duration(1000).call(d3.axisBottom(x))
 
-    dot
+    // Deleting the old dots and making new ones
+    d3.selectAll("circle").remove()
+
+    svg
+      .selectAll('circle')
       .data(dataFilter)
-      .transition()
-      .duration(1000)
-      .attr("cx", function (d) { return x(+d.x) })
-      .attr("cy", function (d) { return y(+d.y) })
+      .enter()
+      .append('circle')
+      .attr("cx", function (d) { return x(parseFloat(d.x)) })
+      .attr("cy", function (d) { return y(parseFloat(d.y)) })
+      .attr("r", 2)
+      .style("fill", "#ff3bdb")
 
     currentX = selectedGroup
     calculateBarGraph()
@@ -1629,33 +1597,80 @@ function drawScatterPlot(data, start = 0, end = 100000) {
     updateY(selectedOptionY)
   })
 
-  // var selectedOptionX
+  var selectedOptionX = "Duration"
   d3.select("#selectButtonX").on("change", function (d) {
+    // Clean all window values
+    startWindow.value = ""
+    endWindow.value = ""
+    startValue = null
+    endValue = null
+    
     // recover the option that has been chosen
     selectedOptionX = d3.select(this).property("value")
     // run the updateChart function with this selected option
     updateX(selectedOptionX)
   })
 
-  // let startWindow = document.getElementById("startWindow")
-  // let endWindow = document.getElementById("endWindow")
-  // let startValue
-  // let endValue
-  // startWindow.addEventListener('change', function() {
-  //   startValue = startWindow.value
-  //   updateWindow()
-  // })
+  // Create bar graph
+  let chunkNumElement = document.getElementById("chunkNum")
+  let minimumYElement = document.getElementById("minimumY")
+  let chunkNum = 10
+  let minimumY = 2
+  calculateBarGraph()
+  
+  chunkNumElement.addEventListener('change', function() {
+    chunkNum = chunkNumElement.value
+    calculateBarGraph()
+  })
 
-  // endWindow.addEventListener('change', function() {
-  //   endValue = endWindow.value
-  //   updateWindow()
-  // })
+  minimumYElement.addEventListener('change', function() {
+    minimumY = minimumYElement.value
+    calculateBarGraph()
+  })
 
-  // function updateWindow() {
-  //   if (parseFloat(startValue) < parseFloat(endValue)) {
-  //     updateX(selectedOptionX, startValue, endValue)
-  //   }
-  // }
+  function calculateBarGraph() {
+    let dataPoints = data.map(function (d) { return { x: parseFloat(d[currentX]), y: parseFloat(d[currentY]) } })
+    let chunkRange = parseFloat((d3.max(data.map(d => {return d[currentX]})) / chunkNum).toFixed(2))
+    let chunkStart = 0
+    let chunkEnd = chunkRange
+    let barGraphData = []
+
+    // Loop until the end of xAxis
+    while (true) {
+      let filteredX = dataPoints.filter((d) => {return d.x >= chunkStart && d.x <= chunkEnd})
+      let barGraphObj = {}
+      barGraphObj.y = filteredX.filter((d) => {return d.y <= minimumY}).length / filteredX.length * 100
+      barGraphObj.x = chunkStart + "~" + chunkEnd
+      barGraphData.push(barGraphObj)
+
+      if ((chunkEnd * 1000000 + chunkRange * 1000000) / 1000000 > chunkRange * 1000000 * chunkNum / 1000000) {
+        console.log(chunkEnd)
+        console.log(chunkRange)
+        console.log(chunkRange * 1000000 * chunkNum / 1000000)
+        break
+      }
+
+      chunkStart = chunkEnd
+      chunkEnd = (chunkEnd * 1000000 + chunkRange * 1000000) / 1000000
+    }
+    barGraph(barGraphData)
+  }
+
+  startWindow.addEventListener('change', function() {
+    startValue = startWindow.value
+    updateWindow()
+  })
+
+  endWindow.addEventListener('change', function() {
+    endValue = endWindow.value
+    updateWindow()
+  })
+
+  function updateWindow() {
+    if (parseFloat(startValue) < parseFloat(endValue)) {
+      updateX(selectedOptionX, startValue, endValue)
+    }
+  }
 }
 
 // Second Graph for scatterplot
