@@ -1614,7 +1614,7 @@ function drawScatterPlot(data) {
   // Create bar graph
   let chunkNumElement = document.getElementById("chunkNum")
   let minimumYElement = document.getElementById("minimumY")
-  let chunkNum = 10
+  let chunkNum = 30
   let minimumY = 1
   calculateBarGraph()
 
@@ -1639,7 +1639,7 @@ function drawScatterPlot(data) {
     while (true) {
       let filteredX = dataPoints.filter((d) => { return d.x >= chunkStart && d.x <= chunkEnd })
       let barGraphObj = {}
-      barGraphObj.y = filteredX.filter((d) => { return d.y <= minimumY }).length / filteredX.length * 100
+      barGraphObj.y = filteredX.filter((d) => { return d.y >= minimumY }).length / filteredX.length * 100
       barGraphObj.x = chunkStart + "~" + chunkEnd
       barGraphData.push(barGraphObj)
 
