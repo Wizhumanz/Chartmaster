@@ -391,8 +391,8 @@ function computeBacktest() {
   let chunkProcessOption = (document.getElementById("chunkProcessTogglerBtn").innerHTML === "Switch to Waterfall") ? "RAINDROPS" : "WATERFALL"
 
   let backendInfo = {
-    "process" : chunkProcessOption,
-    "retrieveCandles" : retrieveCandles,
+    "process": chunkProcessOption,
+    "retrieveCandles": retrieveCandles,
     "operation": operation,
     "ticker": ticker,
     "period": period,
@@ -802,40 +802,40 @@ function drawChart(start, end) {
     .attr("width", pointerWidth)
     .attr("height", pointerHeight)
     .attr("fill", "hotpink")
-  
+
   let entryLine = chartBody.selectAll("entryLine")
     .data(candlesToShow.filter((p) => { return p.StratEnterPrice != 0 }))
     .enter()
     .append("rect")
     .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
     .attr("y", d => yScale(d.StratEnterPrice) + pointerYMove)
-    .attr("width", pointerWidth+6)
+    .attr("width", pointerWidth + 6)
     .attr("height", 2)
     .attr("fill", "white")
 
-  let exitLine 
+  let exitLine
   candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
     if (c.StratExitPrice.length > 1) {
       c.StratExitPrice.forEach((g) => {
         exitLine = chartBody.selectAll("exitLine")
-        .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
-        .enter()
-        .append("rect")
-        .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-        .attr("y", (d) => yScale(g) + pointerYMove)
-        .attr("width", pointerWidth+6)
-        .attr("height", 2)
-        .attr("fill", "white")
-      // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
+          .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
+          .enter()
+          .append("rect")
+          .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+          .attr("y", (d) => yScale(g) + pointerYMove)
+          .attr("width", pointerWidth + 6)
+          .attr("height", 2)
+          .attr("fill", "white")
+        // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
       })
     } else {
       exitLine = chartBody.selectAll("exitLine")
         .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
         .enter()
         .append("rect")
-        .attr("x",(d) =>  xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+        .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
         .attr("y", (d) => yScale(c.StratExitPrice[0]) + pointerYMove)
-        .attr("width", pointerWidth+6)
+        .attr("width", pointerWidth + 6)
         .attr("height", 2)
         .attr("fill", "white")
     }
@@ -998,7 +998,7 @@ function drawChart(start, end) {
             .attr("y", (d) => yScale(g) + labelYMoveTop)
         })
       })
-      
+
 
       gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
 
@@ -1202,25 +1202,25 @@ function drawPC(data) {
   // Scale the range of the data
   x.domain(d3.extent(data, function (d) { return d.date; }));
   y.domain([d3.min(data, function (d) {
-      let minValue = []
-      let findMin = (key, value) => {
-        if (key !== "date") {
-          minValue.push(value)
-        }
-      }
-      useKeyAndValue(findMin, d)
-      return 0.85 * (Math.min(...minValue));
-    })
-    , d3.max(data, function (d) {
-    let maxValue = []
-    let findMax = (key, value) => {
+    let minValue = []
+    let findMin = (key, value) => {
       if (key !== "date") {
-        maxValue.push(value)
+        minValue.push(value)
       }
     }
-    useKeyAndValue(findMax, d)
-    return 1.03 * (Math.max(...maxValue));
-  })]);
+    useKeyAndValue(findMin, d)
+    return 0.85 * (Math.min(...minValue));
+  })
+    , d3.max(data, function (d) {
+      let maxValue = []
+      let findMax = (key, value) => {
+        if (key !== "date") {
+          maxValue.push(value)
+        }
+      }
+      useKeyAndValue(findMax, d)
+      return 1.03 * (Math.max(...maxValue));
+    })]);
 
   let valueline = []
 
@@ -1282,13 +1282,13 @@ function plotHistory(data) {
   }
 
   // Number of rows
-  document.getElementById("numOfRows").innerHTML = "Total: (" + data[0].Data.length.toString() + ")" + " Entry: " + "(" + data[0].Data.filter((d) => {return d.EntryDateTime.length != 0}).length.toString() + ")"
+  document.getElementById("numOfRows").innerHTML = "Total: (" + data[0].Data.length.toString() + ")" + " Entry: " + "(" + data[0].Data.filter((d) => { return d.EntryDateTime.length != 0 }).length.toString() + ")"
 
   var tableHeader = document.getElementById("history")
   tableHeader.innerHTML = ""
   let row = tableHeader.insertRow()
   let tableHeaderEle = ["EntryDateTime", "ExitDateTime", "Profit($)", "Position Size", "Exit Price", "Raw Profit(%)", "Entry Price", "Risked Equity", "Fees($)", "Direction", "Index", "Parameter"]
-  
+
   tableHeaderEle.forEach(t => {
     let newCell = row.insertCell()
     newCell.innerHTML = t
@@ -1367,7 +1367,7 @@ function scanHistory(data) {
   data.forEach((s) => {
     // creating checkbox element
     var checkbox = document.createElement('input');
-              
+
     // Assigning the attributes to created checkbox
     checkbox.type = "checkbox";
     checkbox.value = "value";
@@ -1376,7 +1376,7 @@ function scanHistory(data) {
     checkbox.checked = true
 
     // If checkbox is unchecked, remove the data and display. If it's checked, add the data and display.
-    checkbox.addEventListener('change', function() {
+    checkbox.addEventListener('change', function () {
       if (this.checked) {
         data.forEach((s) => {
           if (s.EntryTime == checkbox.id) {
@@ -1435,10 +1435,10 @@ var selectedOptionX
 // Scatter plot
 function drawScatterPlot(data) {
   data.forEach((e) => {
-    e["EntryDate"] = new Date(Math.abs((new Date(e.EntryTime))) )
-    e["ExtentDate"] = new Date(Math.abs((new Date(e.ExtentTime))) )
-    e.Entry = new Date(Math.abs((new Date(e.EntryTime))) ).getHours() + (new Date(Math.abs((new Date(e.EntryTime))) ).getMinutes()/60)
-    e.Extent = new Date(Math.abs((new Date(e.ExtentTime))) ).getHours() + (new Date(Math.abs((new Date(e.ExtentTime))) ).getMinutes()/60)
+    e["EntryDate"] = new Date(Math.abs((new Date(e.EntryTime))))
+    e["ExtentDate"] = new Date(Math.abs((new Date(e.ExtentTime))))
+    e.Entry = new Date(Math.abs((new Date(e.EntryTime)))).getHours() + (new Date(Math.abs((new Date(e.EntryTime)))).getMinutes() / 60)
+    e.Extent = new Date(Math.abs((new Date(e.ExtentTime)))).getHours() + (new Date(Math.abs((new Date(e.ExtentTime)))).getMinutes() / 60)
     // - getLocalTimezone()
   })
   // set the dimensions and margins of the graph
@@ -1484,10 +1484,10 @@ function drawScatterPlot(data) {
     .append('option')
     .text(function (d) { return d; }) // text showed in the menu
     .attr("value", function (d) { return d; }) // corresponding value returned by the button
-    
+
   // Add X axis --> it is a date format
   var x = d3.scaleLinear()
-    .domain(d3.extent(data.map((d) => { return d[currentX]})))
+    .domain(d3.extent(data.map((d) => { return d[currentX] })))
     .range([0, width]);
   var xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -1497,7 +1497,7 @@ function drawScatterPlot(data) {
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain(d3.extent(data.map((d) => { return d[currentY]})))
+    .domain(d3.extent(data.map((d) => { return d[currentY] })))
     .range([height, 0]);
   var yAxis = svg.append("g")
     .call(d3.axisLeft(y))
@@ -1556,8 +1556,8 @@ function drawScatterPlot(data) {
 
   function updateX(selectedGroup, start = 0, end = 100000) {
     // Create new data with the selection?
-    var dataFilter = data.map(function (d) { return { x: d[selectedGroup], y: d[currentY]}}).filter((d) => { return d.x >= start && d.x <= end})
-    
+    var dataFilter = data.map(function (d) { return { x: d[selectedGroup], y: d[currentY] } }).filter((d) => { return d.x >= start && d.x <= end })
+
     // Add X axis
     if (selectedGroup == "EntryDate" || selectedGroup == "ExtentDate") {
       x = d3.scaleTime()
@@ -1604,7 +1604,7 @@ function drawScatterPlot(data) {
     endWindow.value = ""
     startValue = null
     endValue = null
-    
+
     // recover the option that has been chosen
     selectedOptionX = d3.select(this).property("value")
     // run the updateChart function with this selected option
@@ -1615,31 +1615,31 @@ function drawScatterPlot(data) {
   let chunkNumElement = document.getElementById("chunkNum")
   let minimumYElement = document.getElementById("minimumY")
   let chunkNum = 10
-  let minimumY = 2
+  let minimumY = 1
   calculateBarGraph()
-  
-  chunkNumElement.addEventListener('change', function() {
+
+  chunkNumElement.addEventListener('change', function () {
     chunkNum = chunkNumElement.value
     calculateBarGraph()
   })
 
-  minimumYElement.addEventListener('change', function() {
+  minimumYElement.addEventListener('change', function () {
     minimumY = minimumYElement.value
     calculateBarGraph()
   })
 
   function calculateBarGraph() {
     let dataPoints = data.map(function (d) { return { x: parseFloat(d[currentX]), y: parseFloat(d[currentY]) } })
-    let chunkRange = parseFloat((d3.max(data.map(d => {return d[currentX]})) / chunkNum).toFixed(2))
+    let chunkRange = parseFloat((d3.max(data.map(d => { return d[currentX] })) / chunkNum).toFixed(2))
     let chunkStart = 0
     let chunkEnd = chunkRange
     let barGraphData = []
 
     // Loop until the end of xAxis
     while (true) {
-      let filteredX = dataPoints.filter((d) => {return d.x >= chunkStart && d.x <= chunkEnd})
+      let filteredX = dataPoints.filter((d) => { return d.x >= chunkStart && d.x <= chunkEnd })
       let barGraphObj = {}
-      barGraphObj.y = filteredX.filter((d) => {return d.y <= minimumY}).length / filteredX.length * 100
+      barGraphObj.y = filteredX.filter((d) => { return d.y <= minimumY }).length / filteredX.length * 100
       barGraphObj.x = chunkStart + "~" + chunkEnd
       barGraphData.push(barGraphObj)
 
@@ -1656,12 +1656,12 @@ function drawScatterPlot(data) {
     barGraph(barGraphData)
   }
 
-  startWindow.addEventListener('change', function() {
+  startWindow.addEventListener('change', function () {
     startValue = startWindow.value
     updateWindow()
   })
 
-  endWindow.addEventListener('change', function() {
+  endWindow.addEventListener('change', function () {
     endValue = endWindow.value
     updateWindow()
   })
@@ -1677,38 +1677,39 @@ function drawScatterPlot(data) {
 function barGraph(data) {
   d3.selectAll("#barGraph > *").remove();
   // set the dimensions and margins of the graph
-  var margin = {top: 10, right: 30, bottom: 90, left: 40},
-      width = 460 - margin.left - margin.right,
-      height = 450 - margin.top - margin.bottom;
+  var margin = { top: 10, right: 30, bottom: 90, left: 40 },
+    width = 850 - margin.left - margin.right,
+    height = 350 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   var svg = d3.select("#barGraph")
     .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
     .append("g")
-      .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")");
 
   // X axis
   var x = d3.scaleBand()
-    .range([ 0, width ])
-    .domain(data.map(function(d) { return d.x; }))
+    .range([0, width])
+    .domain(data.map(function (d) { return d.x; }))
     .padding(0.2);
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(x))
     .selectAll("text")
-      .attr("transform", "translate(-10,0)rotate(-45)")
-      .style("text-anchor", "end")
-      .attr("stroke", "white")
-      .style("font", "16px times")
+    .attr("transform", "translate(-10,0)rotate(-45)")
+    .style("text-anchor", "end")
+    .attr("stroke", "white")
+    .attr("fill", "white")
+    .style("font", "10px times")
 
 
   // Add Y axis
   var y = d3.scaleLinear()
     .domain([0, d3.max(data.map((d) => { return d.y }))])
-    .range([ height, 0]);
+    .range([height, 0]);
   svg.append("g")
     .call(d3.axisLeft(y))
     .attr("stroke", "white")
@@ -1719,20 +1720,20 @@ function barGraph(data) {
     .data(data)
     .enter()
     .append("rect")
-      .attr("x", function(d) { return x(d.x); })
-      .attr("width", x.bandwidth())
-      .attr("fill", "#69b3a2")
-      // no bar at the beginning thus:
-      .attr("height", function(d) { return height - y(0); }) // always equal to 0
-      .attr("y", function(d) { return y(0); })
+    .attr("x", function (d) { return x(d.x); })
+    .attr("width", x.bandwidth())
+    .attr("fill", "#f5ff63")
+    // no bar at the beginning thus:
+    .attr("height", function (d) { return height - y(0); }) // always equal to 0
+    .attr("y", function (d) { return y(0); })
 
   // Animation
   svg.selectAll("rect")
     .transition()
     .duration(800)
-    .attr("y", function(d) { return y(d.y); })
-    .attr("height", function(d) { return height - y(d.y); })
-    .delay(function(d,i){ return(i*100)})
+    .attr("y", function (d) { return y(d.y); })
+    .attr("height", function (d) { return height - y(d.y); })
+    .delay(function (d, i) { return (i * 100) })
 
 }
 
@@ -1884,8 +1885,8 @@ function moveLeft() {
   let rBtn = document.getElementById("panCandlesRightBtn")
 
   lBtn.style.display = "inline"
-  candleDrawStartIndex -= candleDisplayNumber /2
-  candleDrawEndIndex -= candleDisplayNumber /2
+  candleDrawStartIndex -= candleDisplayNumber / 2
+  candleDrawEndIndex -= candleDisplayNumber / 2
   if (candleDrawStartIndex <= 0) {
     lBtn.style.display = "none"
   }
@@ -1900,8 +1901,8 @@ function moveRight() {
   let rBtn = document.getElementById("panCandlesRightBtn")
 
   rBtn.style.display = "inline"
-  candleDrawStartIndex += candleDisplayNumber /2
-  candleDrawEndIndex += candleDisplayNumber /2
+  candleDrawStartIndex += candleDisplayNumber / 2
+  candleDrawEndIndex += candleDisplayNumber / 2
   if (candleDrawEndIndex >= allCandles.length) {
     rBtn.style.display = "none"
   }
@@ -1940,9 +1941,9 @@ function saveCandlesChanged() {
   var tickerInput = document.getElementById("tickerSelect")
 
   startTimeInput.value = selectedOptionText.substring(0, selectedOptionText.indexOf("~")).replace("_", "T").slice(0, -3)
-  endTimeInput.value = selectedOptionText.substring(selectedOptionText.indexOf("~")+1, selectedOptionText.indexOf("(")).replace("_", "T").slice(0, -3)
-  periodInput.value = selectedOptionText.substring(selectedOptionText.indexOf("(")+1, selectedOptionText.indexOf(","))
-  tickerInput.value = selectedOptionText.substring(selectedOptionText.indexOf(" ")+1, selectedOptionText.indexOf(")"))
+  endTimeInput.value = selectedOptionText.substring(selectedOptionText.indexOf("~") + 1, selectedOptionText.indexOf("(")).replace("_", "T").slice(0, -3)
+  periodInput.value = selectedOptionText.substring(selectedOptionText.indexOf("(") + 1, selectedOptionText.indexOf(","))
+  tickerInput.value = selectedOptionText.substring(selectedOptionText.indexOf(" ") + 1, selectedOptionText.indexOf(")"))
 
   retrieveCandles = true
 }
