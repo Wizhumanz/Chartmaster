@@ -277,7 +277,6 @@ function connectWs(id) {
           scanHistory(allScatter)
           drawScatterPlot(allScatter)
           histogram(allScatter)
-          scatterPlotWindow(allScatter)
           //save res id so next messages with same ID will be concatenated with existing data
           existingWSResIDPC = JSON.parse(msg.data).ResultID
         } else {
@@ -293,7 +292,6 @@ function connectWs(id) {
           scanHistory(allScatter)
           drawScatterPlot(allScatter)
           histogram(allScatter)
-          scatterPlotWindow(allScatter)
         }
       }
 
@@ -1435,7 +1433,7 @@ function scanHistory(data) {
 var selectedOptionX
 
 // Scatter plot
-function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
+function drawScatterPlot(data, start = 0, end = 100000) {
   data.forEach((e) => {
     e["EntryDate"] = new Date(Math.abs((new Date(e.EntryTime))) )
     e["ExtentDate"] = new Date(Math.abs((new Date(e.ExtentTime))) )
@@ -1462,7 +1460,7 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
   var XOptions = ["Duration", "TrailingMaxDrawdownPercTillExtent", "MaxDrawdownPerc", "Entry", "EntryDate", "ExtentDate", "Extent", "Growth", "FirstLastEntryPivotPriceDiffPerc", "FirstToLastEntryPivotDuration", "AveragePriceDiffPercEntryPivots"]
 
   let currentY = YOptions[0]
-  // let currentX = XOptions[0]
+  let currentX = XOptions[0]
 
   // add the options to the button
   d3.select("#selectButtonY")
@@ -1483,7 +1481,7 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
     
   // Add X axis --> it is a date format
   var x = d3.scaleLinear()
-    .domain(d3.extent(data.filter((d) => { return d[currentX] >= start && d[currentX] <= end}).map((d) => { return d[currentX]})))
+    .domain(d3.extent(data.filter((d) => { return d[currentX]})))
     .range([0, width]);
   var xAxis = svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -1658,40 +1656,6 @@ function drawScatterPlot(data, start = 0, end = 100000, currentX = "Duration") {
   //     updateX(selectedOptionX, startValue, endValue)
   //   }
   // }
-}
-
-function scatterPlotWindow(data) {
-  let startWindow = document.getElementById("startWindow")
-  let endWindow = document.getElementById("endWindow")
-  let startValue
-  let endValue
-  // var selectedOptionX
-
-  // d3.select("#selectButtonX").on("change", function (d) {
-  //   // recover the option that has been chosen
-  //   selectedOptionX = d3.select(this).property("value")
-  //   // run the updateChart function with this selected option
-  //   console.log(selectedOptionX)
-  // })
-
-  startWindow.addEventListener('change', function() {
-    startValue = startWindow.value
-    updateWindow()
-  })
-
-  endWindow.addEventListener('change', function() {
-    endValue = endWindow.value
-    updateWindow()
-  })
-
-  function updateWindow() {
-    if (parseFloat(startValue) < parseFloat(endValue)) {
-      d3.selectAll("#scatterPlot > *").remove();
-      d3.selectAll("#selectButtonY > *").remove();
-      d3.selectAll("#selectButtonX > *").remove();
-      drawScatterPlot(data, parseFloat(startValue), parseFloat(endValue), selectedOptionX)
-    }
-  }
 }
 
 // Second Graph for scatterplot
