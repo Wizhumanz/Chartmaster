@@ -1634,24 +1634,22 @@ function drawScatterPlot(data) {
     let chunkStart = 0
     let chunkEnd = chunkRange
     let barGraphData = []
+    let floatPrecision = 1000000
 
     // Loop until the end of xAxis
     while (true) {
       let filteredX = dataPoints.filter((d) => { return d.x >= chunkStart && d.x <= chunkEnd })
       let barGraphObj = {}
-      barGraphObj.y = filteredX.filter((d) => { return d.y <= minimumY }).length / filteredX.length * 100
+      barGraphObj.y = filteredX.filter((d) => { return d.y >= minimumY }).length / filteredX.length * 100
       barGraphObj.x = chunkStart + "~" + chunkEnd
       barGraphData.push(barGraphObj)
 
-      if ((chunkEnd * 1000000 + chunkRange * 1000000) / 1000000 > chunkRange * 1000000 * chunkNum / 1000000) {
-        console.log(chunkEnd)
-        console.log(chunkRange)
-        console.log(chunkRange * 1000000 * chunkNum / 1000000)
+      if (((parseFloat(chunkEnd * floatPrecision + chunkRange * floatPrecision) / floatPrecision).toFixed(2)) > parseFloat((chunkRange * floatPrecision * chunkNum / floatPrecision).toFixed(2))) {
         break
       }
 
       chunkStart = chunkEnd
-      chunkEnd = (chunkEnd * 1000000 + chunkRange * 1000000) / 1000000
+      chunkEnd = parseFloat(((chunkEnd * floatPrecision + chunkRange * floatPrecision) / floatPrecision).toFixed(2))
     }
     barGraph(barGraphData)
   }
