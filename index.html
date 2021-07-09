@@ -33,14 +33,6 @@
 
   <div id="brand-controls">
     <h4 id="brand-h">Chartmaster</h4>
-    <button id="modeTogglerBtn" onclick="showScanResults()">Switch to Scan Mode</button>
-    <button id="chunkProcessTogglerBtn" onclick="chunkProcessOption()">Switch to Waterfall</button>
-    <button id="saveCandles" onclick="saveCandlesToJson()">Save Candles</button>
-    <div class="topControls">
-      <select name="candlesSelect" id="candlesSelect" onchange="saveCandlesChanged()">
-        <!-- filled dynamically by API call -->
-      </select>
-    </div>
   </div>
 
   <div id="progress" class="progress" style="display:block">
@@ -186,6 +178,15 @@
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div id="extraControls">
+              <button id="modeTogglerBtn" onclick="showScanResults()">Switch to Scan Mode</button>
+              <button id="chunkProcessTogglerBtn" onclick="chunkProcessOption()">Switch to Waterfall</button>
+              <button id="saveCandles" onclick="saveCandlesToJson()">Save Candles</button>
+              <select name="candlesSelect" id="candlesSelect" onchange="saveCandlesChanged()">
+                <!-- filled dynamically by API call -->
+              </select>
             </div>
           </div>
 

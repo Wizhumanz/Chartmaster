@@ -107,6 +107,11 @@ html,
   display: inline;
 }
 
+#extraControls {
+  margin-top: -1rem;
+  margin-bottom: 1rem;
+}
+
 #modeTogglerBtn {
   margin-top: -0.5rem;
   font-size: x-small;
@@ -151,7 +156,7 @@ h4.chartHeader#optionsH {
   font-family: "Alata", sans-serif;
 }
 .topControls div.row {
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 .topControls button {
   margin-left: 0.5rem;
