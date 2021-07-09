@@ -1677,7 +1677,7 @@ function drawScatterPlot(data) {
 function barGraph(data) {
   d3.selectAll("#barGraph > *").remove();
   // set the dimensions and margins of the graph
-  var margin = { top: 10, right: 30, bottom: 90, left: 40 },
+  var margin = { top: 10, right: 30, bottom: 55, left: 40 },
     width = 850 - margin.left - margin.right,
     height = 350 - margin.top - margin.bottom;
 
