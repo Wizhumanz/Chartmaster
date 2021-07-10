@@ -1468,6 +1468,9 @@ function drawScatterPlot(data) {
   let startValue
   let endValue
 
+  // Data for bargraph
+  let barData = data
+
   // add the options to the button
   d3.select("#selectButtonY")
     .selectAll('myOptionsY')
@@ -1551,7 +1554,7 @@ function drawScatterPlot(data) {
       .attr("cy", function (d) { return y(+d.y) })
 
     currentY = selectedGroup
-    calculateBarGraph()
+    calculateBarGraph(barData)
   }
 
   function updateX(selectedGroup, start = 0, end = 100000) {
@@ -1585,7 +1588,8 @@ function drawScatterPlot(data) {
       .style("fill", "#ff3bdb")
 
     currentX = selectedGroup
-    calculateBarGraph()
+    barData = data.filter((d) => { return d[selectedGroup] >= start && d[selectedGroup] <= end })
+    calculateBarGraph(barData)
   }
 
   var selectedOptionY
@@ -1615,27 +1619,28 @@ function drawScatterPlot(data) {
   let chunkNumElement = document.getElementById("chunkNum")
   let minimumYElement = document.getElementById("minimumY")
   let chunkNum = 30
-  let minimumY = 1
-  calculateBarGraph()
+  let minimumY = 2
+  calculateBarGraph(barData)
 
   chunkNumElement.addEventListener('change', function () {
     chunkNum = chunkNumElement.value
-    calculateBarGraph()
+    calculateBarGraph(barData)
   })
 
   minimumYElement.addEventListener('change', function () {
     minimumY = minimumYElement.value
-    calculateBarGraph()
+    calculateBarGraph(barData)
   })
 
-  function calculateBarGraph() {
-    let dataPoints = data.map(function (d) { return { x: parseFloat(d[currentX]), y: parseFloat(d[currentY]) } })
-    let chunkRange = parseFloat((d3.max(data.map(d => { return d[currentX] })) / chunkNum).toFixed(2))
+  function calculateBarGraph(dataBarGraph) {
+    let dataPoints = dataBarGraph.map(function (d) { return { x: parseFloat(d[currentX]), y: parseFloat(d[currentY]) } })
+    let chunkRange = parseFloat((d3.max(dataBarGraph.map(d => { return d[currentX] })) / chunkNum).toFixed(2))
     let chunkStart = 0
     let chunkEnd = chunkRange
     let barGraphData = []
     let floatPrecision = 1000000
-
+    console.log(dataPoints)
+    console.log(chunkRange)
     // Loop until the end of xAxis
     while (true) {
       let filteredX = dataPoints.filter((d) => { return d.x >= chunkStart && d.x <= chunkEnd })
