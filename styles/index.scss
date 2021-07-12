@@ -80,7 +80,7 @@ div#computeControls {
 
 #indicatorCtrls {
   position: absolute;
-  left: 7%;
+  left: 9%;
   width: 300px;
   z-index: 100;
   background-color: #01001c;
@@ -378,22 +378,21 @@ div.inline {
 
 div.stacked {
   overflow: scroll;
-  // border-left: $blood 3px solid;
   padding: 0.75rem;
 }
 
 div.stacked::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
 }
 
 div.stacked::-webkit-scrollbar-track {
-  background: orange;
+  background: black;
 }
 
 div.stacked::-webkit-scrollbar-thumb {
-  background-color: $blood; /* color of the scroll thumb */
+  background-color: darkred; /* color of the scroll thumb */
   border-radius: 20px; /* roundness of the scroll thumb */
-  border: 3px solid orange;
+  border: 3px solid black;
 }
 
 #profitCurveDiv {
