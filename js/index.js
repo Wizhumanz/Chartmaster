@@ -729,8 +729,8 @@ function drawChart(start, end) {
     .style("stroke-width", 3)
     .attr("x1", (d, i) => i !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
     .attr("y1", (d, i) => i !== 0 ? yScale(candlesToShow[i-1].High) : null)
-    .attr("x2", (d, i) => xScale(i) - xBand.bandwidth() / 2)
-    .attr("y2", d => yScale(d.High));
+    .attr("x2", (d, i) => i !== 0 ?xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 ?yScale(d.High) : null);
 
   // Add index to Price Array
   candlesToShow.map(p => p["index"] = candlesToShow.indexOf(p))
@@ -825,33 +825,33 @@ function drawChart(start, end) {
     .attr("height", 2)
     .attr("fill", "white")
 
-  let exitLine
-  candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
-    if (c.StratExitPrice.length > 1) {
-      c.StratExitPrice.forEach((g) => {
-        exitLine = chartBody.selectAll("exitLine")
-          .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
-          .enter()
-          .append("rect")
-          .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-          .attr("y", (d) => yScale(g) + pointerYMove)
-          .attr("width", pointerWidth + 6)
-          .attr("height", 2)
-          .attr("fill", "white")
-        // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
-      })
-    } else {
-      exitLine = chartBody.selectAll("exitLine")
-        .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
-        .enter()
-        .append("rect")
-        .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-        .attr("y", (d) => yScale(c.StratExitPrice[0]) + pointerYMove)
-        .attr("width", pointerWidth + 6)
-        .attr("height", 2)
-        .attr("fill", "white")
-    }
-  })
+  // let exitLine
+  // candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
+  //   if (c.StratExitPrice.length > 1) {
+  //     c.StratExitPrice.forEach((g) => {
+  //       exitLine = chartBody.selectAll("exitLine")
+  //         .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
+  //         .enter()
+  //         .append("rect")
+  //         .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+  //         .attr("y", (d) => yScale(g) + pointerYMove)
+  //         .attr("width", pointerWidth + 6)
+  //         .attr("height", 2)
+  //         .attr("fill", "white")
+  //       // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
+  //     })
+  //   } else {
+  //     exitLine = chartBody.selectAll("exitLine")
+  //       .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
+  //       .enter()
+  //       .append("rect")
+  //       .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+  //       .attr("y", (d) => yScale(c.StratExitPrice[0]) + pointerYMove)
+  //       .attr("width", pointerWidth + 6)
+  //       .attr("height", 2)
+  //       .attr("fill", "white")
+  //   }
+  // })
 
   // exitLine = chartBody.selectAll("exitLine")
   // .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
@@ -947,12 +947,12 @@ function drawChart(start, end) {
     enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
     exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
     entryLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-    exitLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+    // exitLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
     // EMAs
     ema1
       .attr("x1", (d, i) => i !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
-      .attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2)
+      .attr("x2", (d, i) => i !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
 
     hideTicksWithoutLabel();
 
@@ -1011,7 +1011,7 @@ function drawChart(start, end) {
       // EMAs
       ema1.transition().duration(100)      
         .attr("y1", (d, i) => i !== 0 ? yScale(candlesToShow[i-1].High) : null)
-        .attr("y2", d => yScale(d.High));
+        .attr("y2", (d, i) => i !== 0 ? yScale(d.High) : null);
 
       // candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
       //   c.StratExitPrice.forEach((g) => {
