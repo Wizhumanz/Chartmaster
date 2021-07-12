@@ -720,6 +720,18 @@ function drawChart(start, end) {
   //   .attr("height", 10)
   //   .attr("fill", "yellow")
 
+  // EMAs
+  let ema1 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "lightgreen")
+    .style("stroke-width", 3)
+    .attr("x1", (d, i) => i !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 ? yScale(candlesToShow[i-1].High) : null)
+    .attr("x2", (d, i) => xScale(i) - xBand.bandwidth() / 2)
+    .attr("y2", d => yScale(d.High));
+
   // Add index to Price Array
   candlesToShow.map(p => p["index"] = candlesToShow.indexOf(p))
 
@@ -937,6 +949,11 @@ function drawChart(start, end) {
     entryLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
     exitLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
+    // EMAs
+    ema1
+      .attr("x1", (d, i) => i !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2)
+
     hideTicksWithoutLabel();
 
     gX.selectAll(".tick text")
@@ -991,13 +1008,18 @@ function drawChart(start, end) {
       entryLine.transition().duration(100)
         .attr("y", (d) => yScale(d.StratEnterPrice) + labelYMoveTop)
 
-      candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
-        c.StratExitPrice.forEach((g) => {
-          console.log(g)
-          exitLine.transition().duration(100)
-            .attr("y", (d) => yScale(g) + labelYMoveTop)
-        })
-      })
+      // EMAs
+      ema1.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 ? yScale(candlesToShow[i-1].High) : null)
+        .attr("y2", d => yScale(d.High));
+
+      // candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
+      //   c.StratExitPrice.forEach((g) => {
+      //     console.log(g)
+      //     exitLine.transition().duration(100)
+      //       .attr("y", (d) => yScale(g) + labelYMoveTop)
+      //   })
+      // })
 
 
       gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
