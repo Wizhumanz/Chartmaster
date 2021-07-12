@@ -48,7 +48,7 @@ let tickNumProfitY = 8
 let candlestickChartLabelFontSize = "13px"
 let margin = { top: 10, right: 20, bottom: 205, left: 45 },
   w = 1050,
-  h = 630;
+  h = 730;
 let candlesViewBoxHeight = "1000"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
@@ -613,19 +613,6 @@ function drawChart(start, end) {
   //reset chart
   d3.selectAll("#container > *").remove();
 
-  candlesToShow.forEach(c => {
-    if (c.DateTime === "") {
-      console.log(c)
-    }
-  })
-
-  // candlesToShow.forEach(c => {
-  // console.log("BEFORE " + typeof(c.DateTime))
-  // if (c.DateTime === "") {
-  //   console.log(c)
-  // }
-  // })
-
   //build datetime array
   let dateTimes = []
   for (var i = 0; i < candlesToShow.length; i++) {
@@ -642,10 +629,6 @@ function drawChart(start, end) {
       candlesToShow[i].DateTime = add
     }
   }
-
-  // candlesToShow.forEach(c => {
-  //   console.log("AFTER " +typeof(c.DateTime))
-  // })
 
   var svg = d3.select("#container")
     // .attr("width", "100%")
@@ -686,8 +669,13 @@ function drawChart(start, end) {
   gX.selectAll(".tick text")
     .call(wrap, xBand.bandwidth())
 
-  var ymin = d3.min(candlesToShow.map(r => r.Low));
-  var ymax = d3.max(candlesToShow.map(r => r.High));
+  var emaValues = []
+  for (var i = 1; i < 5; i++) {
+    emaValues.push(...candlesToShow.map(r => r["ema"+i.toString()]).filter(e => e !== 0))
+  }
+
+  var ymin = d3.min(candlesToShow.map(r => r.Low).concat(emaValues));
+  var ymax = d3.max(candlesToShow.map(r => r.High).concat(emaValues));
   var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h, 0]).nice();
   var yAxis = d3.axisLeft()
     .scale(yScale)
@@ -719,7 +707,7 @@ function drawChart(start, end) {
   //   .attr("width", 5000)
   //   .attr("height", 10)
   //   .attr("fill", "yellow")
-console.log(candlesToShow)
+  
   // EMAs
   let ema1 = chartBody.selectAll("g.line")
     .data(candlesToShow)
