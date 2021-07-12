@@ -63,7 +63,7 @@ let tickNumProfitY = 8
 let candlestickChartLabelFontSize = "13px"
 let margin = { top: 10, right: 20, bottom: 205, left: 45 },
   w = 1050,
-  h = 730;
+  h = 630;
 let candlesViewBoxHeight = "1000"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
@@ -1426,7 +1426,7 @@ function plotHistory(data) {
   }
 
   // Number of rows
-  document.getElementById("numOfRows").innerHTML = "Total: (" + data[0].Data.length.toString() + ")" + " Entry: " + "(" + data[0].Data.filter((d) => { return d.EntryDateTime.length != 0 }).length.toString() + ")"
+  document.getElementById("numOfRows").innerHTML = "Total: (" + data[0].Data.length.toString() + ")" + " / Entries: " + "(" + data[0].Data.filter((d) => { return d.EntryDateTime.length != 0 }).length.toString() + ")"
 
   var tableHeader = document.getElementById("history")
   tableHeader.innerHTML = ""
