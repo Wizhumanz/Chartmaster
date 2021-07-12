@@ -39,6 +39,21 @@ document.getElementById("saveCandles").style.display = "none"
 document.getElementById("panCandlesLeftBtn").style.display = "none"
 document.getElementById("panCandlesRightBtn").style.display = "none"
 
+// EMAs
+let checked1 = false
+let checked2 = false
+let checked3 = false
+let checked4 = false
+document.getElementById("legendLabel1").style.display = "none"
+document.getElementById("legendCheckbox1").style.display = "none"
+document.getElementById("legendLabel2").style.display = "none"
+document.getElementById("legendCheckbox2").style.display = "none"
+document.getElementById("legendLabel3").style.display = "none"
+document.getElementById("legendCheckbox3").style.display = "none"
+document.getElementById("legendLabel4").style.display = "none"
+document.getElementById("legendCheckbox4").style.display = "none"
+
+
 /// CANDLESTICKS
 let candleDisplayNumber = 260
 let candleDrawStartIndex = 0
@@ -604,6 +619,16 @@ function saveCandlesToJson() {
 }
 
 function drawChart(start, end) {
+  // Show Legend
+  document.getElementById('legendLabel1').style.display = "block"
+  document.getElementById('legendCheckbox1').style.display = "block"
+  document.getElementById('legendLabel2').style.display = "block"
+  document.getElementById('legendCheckbox2').style.display = "block"
+  document.getElementById('legendLabel3').style.display = "block"
+  document.getElementById('legendCheckbox3').style.display = "block"
+  document.getElementById('legendLabel4').style.display = "block"
+  document.getElementById('legendCheckbox4').style.display = "block"
+
   let candlesToShow = allCandles.slice(start, end)
   // console.log(JSON.stringify(candlesToShow))
   if (!candlesToShow || candlesToShow.length == 0) {
@@ -700,14 +725,6 @@ function drawChart(start, end) {
     .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
     .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
 
-  //creating a horizontal line to show when strategy is in trade-----------
-  // shapes.append("rect")
-  //   .attr("x", 200)
-  //   .attr("y", 620)
-  //   .attr("width", 5000)
-  //   .attr("height", 10)
-  //   .attr("fill", "yellow")
-  
   // EMAs
   let ema1 = chartBody.selectAll("g.line")
     .data(candlesToShow)
@@ -720,17 +737,46 @@ function drawChart(start, end) {
     .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
     .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(d.ema1) : null);
 
+  document.getElementById('legendCheckbox1').addEventListener('change', function () {
+    checked1 = this.checked
+    if (checked1) {
+      ema1.style("display", "block");
+    } else {
+      ema1.style("display", "none");
+    }
+  })
+
+  if (checked1) {
+    ema1.style("display", "block");
+  } else {
+    ema1.style("display", "none");
+  }
+
   let ema2 = chartBody.selectAll("g.line")
     .data(candlesToShow)
     .enter()
     .append('line')
     .style("stroke", "chartreuse")
     .style("stroke-width", 1)
-    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
-    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 ? yScale(candlesToShow[i-1].ema2) : null)
-    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 ? xScale(i) - xBand.bandwidth() / 2 : null)
-    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 ? yScale(d.ema2) : null);
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(candlesToShow[i-1].ema2) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(d.ema2) : null);
 
+  document.getElementById('legendCheckbox2').addEventListener('change', function () {
+    checked2 = this.checked
+    if (checked2) {
+      ema2.style("display", "block");
+    } else {
+      ema2.style("display", "none");
+    }
+  })
+
+  if (checked2) {
+    ema2.style("display", "block");
+  } else {
+    ema2.style("display", "none");
+  }
 
   let ema3 = chartBody.selectAll("g.line")
     .data(candlesToShow)
@@ -738,22 +784,51 @@ function drawChart(start, end) {
     .append('line')
     .style("stroke", "orange")
     .style("stroke-width", 1)
-    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
-    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 ? yScale(candlesToShow[i-1].ema3) : null)
-    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 ? xScale(i) - xBand.bandwidth() / 2 : null)
-    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 ? yScale(d.ema3) : null);
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(candlesToShow[i-1].ema3) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(d.ema3) : null);
 
+  document.getElementById('legendCheckbox3').addEventListener('change', function () {
+    checked3 = this.checked
+    if (checked3) {
+      ema3.style("display", "block");
+    } else {
+      ema3.style("display", "none");
+    }
+  })
+
+  if (checked3) {
+    ema3.style("display", "block");
+  } else {
+    ema3.style("display", "none");
+  }
 
   let ema4 = chartBody.selectAll("g.line")
     .data(candlesToShow)
     .enter()
     .append('line')
     .style("stroke", "red")
-    .style("stroke-width", 2)
-    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
-    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 ? yScale(candlesToShow[i-1].ema4) : null)
-    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 ? xScale(i) - xBand.bandwidth() / 2 : null)
-    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 ? yScale(d.ema4) : null);
+    .style("stroke-width", 1)
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(candlesToShow[i-1].ema4) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(d.ema4) : null);
+
+  document.getElementById('legendCheckbox4').addEventListener('change', function () {
+    checked4 = this.checked
+    if (checked4) {
+      ema4.style("display", "block");
+    } else {
+      ema4.style("display", "none");
+    }
+  })
+
+  if (checked4) {
+    ema4.style("display", "block");
+  } else {
+    ema4.style("display", "none");
+  }
 
   // Add index to Price Array
   candlesToShow.map(p => p["index"] = candlesToShow.indexOf(p))
