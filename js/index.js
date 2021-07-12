@@ -1614,7 +1614,7 @@ function drawScatterPlot(data) {
   // Create bar graph
   let chunkNumElement = document.getElementById("chunkNum")
   let minimumYElement = document.getElementById("minimumY")
-  let chunkNum = 30
+  let chunkNum = 40
   let minimumY = 1
   calculateBarGraph()
 
