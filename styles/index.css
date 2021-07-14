@@ -70,7 +70,7 @@ body,
 html,
 .container-fluid,
 .row {
-  background-color: black !important;
+  background-color: #01001c !important;
 }
 @media only screen and (max-width: 700px) {
   body,
@@ -80,14 +80,6 @@ html,
 .row {
     overflow: scroll;
   }
-}
-
-#brand-h {
-  font-family: "DM Serif Display", serif;
-  margin: 0.75rem;
-  margin-left: 1rem;
-  margin-bottom: 0.25rem;
-  background-color: black;
 }
 
 #undefinedUserErr {
@@ -101,14 +93,22 @@ html,
 }
 
 #brand-controls {
-  padding: 0.5rem;
+  padding: 0.25rem;
 }
-#brand-controls h4 {
+#brand-controls img {
+  width: 45px;
+  display: inline;
+}
+#brand-controls h5 {
+  position: absolute;
+  margin-top: 0.6rem;
+  left: 75px;
+  font-family: "DM Serif Display", serif;
+  color: #fffdd0;
   display: inline;
 }
 
 #extraControls {
-  margin-top: -1rem;
   margin-bottom: 1rem;
 }
 
@@ -119,7 +119,7 @@ html,
 }
 
 div#computeControls {
-  margin: 0 auto;
+  margin: 0.5rem auto;
   font-size: x-small;
 }
 @media only screen and (max-width: 700px) {
@@ -129,6 +129,17 @@ div#computeControls {
     border-bottom: #001b6b 3px dotted;
     border-top: #001b6b 3px dotted;
   }
+}
+
+#indicatorCtrls {
+  position: absolute;
+  left: 9%;
+  width: 300px;
+  z-index: 100;
+}
+#indicatorCtrls ul li {
+  list-style-type: none;
+  display: inline;
 }
 
 h4.chartHeader {
@@ -223,7 +234,7 @@ h4.chartHeader#optionsH {
   padding: 0.15rem;
   margin-bottom: 0.25rem;
   color: #fffdd0;
-  background-color: black;
+  background-color: #01001c;
   border-radius: 5px;
   border: #8a0000 2px solid;
 }
@@ -248,7 +259,7 @@ input[type=datetime-local] {
   color: #fffdd0;
   border-radius: 5px;
   border: #8a0000 2px solid;
-  background-color: black;
+  background-color: #01001c;
   font-size: inherit;
 }
 @media only screen and (max-width: 700px) {
@@ -272,7 +283,7 @@ select {
   width: 170px;
   padding: 0.25rem;
   margin: 0.25rem;
-  background-color: black;
+  background-color: #01001c;
   color: #fffdd0;
   border: #8a0000 2px solid;
   border-radius: 5px;
@@ -331,11 +342,11 @@ div.modal-content {
 }
 
 #ohlcDisplay {
-  margin: 0.5rem 4.5rem;
+  margin: 1.5rem 4.5rem;
   padding: 0.35rem;
   width: fit-content;
-  font-size: small;
-  background-color: #120011;
+  font-size: x-small;
+  background-color: black;
   color: #fffdd0;
 }
 @media only screen and (max-width: 700px) {
@@ -345,7 +356,7 @@ div.modal-content {
   }
 }
 #ohlcDisplay span {
-  color: cyan;
+  color: hotpink;
   margin-left: 0.25rem;
 }
 
@@ -355,7 +366,7 @@ div.modal-content {
 
 button {
   font-family: "Alata", sans-serif;
-  background-color: black;
+  background-color: #01001c;
   color: #fffdd0;
   border-radius: 5px !important;
   border: #fffdd0 2px solid;
@@ -416,19 +427,19 @@ div.stacked {
 }
 
 div.stacked::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
 }
 
 div.stacked::-webkit-scrollbar-track {
-  background: orange;
+  background: black;
 }
 
 div.stacked::-webkit-scrollbar-thumb {
-  background-color: #8a0000;
+  background-color: darkred;
   /* color of the scroll thumb */
   border-radius: 20px;
   /* roundness of the scroll thumb */
-  border: 3px solid orange;
+  border: 3px solid black;
 }
 
 #profitCurveDiv {
@@ -447,7 +458,7 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 .thead {
-  background-color: black;
+  background-color: #01001c;
   color: #fffdd0;
   padding: auto 0.25rem;
 }

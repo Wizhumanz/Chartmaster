@@ -31,10 +31,6 @@
 
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 
-  <div id="brand-controls">
-    <h4 id="brand-h">Chartmaster</h4>
-  </div>
-
   <div id="progress" class="progress" style="display:block">
     <div id="progressBar" class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%"
       aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Loading...</div>
@@ -54,6 +50,13 @@
               <!-- start/end compute controls -->
               <div class="col-12 col-md-9">
                 <div class="row">
+                  <div class="col-12 col-md-2">
+                    <div id="brand-controls">
+                      <img src="./logo.png" alt="chartmaster logo">
+                      <h5>Chartmaster</h5>
+                    </div>
+                  </div>
+                  <!-- compute start + end datetime -->
                   <div class="col-12 col-md-4">
                     <div class="topControls">
                       <div class="row">
@@ -75,7 +78,7 @@
                     </div>
                   </div>
                   <!-- ticker + period select -->
-                  <div class="col-12 col-md-4 center">
+                  <div class="col-12 col-md-3 center">
                     <select name="tickerSelect" id="tickerSelect">
                       <!-- filled dynamically by API call -->
                     </select>
@@ -102,7 +105,7 @@
                     </select>
                   </div>
                   <!-- more compute settings -->
-                  <div class="col-12 col-md-4">
+                  <div class="col-12 col-md-3">
                     <div class="row">
                       <div class="col-4">
                         <label>Risk/Trade(%)</label>
@@ -188,7 +191,48 @@
                 <!-- filled dynamically by API call -->
               </select>
             </div>
+
+            <!-- Legend -->
+            <div id="indicatorCtrls">
+              <div class="row">
+                <div class="col-3">
+                  <label style="color: lightblue" id="legendLabel1SMA" for="legendCheckbox">SMA 1</label>
+                  <input type="checkbox" id="legendCheckbox1SMA" name="legendCheckbox">
+                </div>
+                <div class="col-3">
+                  <label style="color: chartreuse" id="legendLabel2SMA" for="legendCheckbox">SMA 2</label>
+                  <input type="checkbox" id="legendCheckbox2SMA" name="legendCheckbox">
+                </div>
+                <div class="col-3">
+                  <label style="color: orange" id="legendLabel3SMA" for="legendCheckbox">SMA 3</label>
+                  <input type="checkbox" id="legendCheckbox3SMA" name="legendCheckbox">
+                </div>
+                <div class="col-3">
+                  <label style="color: red" id="legendLabel4SMA" for="legendCheckbox">SMA 4</label>
+                  <input type="checkbox" id="legendCheckbox4SMA" name="legendCheckbox">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3">
+                  <label style="color: lightblue" id="legendLabel1EMA" for="legendCheckbox">EMA 1</label>
+                  <input type="checkbox" id="legendCheckbox1EMA" name="legendCheckbox">
+                </div>
+                <div class="col-3">
+                  <label style="color: chartreuse" id="legendLabel2EMA" for="legendCheckbox">EMA 2</label>
+                  <input type="checkbox" id="legendCheckbox2EMA" name="legendCheckbox">
+                </div>
+                <div class="col-3">
+                  <label style="color: orange" id="legendLabel3EMA" for="legendCheckbox">EMA 3</label>
+                  <input type="checkbox" id="legendCheckbox3EMA" name="legendCheckbox">
+                </div>
+                <div class="col-3">
+                  <label style="color: red" id="legendLabel4EMA" for="legendCheckbox">EMA 4</label>
+                  <input type="checkbox" id="legendCheckbox4EMA" name="legendCheckbox">
+                </div>
+              </div>
+            </div>
           </div>
+
 
           <!-- candlestick chart and arrows -->
           <div class="col-12 order-1 order-lg-2">

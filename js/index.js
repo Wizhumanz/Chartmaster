@@ -39,6 +39,35 @@ document.getElementById("saveCandles").style.display = "none"
 document.getElementById("panCandlesLeftBtn").style.display = "none"
 document.getElementById("panCandlesRightBtn").style.display = "none"
 
+// SMAs
+let checked1SMA = false
+let checked2SMA = false
+let checked3SMA = false
+let checked4SMA = false
+document.getElementById("legendLabel1SMA").style.display = "none"
+document.getElementById("legendCheckbox1SMA").style.display = "none"
+document.getElementById("legendLabel2SMA").style.display = "none"
+document.getElementById("legendCheckbox2SMA").style.display = "none"
+document.getElementById("legendLabel3SMA").style.display = "none"
+document.getElementById("legendCheckbox3SMA").style.display = "none"
+document.getElementById("legendLabel4SMA").style.display = "none"
+document.getElementById("legendCheckbox4SMA").style.display = "none"
+
+// EMAs
+let checked1EMA = false
+let checked2EMA = false
+let checked3EMA = false
+let checked4EMA = false
+document.getElementById("legendLabel1EMA").style.display = "none"
+document.getElementById("legendCheckbox1EMA").style.display = "none"
+document.getElementById("legendLabel2EMA").style.display = "none"
+document.getElementById("legendCheckbox2EMA").style.display = "none"
+document.getElementById("legendLabel3EMA").style.display = "none"
+document.getElementById("legendCheckbox3EMA").style.display = "none"
+document.getElementById("legendLabel4EMA").style.display = "none"
+document.getElementById("legendCheckbox4EMA").style.display = "none"
+
+
 /// CANDLESTICKS
 let candleDisplayNumber = 260
 let candleDrawStartIndex = 0
@@ -91,8 +120,8 @@ document.getElementById("panCandlesRightBtn").style.display = "none"
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
 //default display
-allCandles = [{ "DateTime": "2021-05-01T04:00:00", "Open": 58206.890625, "High": 58253.21875, "Low": 58206.890625, "Close": 58252.78125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:01:00", "Open": 58252.78125, "High": 58277.109375, "Low": 58232.73828125, "Close": 58273, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:02:00", "Open": 58271.03125, "High": 58271.03125, "Low": 58167.01953125, "Close": 58167.01953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:03:00", "Open": 58167.01953125, "High": 58181.33984375, "Low": 58100.80078125, "Close": 58118.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:04:00", "Open": 58118.01171875, "High": 58120, "Low": 58050, "Close": 58067.46875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:05:00", "Open": 58067.46875, "High": 58100, "Low": 58060.5, "Close": 58097.3203125, "StratEnterPrice": 57693, "StratExitPrice": 0, "Label": "▼ 57410.00 / 0.04" }, { "DateTime": "2021-05-01T04:06:00", "Open": 58096.8203125, "High": 58098.48046875, "Low": 58061.33984375, "Close": 58075.859375, "StratEnterPrice": 0, "StratExitPrice": 57711.7890625, "Label": "" }, { "DateTime": "2021-05-01T04:07:00", "Open": 58075.87109375, "High": 58123.94921875, "Low": 58073.76953125, "Close": 58120, "StratEnterPrice": 57784.8515625, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:08:00", "Open": 58120.01171875, "High": 58162.8984375, "Low": 58087.94140625, "Close": 58153.76953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:09:00", "Open": 58156.1796875, "High": 58190.19921875, "Low": 58153.6796875, "Close": 58190.19140625, "StratEnterPrice": 0, "StratExitPrice": 57769.140625, "Label": "▼ 57669.99" }, { "DateTime": "2021-05-01T04:10:00", "Open": 58190.19921875, "High": 58248.37109375, "Low": 58190.19140625, "Close": 58223.26953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:11:00", "Open": 58223.26953125, "High": 58264.7890625, "Low": 58216.6484375, "Close": 58249.51171875, "StratEnterPrice": 57848.19921875, "StratExitPrice": 0, "Label": "▼ 57742.96 / 0.11" }, { "DateTime": "2021-05-01T04:12:00", "Open": 58249.51171875, "High": 58277, "Low": 58230.859375, "Close": 58257.87109375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:13:00", "Open": 58257.87890625, "High": 58259.98828125, "Low": 58212.01171875, "Close": 58226.9609375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:14:00", "Open": 58227.62890625, "High": 58249.96875, "Low": 58206.73046875, "Close": 58215, "StratEnterPrice": 0, "StratExitPrice": 57949.640625, "Label": "▼ 57410.00" }, { "DateTime": "2021-05-01T04:15:00", "Open": 58215, "High": 58243.1796875, "Low": 58213.6484375, "Close": 58227.578125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:16:00", "Open": 58227.640625, "High": 58239.9609375, "Low": 58211.44921875, "Close": 58223.55078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:17:00", "Open": 58223.55078125, "High": 58229.75, "Low": 58137.28125, "Close": 58163.80078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:18:00", "Open": 58163.80078125, "High": 58163.80078125, "Low": 58107.671875, "Close": 58128.140625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:19:00", "Open": 58128.12890625, "High": 58146.48828125, "Low": 58075, "Close": 58135.359375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:20:00", "Open": 58135.359375, "High": 58168.1796875, "Low": 58117.91015625, "Close": 58141.03125, "StratEnterPrice": 57911.28125, "StratExitPrice": 0, "Label": "▼ 57789.42 / 0.10" }, { "DateTime": "2021-05-01T04:21:00", "Open": 58135.21875, "High": 58135.21875, "Low": 58083.828125, "Close": 58123.41015625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:22:00", "Open": 58123.41015625, "High": 58157.3984375, "Low": 58120, "Close": 58141.921875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:23:00", "Open": 58141.921875, "High": 58149.83984375, "Low": 58120, "Close": 58149.71875, "StratEnterPrice": 0, "StratExitPrice": 57975.76171875, "Label": "▼ 57789.42" }, { "DateTime": "2021-05-01T04:24:00", "Open": 58149.71875, "High": 58169.80859375, "Low": 58139.80078125, "Close": 58147.28125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:25:00", "Open": 58147.26953125, "High": 58150, "Low": 58122.98046875, "Close": 58130.08984375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:26:00", "Open": 58130.1015625, "High": 58140, "Low": 58119.05859375, "Close": 58136.05078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:27:00", "Open": 58136.05078125, "High": 58138.05078125, "Low": 58060, "Close": 58060.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:28:00", "Open": 58060.01171875, "High": 58089.48046875, "Low": 58000, "Close": 58005.78125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:29:00", "Open": 58005.7890625, "High": 58070, "Low": 58002.83984375, "Close": 58062.94140625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:30:00", "Open": 58062.94140625, "High": 58068.94921875, "Low": 58004.26171875, "Close": 58024.73046875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:31:00", "Open": 58024.73046875, "High": 58024.73046875, "Low": 57845.21875, "Close": 57895.33984375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:32:00", "Open": 57894.73046875, "High": 57939.94921875, "Low": 57875.91015625, "Close": 57918.96875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:33:00", "Open": 57919, "High": 57958.44921875, "Low": 57891.58984375, "Close": 57946.25, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:34:00", "Open": 57946.26171875, "High": 57948.9609375, "Low": 57888.109375, "Close": 57908.109375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:35:00", "Open": 57909.98828125, "High": 57912.3984375, "Low": 57817.359375, "Close": 57820, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:36:00", "Open": 57820, "High": 57847.2109375, "Low": 57722.87109375, "Close": 57780.12890625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:37:00", "Open": 57780.140625, "High": 57840.30078125, "Low": 57720, "Close": 57832.76171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:38:00", "Open": 57832.7890625, "High": 57876.62109375, "Low": 57826, "Close": 57862.26953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:39:00", "Open": 57862.28125, "High": 57887.55859375, "Low": 57831.73046875, "Close": 57885.140625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:40:00", "Open": 57885.12890625, "High": 57900, "Low": 57877.21875, "Close": 57899.5, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:41:00", "Open": 57899.98828125, "High": 57941.05859375, "Low": 57899.25, "Close": 57927.4609375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:42:00", "Open": 57927.44921875, "High": 57950, "Low": 57918.87109375, "Close": 57920.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:43:00", "Open": 57920.01171875, "High": 57920.01171875, "Low": 57872, "Close": 57872, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:44:00", "Open": 57872.01171875, "High": 57926.5703125, "Low": 57870, "Close": 57910.828125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:45:00", "Open": 57913.19140625, "High": 57924.640625, "Low": 57872.7109375, "Close": 57880.55078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:46:00", "Open": 57880.55078125, "High": 57922.828125, "Low": 57826.328125, "Close": 57908.171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:47:00", "Open": 57907.4609375, "High": 57935.8984375, "Low": 57888.37890625, "Close": 57891.98046875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:48:00", "Open": 57891.98046875, "High": 57942.69921875, "Low": 57891.96875, "Close": 57942.55859375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:49:00", "Open": 57942.55859375, "High": 57980.5, "Low": 57914.51171875, "Close": 57974.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:50:00", "Open": 57974.01953125, "High": 58049.30078125, "Low": 57970.921875, "Close": 58017.859375, "StratEnterPrice": 57866.140625, "StratExitPrice": 0, "Label": "▼ 57786.00 / 0.15" }, { "DateTime": "2021-05-01T04:51:00", "Open": 58016.87109375, "High": 58046.44140625, "Low": 58016.859375, "Close": 58040.03125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:52:00", "Open": 58036.37890625, "High": 58060, "Low": 58030, "Close": 58037.7890625, "StratEnterPrice": 0, "StratExitPrice": 57863.03125, "Label": "▼ 57600.08" }, { "DateTime": "2021-05-01T04:53:00", "Open": 58037.3203125, "High": 58041.69140625, "Low": 57959.2109375, "Close": 57994.859375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:54:00", "Open": 57994.859375, "High": 58035.921875, "Low": 57990.12109375, "Close": 58023.78125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:55:00", "Open": 58027.71875, "High": 58045, "Low": 58009.671875, "Close": 58045, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:56:00", "Open": 58044.98046875, "High": 58127.328125, "Low": 58044.58984375, "Close": 58125.55078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:57:00", "Open": 58125.55859375, "High": 58138.37890625, "Low": 58078.75, "Close": 58117.19921875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:58:00", "Open": 58117.2109375, "High": 58117.2109375, "Low": 58082.23828125, "Close": 58090.66015625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:59:00", "Open": 58090.66015625, "High": 58121.8203125, "Low": 58057.9296875, "Close": 58100.6484375, "StratEnterPrice": 57787.28125, "StratExitPrice": 0, "Label": "▼ 57669.99 / 0.10" }, { "DateTime": "2021-05-01T05:00:00", "Open": 58100.26953125, "High": 58150, "Low": 58065.53125, "Close": 58079.328125, "StratEnterPrice": 0, "StratExitPrice": 57807.6484375, "Label": "" }]
-drawChart(0, candleDisplayNumber)
+// allCandles = [{ "DateTime": "2021-05-01T04:00:00", "Open": 58206.890625, "High": 58253.21875, "Low": 58206.890625, "Close": 58252.78125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:01:00", "Open": 58252.78125, "High": 58277.109375, "Low": 58232.73828125, "Close": 58273, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:02:00", "Open": 58271.03125, "High": 58271.03125, "Low": 58167.01953125, "Close": 58167.01953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:03:00", "Open": 58167.01953125, "High": 58181.33984375, "Low": 58100.80078125, "Close": 58118.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:04:00", "Open": 58118.01171875, "High": 58120, "Low": 58050, "Close": 58067.46875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:05:00", "Open": 58067.46875, "High": 58100, "Low": 58060.5, "Close": 58097.3203125, "StratEnterPrice": 57693, "StratExitPrice": 0, "Label": "▼ 57410.00 / 0.04" }, { "DateTime": "2021-05-01T04:06:00", "Open": 58096.8203125, "High": 58098.48046875, "Low": 58061.33984375, "Close": 58075.859375, "StratEnterPrice": 0, "StratExitPrice": 57711.7890625, "Label": "" }, { "DateTime": "2021-05-01T04:07:00", "Open": 58075.87109375, "High": 58123.94921875, "Low": 58073.76953125, "Close": 58120, "StratEnterPrice": 57784.8515625, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:08:00", "Open": 58120.01171875, "High": 58162.8984375, "Low": 58087.94140625, "Close": 58153.76953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:09:00", "Open": 58156.1796875, "High": 58190.19921875, "Low": 58153.6796875, "Close": 58190.19140625, "StratEnterPrice": 0, "StratExitPrice": 57769.140625, "Label": "▼ 57669.99" }, { "DateTime": "2021-05-01T04:10:00", "Open": 58190.19921875, "High": 58248.37109375, "Low": 58190.19140625, "Close": 58223.26953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:11:00", "Open": 58223.26953125, "High": 58264.7890625, "Low": 58216.6484375, "Close": 58249.51171875, "StratEnterPrice": 57848.19921875, "StratExitPrice": 0, "Label": "▼ 57742.96 / 0.11" }, { "DateTime": "2021-05-01T04:12:00", "Open": 58249.51171875, "High": 58277, "Low": 58230.859375, "Close": 58257.87109375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:13:00", "Open": 58257.87890625, "High": 58259.98828125, "Low": 58212.01171875, "Close": 58226.9609375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:14:00", "Open": 58227.62890625, "High": 58249.96875, "Low": 58206.73046875, "Close": 58215, "StratEnterPrice": 0, "StratExitPrice": 57949.640625, "Label": "▼ 57410.00" }, { "DateTime": "2021-05-01T04:15:00", "Open": 58215, "High": 58243.1796875, "Low": 58213.6484375, "Close": 58227.578125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:16:00", "Open": 58227.640625, "High": 58239.9609375, "Low": 58211.44921875, "Close": 58223.55078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:17:00", "Open": 58223.55078125, "High": 58229.75, "Low": 58137.28125, "Close": 58163.80078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:18:00", "Open": 58163.80078125, "High": 58163.80078125, "Low": 58107.671875, "Close": 58128.140625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:19:00", "Open": 58128.12890625, "High": 58146.48828125, "Low": 58075, "Close": 58135.359375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:20:00", "Open": 58135.359375, "High": 58168.1796875, "Low": 58117.91015625, "Close": 58141.03125, "StratEnterPrice": 57911.28125, "StratExitPrice": 0, "Label": "▼ 57789.42 / 0.10" }, { "DateTime": "2021-05-01T04:21:00", "Open": 58135.21875, "High": 58135.21875, "Low": 58083.828125, "Close": 58123.41015625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:22:00", "Open": 58123.41015625, "High": 58157.3984375, "Low": 58120, "Close": 58141.921875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:23:00", "Open": 58141.921875, "High": 58149.83984375, "Low": 58120, "Close": 58149.71875, "StratEnterPrice": 0, "StratExitPrice": 57975.76171875, "Label": "▼ 57789.42" }, { "DateTime": "2021-05-01T04:24:00", "Open": 58149.71875, "High": 58169.80859375, "Low": 58139.80078125, "Close": 58147.28125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:25:00", "Open": 58147.26953125, "High": 58150, "Low": 58122.98046875, "Close": 58130.08984375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:26:00", "Open": 58130.1015625, "High": 58140, "Low": 58119.05859375, "Close": 58136.05078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:27:00", "Open": 58136.05078125, "High": 58138.05078125, "Low": 58060, "Close": 58060.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:28:00", "Open": 58060.01171875, "High": 58089.48046875, "Low": 58000, "Close": 58005.78125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:29:00", "Open": 58005.7890625, "High": 58070, "Low": 58002.83984375, "Close": 58062.94140625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:30:00", "Open": 58062.94140625, "High": 58068.94921875, "Low": 58004.26171875, "Close": 58024.73046875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:31:00", "Open": 58024.73046875, "High": 58024.73046875, "Low": 57845.21875, "Close": 57895.33984375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:32:00", "Open": 57894.73046875, "High": 57939.94921875, "Low": 57875.91015625, "Close": 57918.96875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:33:00", "Open": 57919, "High": 57958.44921875, "Low": 57891.58984375, "Close": 57946.25, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:34:00", "Open": 57946.26171875, "High": 57948.9609375, "Low": 57888.109375, "Close": 57908.109375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:35:00", "Open": 57909.98828125, "High": 57912.3984375, "Low": 57817.359375, "Close": 57820, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:36:00", "Open": 57820, "High": 57847.2109375, "Low": 57722.87109375, "Close": 57780.12890625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:37:00", "Open": 57780.140625, "High": 57840.30078125, "Low": 57720, "Close": 57832.76171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:38:00", "Open": 57832.7890625, "High": 57876.62109375, "Low": 57826, "Close": 57862.26953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:39:00", "Open": 57862.28125, "High": 57887.55859375, "Low": 57831.73046875, "Close": 57885.140625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:40:00", "Open": 57885.12890625, "High": 57900, "Low": 57877.21875, "Close": 57899.5, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:41:00", "Open": 57899.98828125, "High": 57941.05859375, "Low": 57899.25, "Close": 57927.4609375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:42:00", "Open": 57927.44921875, "High": 57950, "Low": 57918.87109375, "Close": 57920.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:43:00", "Open": 57920.01171875, "High": 57920.01171875, "Low": 57872, "Close": 57872, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:44:00", "Open": 57872.01171875, "High": 57926.5703125, "Low": 57870, "Close": 57910.828125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:45:00", "Open": 57913.19140625, "High": 57924.640625, "Low": 57872.7109375, "Close": 57880.55078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:46:00", "Open": 57880.55078125, "High": 57922.828125, "Low": 57826.328125, "Close": 57908.171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:47:00", "Open": 57907.4609375, "High": 57935.8984375, "Low": 57888.37890625, "Close": 57891.98046875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:48:00", "Open": 57891.98046875, "High": 57942.69921875, "Low": 57891.96875, "Close": 57942.55859375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:49:00", "Open": 57942.55859375, "High": 57980.5, "Low": 57914.51171875, "Close": 57974.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:50:00", "Open": 57974.01953125, "High": 58049.30078125, "Low": 57970.921875, "Close": 58017.859375, "StratEnterPrice": 57866.140625, "StratExitPrice": 0, "Label": "▼ 57786.00 / 0.15" }, { "DateTime": "2021-05-01T04:51:00", "Open": 58016.87109375, "High": 58046.44140625, "Low": 58016.859375, "Close": 58040.03125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:52:00", "Open": 58036.37890625, "High": 58060, "Low": 58030, "Close": 58037.7890625, "StratEnterPrice": 0, "StratExitPrice": 57863.03125, "Label": "▼ 57600.08" }, { "DateTime": "2021-05-01T04:53:00", "Open": 58037.3203125, "High": 58041.69140625, "Low": 57959.2109375, "Close": 57994.859375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:54:00", "Open": 57994.859375, "High": 58035.921875, "Low": 57990.12109375, "Close": 58023.78125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:55:00", "Open": 58027.71875, "High": 58045, "Low": 58009.671875, "Close": 58045, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:56:00", "Open": 58044.98046875, "High": 58127.328125, "Low": 58044.58984375, "Close": 58125.55078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:57:00", "Open": 58125.55859375, "High": 58138.37890625, "Low": 58078.75, "Close": 58117.19921875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:58:00", "Open": 58117.2109375, "High": 58117.2109375, "Low": 58082.23828125, "Close": 58090.66015625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:59:00", "Open": 58090.66015625, "High": 58121.8203125, "Low": 58057.9296875, "Close": 58100.6484375, "StratEnterPrice": 57787.28125, "StratExitPrice": 0, "Label": "▼ 57669.99 / 0.10" }, { "DateTime": "2021-05-01T05:00:00", "Open": 58100.26953125, "High": 58150, "Low": 58065.53125, "Close": 58079.328125, "StratEnterPrice": 0, "StratExitPrice": 57807.6484375, "Label": "" }]
+// drawChart(0, candleDisplayNumber)
 allProfitCurve = [{ "DataLabel": "strat1", "Data": [{ "DateTime": "2021-05-01T00:06:00", "Equity": 503.2285777385159 }, { "DateTime": "2021-05-01T00:11:00", "Equity": 514.7956316711843 }, { "DateTime": "2021-05-01T00:20:00", "Equity": 521.1452918840314 }, { "DateTime": "2021-05-01T00:49:00", "Equity": 520.679704050146 }, { "DateTime": "2021-05-01T00:58:00", "Equity": 522.346204200011 }, { "DateTime": "2021-05-01T01:12:00", "Equity": 524.5089442514854 }, { "DateTime": "2021-05-01T01:14:00", "Equity": 520.8258235514659 }, { "DateTime": "2021-05-01T01:17:00", "Equity": 517.0176397972828 }, { "DateTime": "2021-05-01T01:27:00", "Equity": 520.2462175357987 }, { "DateTime": "2021-05-01T01:32:00", "Equity": 531.8132714684671 }, { "DateTime": "2021-05-01T01:41:00", "Equity": 538.1629316813141 }, { "DateTime": "2021-05-01T02:10:00", "Equity": 537.6973438474288 }, { "DateTime": "2021-05-01T02:18:00", "Equity": 539.7810684952456 }, { "DateTime": "2021-05-01T02:35:00", "Equity": 546.1505002909307 }, { "DateTime": "2021-05-01T02:38:00", "Equity": 542.3423165367476 }, { "DateTime": "2021-05-01T02:48:00", "Equity": 545.5708942752635 }, { "DateTime": "2021-05-01T02:53:00", "Equity": 557.1379482079319 }, { "DateTime": "2021-05-01T03:02:00", "Equity": 563.487608420779 }, { "DateTime": "2021-05-01T03:31:00", "Equity": 563.0220205868936 }, { "DateTime": "2021-05-01T03:40:00", "Equity": 564.6885207367586 }, { "DateTime": "2021-05-01T03:56:00", "Equity": 571.0579525324447 }, { "DateTime": "2021-05-01T03:59:00", "Equity": 567.2497687782616 }, { "DateTime": "2021-05-01T04:06:00", "Equity": 568.0464781422188 }, { "DateTime": "2021-05-01T04:09:00", "Equity": 566.1770846957861 }, { "DateTime": "2021-05-01T04:14:00", "Equity": 577.7441386284545 }, { "DateTime": "2021-05-01T04:23:00", "Equity": 584.0937988413016 }, { "DateTime": "2021-05-01T04:52:00", "Equity": 583.6282110074162 }] }]
 drawPC(allProfitCurve)
 // allSimTrades = [{ "DataLabel": "strat1", "Data": [{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 }, { "DateTime": "2021-05-01T01:27:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57769.140625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.13197549962733782 }, { "DateTime": "2021-05-01T01:32:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57949.640625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.44483841193905677 }, { "DateTime": "2021-05-01T01:41:00", "Direction": "LONG", "EntryPrice": 57848.19921875, "ExitPrice": 57975.76171875, "PosSize": 0.11402694777476709, "RiskedEquity": 6596.253591180728, "RawProfitPerc": 0.22051248219089578 }, { "DateTime": "2021-05-01T02:10:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57863.03125, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.00537339274127546 }, { "DateTime": "2021-05-01T02:18:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57807.6484375, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.10108188807519942 }, { "DateTime": "2021-05-01T02:19:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57803.5703125, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.10812940317807829 }, { "DateTime": "2021-05-01T02:33:00", "Direction": "LONG", "EntryPrice": 57787.28125, "ExitPrice": 57619.859375, "PosSize": 0.10230792286941753, "RiskedEquity": 5912.096712958338, "RawProfitPerc": -0.2897209755823216 }, { "DateTime": "2021-05-01T02:35:00", "Direction": "LONG", "EntryPrice": 57609.19140625, "ExitPrice": 57640.609375, "PosSize": 0.20273213225103942, "RiskedEquity": 11679.234211047318, "RawProfitPerc": 0.05453638209994296 }, { "DateTime": "2021-05-01T02:38:00", "Direction": "LONG", "EntryPrice": 57609.19140625, "ExitPrice": 57710.73046875, "PosSize": 0.20273213225103942, "RiskedEquity": 11679.234211047318, "RawProfitPerc": 0.17625496907943766 }] }]
@@ -604,6 +633,26 @@ function saveCandlesToJson() {
 }
 
 function drawChart(start, end) {
+  // Show Legend for SMA
+  document.getElementById('legendLabel1SMA').style.display = "block"
+  document.getElementById('legendCheckbox1SMA').style.display = "block"
+  document.getElementById('legendLabel2SMA').style.display = "block"
+  document.getElementById('legendCheckbox2SMA').style.display = "block"
+  document.getElementById('legendLabel3SMA').style.display = "block"
+  document.getElementById('legendCheckbox3SMA').style.display = "block"
+  document.getElementById('legendLabel4SMA').style.display = "block"
+  document.getElementById('legendCheckbox4SMA').style.display = "block"
+
+  // Show Legend for EMA
+  document.getElementById('legendLabel1EMA').style.display = "block"
+  document.getElementById('legendCheckbox1EMA').style.display = "block"
+  document.getElementById('legendLabel2EMA').style.display = "block"
+  document.getElementById('legendCheckbox2EMA').style.display = "block"
+  document.getElementById('legendLabel3EMA').style.display = "block"
+  document.getElementById('legendCheckbox3EMA').style.display = "block"
+  document.getElementById('legendLabel4EMA').style.display = "block"
+  document.getElementById('legendCheckbox4EMA').style.display = "block"
+
   let candlesToShow = allCandles.slice(start, end)
   // console.log(JSON.stringify(candlesToShow))
   if (!candlesToShow || candlesToShow.length == 0) {
@@ -612,19 +661,6 @@ function drawChart(start, end) {
 
   //reset chart
   d3.selectAll("#container > *").remove();
-
-  candlesToShow.forEach(c => {
-    if (c.DateTime === "") {
-      console.log(c)
-    }
-  })
-
-  // candlesToShow.forEach(c => {
-  // console.log("BEFORE " + typeof(c.DateTime))
-  // if (c.DateTime === "") {
-  //   console.log(c)
-  // }
-  // })
 
   //build datetime array
   let dateTimes = []
@@ -642,10 +678,6 @@ function drawChart(start, end) {
       candlesToShow[i].DateTime = add
     }
   }
-
-  // candlesToShow.forEach(c => {
-  //   console.log("AFTER " +typeof(c.DateTime))
-  // })
 
   var svg = d3.select("#container")
     // .attr("width", "100%")
@@ -686,8 +718,18 @@ function drawChart(start, end) {
   gX.selectAll(".tick text")
     .call(wrap, xBand.bandwidth())
 
-  var ymin = d3.min(candlesToShow.map(r => r.Low));
-  var ymax = d3.max(candlesToShow.map(r => r.High));
+  var smaValues = []
+  for (var i = 1; i < 5; i++) {
+    smaValues.push(...candlesToShow.map(r => r["sma"+i.toString()]).filter(s => s !== 0))
+  }
+
+  var emaValues = []
+  for (var i = 1; i < 5; i++) {
+    emaValues.push(...candlesToShow.map(r => r["ema"+i.toString()]).filter(e => e !== 0))
+  }
+
+  var ymin = d3.min(candlesToShow.map(r => r.Low).concat(emaValues).concat(smaValues));
+  var ymax = d3.max(candlesToShow.map(r => r.High).concat(emaValues).concat(smaValues));
   var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h, 0]).nice();
   var yAxis = d3.axisLeft()
     .scale(yScale)
@@ -712,13 +754,219 @@ function drawChart(start, end) {
     .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
     .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
 
-  //creating a horizontal line to show when strategy is in trade-----------
-  // shapes.append("rect")
-  //   .attr("x", 200)
-  //   .attr("y", 620)
-  //   .attr("width", 5000)
-  //   .attr("height", 10)
-  //   .attr("fill", "yellow")
+  // SMAs
+  let sma1 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "lightblue")
+    .style("stroke-width", 1)
+    .style("stroke-dasharray", ("2, 5"))
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(candlesToShow[i-1].sma1) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(d.sma1) : null);
+
+  document.getElementById('legendCheckbox1SMA').addEventListener('change', function () {
+    checked1SMA = this.checked
+    if (checked1SMA) {
+      sma1.style("display", "block");
+    } else {
+      sma1.style("display", "none");
+    }
+  })
+
+  if (checked1SMA) {
+    sma1.style("display", "block");
+  } else {
+    sma1.style("display", "none");
+  }
+
+  let sma2 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "chartreuse")
+    .style("stroke-width", 1)
+    .style("stroke-dasharray", ("2, 5"))
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(candlesToShow[i-1].sma2) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(d.sma2) : null);
+
+  document.getElementById('legendCheckbox2SMA').addEventListener('change', function () {
+    checked2SMA = this.checked
+    if (checked2SMA) {
+      sma2.style("display", "block");
+    } else {
+      sma2.style("display", "none");
+    }
+  })
+
+  if (checked2SMA) {
+    sma2.style("display", "block");
+  } else {
+    sma2.style("display", "none");
+  }
+
+  let sma3 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "orange")
+    .style("stroke-width", 1)
+    .style("stroke-dasharray", ("2, 5"))
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(candlesToShow[i-1].sma3) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(d.sma3) : null);
+
+  document.getElementById('legendCheckbox3SMA').addEventListener('change', function () {
+    checked3SMA = this.checked
+    if (checked3SMA) {
+      sma3.style("display", "block");
+    } else {
+      sma3.style("display", "none");
+    }
+  })
+
+  if (checked3SMA) {
+    sma3.style("display", "block");
+  } else {
+    sma3.style("display", "none");
+  }
+
+  let sma4 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "red")
+    .style("stroke-width", 1)
+    .style("stroke-dasharray", ("2, 5"))
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(candlesToShow[i-1].sma4) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(d.sma4) : null);
+
+  document.getElementById('legendCheckbox4SMA').addEventListener('change', function () {
+    checked4SMA = this.checked
+    if (checked4SMA) {
+      sma4.style("display", "block");
+    } else {
+      sma4.style("display", "none");
+    }
+  })
+
+  if (checked4SMA) {
+    sma4.style("display", "block");
+  } else {
+    sma4.style("display", "none");
+  }
+
+  // EMAs
+  let ema1 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "lightblue")
+    .style("stroke-width", 1)
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(candlesToShow[i-1].ema1) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(d.ema1) : null);
+
+  document.getElementById('legendCheckbox1EMA').addEventListener('change', function () {
+    checked1EMA = this.checked
+    if (checked1EMA) {
+      ema1.style("display", "block");
+    } else {
+      ema1.style("display", "none");
+    }
+  })
+
+  if (checked1EMA) {
+    ema1.style("display", "block");
+  } else {
+    ema1.style("display", "none");
+  }
+
+  let ema2 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "chartreuse")
+    .style("stroke-width", 1)
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(candlesToShow[i-1].ema2) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(d.ema2) : null);
+
+  document.getElementById('legendCheckbox2EMA').addEventListener('change', function () {
+    checked2EMA = this.checked
+    if (checked2EMA) {
+      ema2.style("display", "block");
+    } else {
+      ema2.style("display", "none");
+    }
+  })
+
+  if (checked2EMA) {
+    ema2.style("display", "block");
+  } else {
+    ema2.style("display", "none");
+  }
+
+  let ema3 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "orange")
+    .style("stroke-width", 1)
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(candlesToShow[i-1].ema3) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(d.ema3) : null);
+
+  document.getElementById('legendCheckbox3EMA').addEventListener('change', function () {
+    checked3EMA = this.checked
+    if (checked3EMA) {
+      ema3.style("display", "block");
+    } else {
+      ema3.style("display", "none");
+    }
+  })
+
+  if (checked3EMA) {
+    ema3.style("display", "block");
+  } else {
+    ema3.style("display", "none");
+  }
+
+  let ema4 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "red")
+    .style("stroke-width", 1)
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(candlesToShow[i-1].ema4) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(d.ema4) : null);
+
+  document.getElementById('legendCheckbox4EMA').addEventListener('change', function () {
+    checked4EMA = this.checked
+    if (checked4EMA) {
+      ema4.style("display", "block");
+    } else {
+      ema4.style("display", "none");
+    }
+  })
+
+  if (checked4EMA) {
+    ema4.style("display", "block");
+  } else {
+    ema4.style("display", "none");
+  }
 
   // Add index to Price Array
   candlesToShow.map(p => p["index"] = candlesToShow.indexOf(p))
@@ -813,33 +1061,33 @@ function drawChart(start, end) {
     .attr("height", 2)
     .attr("fill", "white")
 
-  let exitLine
-  candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
-    if (c.StratExitPrice.length > 1) {
-      c.StratExitPrice.forEach((g) => {
-        exitLine = chartBody.selectAll("exitLine")
-          .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
-          .enter()
-          .append("rect")
-          .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-          .attr("y", (d) => yScale(g) + pointerYMove)
-          .attr("width", pointerWidth + 6)
-          .attr("height", 2)
-          .attr("fill", "white")
-        // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
-      })
-    } else {
-      exitLine = chartBody.selectAll("exitLine")
-        .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
-        .enter()
-        .append("rect")
-        .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-        .attr("y", (d) => yScale(c.StratExitPrice[0]) + pointerYMove)
-        .attr("width", pointerWidth + 6)
-        .attr("height", 2)
-        .attr("fill", "white")
-    }
-  })
+  // let exitLine
+  // candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
+  //   if (c.StratExitPrice.length > 1) {
+  //     c.StratExitPrice.forEach((g) => {
+  //       exitLine = chartBody.selectAll("exitLine")
+  //         .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
+  //         .enter()
+  //         .append("rect")
+  //         .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+  //         .attr("y", (d) => yScale(g) + pointerYMove)
+  //         .attr("width", pointerWidth + 6)
+  //         .attr("height", 2)
+  //         .attr("fill", "white")
+  //       // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
+  //     })
+  //   } else {
+  //     exitLine = chartBody.selectAll("exitLine")
+  //       .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
+  //       .enter()
+  //       .append("rect")
+  //       .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+  //       .attr("y", (d) => yScale(c.StratExitPrice[0]) + pointerYMove)
+  //       .attr("width", pointerWidth + 6)
+  //       .attr("height", 2)
+  //       .attr("fill", "white")
+  //   }
+  // })
 
   // exitLine = chartBody.selectAll("exitLine")
   // .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
@@ -935,7 +1183,41 @@ function drawChart(start, end) {
     enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
     exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
     entryLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-    exitLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+    // exitLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+
+    // SMAs
+    sma1
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
+
+    sma2
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
+
+    sma3
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
+
+    sma4
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
+
+    // EMAs
+    ema1
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
+
+    ema2
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
+
+    ema3
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
+
+    ema4
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
 
     hideTicksWithoutLabel();
 
@@ -991,13 +1273,47 @@ function drawChart(start, end) {
       entryLine.transition().duration(100)
         .attr("y", (d) => yScale(d.StratEnterPrice) + labelYMoveTop)
 
-      candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
-        c.StratExitPrice.forEach((g) => {
-          console.log(g)
-          exitLine.transition().duration(100)
-            .attr("y", (d) => yScale(g) + labelYMoveTop)
-        })
-      })
+      // SMAs
+      sma1.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(candlesToShow[i-1].sma1) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(d.sma1) : null);
+
+      sma2.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(candlesToShow[i-1].sma2) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(d.sma2) : null);
+
+      sma3.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(candlesToShow[i-1].sma3) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(d.sma3) : null);
+
+      sma4.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(candlesToShow[i-1].sma4) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(d.sma4) : null);
+
+      // EMAs
+      ema1.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(candlesToShow[i-1].ema1) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(d.ema1) : null);
+
+      ema2.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(candlesToShow[i-1].ema2) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(d.ema2) : null);
+
+      ema3.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(candlesToShow[i-1].ema3) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(d.ema3) : null);
+
+      ema4.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(candlesToShow[i-1].ema4) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(d.ema4) : null);
+
+      // candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
+      //   c.StratExitPrice.forEach((g) => {
+      //     console.log(g)
+      //     exitLine.transition().duration(100)
+      //       .attr("y", (d) => yScale(g) + labelYMoveTop)
+      //   })
+      // })
 
 
       gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
@@ -1282,7 +1598,7 @@ function plotHistory(data) {
   }
 
   // Number of rows
-  document.getElementById("numOfRows").innerHTML = "Total: (" + data[0].Data.length.toString() + ")" + " Entry: " + "(" + data[0].Data.filter((d) => { return d.EntryDateTime.length != 0 }).length.toString() + ")"
+  document.getElementById("numOfRows").innerHTML = "Total: (" + data[0].Data.length.toString() + ")" + " / Entries: " + "(" + data[0].Data.filter((d) => { return d.EntryDateTime.length != 0 }).length.toString() + ")"
 
   var tableHeader = document.getElementById("history")
   tableHeader.innerHTML = ""
