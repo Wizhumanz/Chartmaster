@@ -30,14 +30,6 @@ html,
   }
 }
 
-#brand-h {
-  font-family: $title-font;
-  color: $cream;
-  margin: 0.75rem;
-  margin-left: 1rem;
-  margin-bottom: 0.25rem;
-}
-
 #undefinedUserErr {
   padding: 0.5rem;
   width: fit-content;
@@ -49,14 +41,23 @@ html,
 }
 
 #brand-controls {
-  padding: 0.5rem;
+  padding: 0.25rem;
+
+  img {
+    width: 45px;
+    display: inline;
+  }
   h5 {
+    position: absolute;
+    margin-top: 0.6rem;
+    left: 75px;
+    font-family: $title-font;
+    color: $cream;
     display: inline;
   }
 }
 
 #extraControls {
-  margin-top: -1.5rem;
   margin-bottom: 1rem;
 }
 
