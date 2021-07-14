@@ -160,7 +160,7 @@ h4.chartHeader#optionsH {
 }
 
 #sideCol {
-  margin-top: -2.5rem;
+  padding-top: 0.5rem;
 }
 
 .topControls {
@@ -453,7 +453,7 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 #simTradesDiv {
-  height: 28rem;
+  height: 30rem;
   margin-bottom: 1rem;
 }
 
