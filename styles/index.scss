@@ -30,14 +30,6 @@ html,
   }
 }
 
-#brand-h {
-  font-family: $title-font;
-  margin: 0.75rem;
-  margin-left: 1rem;
-  margin-bottom: 0.25rem;
-  background-color: #01001c;
-}
-
 #undefinedUserErr {
   padding: 0.5rem;
   width: fit-content;
@@ -49,14 +41,23 @@ html,
 }
 
 #brand-controls {
-  padding: 0.5rem;
-  h4 {
+  padding: 0.25rem;
+
+  img {
+    width: 45px;
+    display: inline;
+  }
+  h5 {
+    position: absolute;
+    margin-top: 0.6rem;
+    left: 75px;
+    font-family: $title-font;
+    color: $cream;
     display: inline;
   }
 }
 
 #extraControls {
-  margin-top: -1.5rem;
   margin-bottom: 1rem;
 }
 
@@ -67,7 +68,7 @@ html,
 }
 
 div#computeControls {
-  margin: 0 auto;
+  margin: 0.5rem auto;
   font-size: x-small;
 
   @media only screen and (max-width: 700px) {
@@ -83,7 +84,6 @@ div#computeControls {
   left: 9%;
   width: 300px;
   z-index: 100;
-  background-color: #01001c;
 
   ul {
     li {
@@ -110,7 +110,7 @@ h4.chartHeader#optionsH {
 }
 
 #sideCol {
-  margin-top: -2.5rem;
+  padding-top: 0.5rem;
 }
 
 .topControls {
@@ -186,12 +186,12 @@ h4.chartHeader#optionsH {
 }
 
 .computeInputs {
-  padding: 0.15rem;
+  padding: 0.15rem 0.5rem;
   margin-bottom: 0.25rem;
   color: $cream;
   background-color: #01001c;
   border-radius: 5px;
-  border: $blood 2px solid;
+  border: $blue 2px solid;
 
   @media only screen and (max-width: 700px) {
     margin-left: 0.25rem;
@@ -209,7 +209,7 @@ div.col-4 {
 
 input[type="datetime-local"] {
   width: 165px;
-  padding: 0.15rem;
+  padding: 0.2rem;
   color: $cream;
   border-radius: 5px;
   border: $blood 2px solid;
@@ -238,7 +238,7 @@ select {
   margin: 0.25rem;
   background-color: #01001c;
   color: $cream;
-  border: $blood 2px solid;
+  border: $blue 2px solid;
   border-radius: 5px;
   font-size: inherit;
   font-family: $body-font;
@@ -405,7 +405,7 @@ div.stacked::-webkit-scrollbar-thumb {
 }
 
 #simTradesDiv {
-  height: 28rem;
+  height: 30rem;
   margin-bottom: 1rem;
 }
 
