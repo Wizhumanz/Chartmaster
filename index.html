@@ -137,8 +137,6 @@
                     <div class="topControls">
                       <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
                         style="display: none;">Share Results</button>
-                      <!-- TODO: copy share link to clipboard -->
-                      <a href="">Copy Link</a>
                       <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> Compute</button>
                       <p id="wsStatus"></p>
                     </div>
@@ -170,7 +168,16 @@
                           </div>
                           <div class="modal-footer">
                             <button type="button" data-bs-dismiss="modal">Close</button>
-                            <button type="button" onclick="shareResult()">Share</button>
+                            <button type="button" onclick="shareResult()" id="shareBtn">Share</button>
+
+                            <!-- TODO: copy share link to clipboard -->
+                            <!-- <a href="" id="copyLink" style="display:hidden">Copy Link</a> -->
+                            <div class="tooltips">
+                              <button onclick="clipBoard()" onmouseout="outFunc()" style="display: none;" id="copyLink">
+                                <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                                Copy text
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>

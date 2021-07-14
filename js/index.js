@@ -2,6 +2,8 @@
 let baseURL = "http://localhost:8001"
 let wsStatus = document.getElementById("wsStatus")
 
+// copyLink
+let copyLink
 
 // Get parameters from a URL string
 let userID = getParams(window.location.href).user
@@ -569,7 +571,9 @@ function shareResult() {
       mode: "cors",
     })
     .then((res) => {
-      console.log(res.data)
+      copyLink = "http://127.0.0.1:5500/index.html?share=" + res.data.shareID
+      document.getElementById("copyLink").style = "display: block;"
+      document.getElementById("shareBtn").style = "display: none;"
     })
     .catch((error) => {
       console.log(error);
@@ -2377,6 +2381,20 @@ function getMoreData() {
     .catch((error) => {
       console.log(error);
     });
+}
+
+// Copy to clipboard
+function clipBoard() {
+  navigator.clipboard.writeText(copyLink).then(() => {
+    var tooltip = document.getElementById("myTooltip");
+    tooltip.innerHTML = "Copied!"
+    }
+  )
+}
+
+function outFunc() {
+  var tooltip = document.getElementById("myTooltip");
+  tooltip.innerHTML = "Copy to clipboard";
 }
 
 //unused 
