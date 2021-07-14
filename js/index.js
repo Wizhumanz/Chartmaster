@@ -39,19 +39,33 @@ document.getElementById("saveCandles").style.display = "none"
 document.getElementById("panCandlesLeftBtn").style.display = "none"
 document.getElementById("panCandlesRightBtn").style.display = "none"
 
+// SMAs
+let checked1SMA = false
+let checked2SMA = false
+let checked3SMA = false
+let checked4SMA = false
+document.getElementById("legendLabel1SMA").style.display = "none"
+document.getElementById("legendCheckbox1SMA").style.display = "none"
+document.getElementById("legendLabel2SMA").style.display = "none"
+document.getElementById("legendCheckbox2SMA").style.display = "none"
+document.getElementById("legendLabel3SMA").style.display = "none"
+document.getElementById("legendCheckbox3SMA").style.display = "none"
+document.getElementById("legendLabel4SMA").style.display = "none"
+document.getElementById("legendCheckbox4SMA").style.display = "none"
+
 // EMAs
-let checked1 = false
-let checked2 = false
-let checked3 = false
-let checked4 = false
-document.getElementById("legendLabel1").style.display = "none"
-document.getElementById("legendCheckbox1").style.display = "none"
-document.getElementById("legendLabel2").style.display = "none"
-document.getElementById("legendCheckbox2").style.display = "none"
-document.getElementById("legendLabel3").style.display = "none"
-document.getElementById("legendCheckbox3").style.display = "none"
-document.getElementById("legendLabel4").style.display = "none"
-document.getElementById("legendCheckbox4").style.display = "none"
+let checked1EMA = false
+let checked2EMA = false
+let checked3EMA = false
+let checked4EMA = false
+document.getElementById("legendLabel1EMA").style.display = "none"
+document.getElementById("legendCheckbox1EMA").style.display = "none"
+document.getElementById("legendLabel2EMA").style.display = "none"
+document.getElementById("legendCheckbox2EMA").style.display = "none"
+document.getElementById("legendLabel3EMA").style.display = "none"
+document.getElementById("legendCheckbox3EMA").style.display = "none"
+document.getElementById("legendLabel4EMA").style.display = "none"
+document.getElementById("legendCheckbox4EMA").style.display = "none"
 
 
 /// CANDLESTICKS
@@ -619,15 +633,25 @@ function saveCandlesToJson() {
 }
 
 function drawChart(start, end) {
-  // Show Legend
-  document.getElementById('legendLabel1').style.display = "block"
-  document.getElementById('legendCheckbox1').style.display = "block"
-  document.getElementById('legendLabel2').style.display = "block"
-  document.getElementById('legendCheckbox2').style.display = "block"
-  document.getElementById('legendLabel3').style.display = "block"
-  document.getElementById('legendCheckbox3').style.display = "block"
-  document.getElementById('legendLabel4').style.display = "block"
-  document.getElementById('legendCheckbox4').style.display = "block"
+  // Show Legend for SMA
+  document.getElementById('legendLabel1SMA').style.display = "block"
+  document.getElementById('legendCheckbox1SMA').style.display = "block"
+  document.getElementById('legendLabel2SMA').style.display = "block"
+  document.getElementById('legendCheckbox2SMA').style.display = "block"
+  document.getElementById('legendLabel3SMA').style.display = "block"
+  document.getElementById('legendCheckbox3SMA').style.display = "block"
+  document.getElementById('legendLabel4SMA').style.display = "block"
+  document.getElementById('legendCheckbox4SMA').style.display = "block"
+
+  // Show Legend for EMA
+  document.getElementById('legendLabel1EMA').style.display = "block"
+  document.getElementById('legendCheckbox1EMA').style.display = "block"
+  document.getElementById('legendLabel2EMA').style.display = "block"
+  document.getElementById('legendCheckbox2EMA').style.display = "block"
+  document.getElementById('legendLabel3EMA').style.display = "block"
+  document.getElementById('legendCheckbox3EMA').style.display = "block"
+  document.getElementById('legendLabel4EMA').style.display = "block"
+  document.getElementById('legendCheckbox4EMA').style.display = "block"
 
   let candlesToShow = allCandles.slice(start, end)
   // console.log(JSON.stringify(candlesToShow))
@@ -694,13 +718,18 @@ function drawChart(start, end) {
   gX.selectAll(".tick text")
     .call(wrap, xBand.bandwidth())
 
+  var smaValues = []
+  for (var i = 1; i < 5; i++) {
+    smaValues.push(...candlesToShow.map(r => r["sma"+i.toString()]).filter(s => s !== 0))
+  }
+
   var emaValues = []
   for (var i = 1; i < 5; i++) {
     emaValues.push(...candlesToShow.map(r => r["ema"+i.toString()]).filter(e => e !== 0))
   }
 
-  var ymin = d3.min(candlesToShow.map(r => r.Low).concat(emaValues));
-  var ymax = d3.max(candlesToShow.map(r => r.High).concat(emaValues));
+  var ymin = d3.min(candlesToShow.map(r => r.Low).concat(emaValues).concat(smaValues));
+  var ymax = d3.max(candlesToShow.map(r => r.High).concat(emaValues).concat(smaValues));
   var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h, 0]).nice();
   var yAxis = d3.axisLeft()
     .scale(yScale)
@@ -725,6 +754,111 @@ function drawChart(start, end) {
     .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
     .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
 
+  // SMAs
+  let sma1 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "lightblue")
+    .style("stroke-width", 1)
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(candlesToShow[i-1].sma1) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(d.sma1) : null);
+
+  document.getElementById('legendCheckbox1SMA').addEventListener('change', function () {
+    checked1SMA = this.checked
+    if (checked1SMA) {
+      sma1.style("display", "block");
+    } else {
+      sma1.style("display", "none");
+    }
+  })
+
+  if (checked1SMA) {
+    sma1.style("display", "block");
+  } else {
+    sma1.style("display", "none");
+  }
+
+  let sma2 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "chartreuse")
+    .style("stroke-width", 1)
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(candlesToShow[i-1].sma2) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(d.sma2) : null);
+
+  document.getElementById('legendCheckbox2SMA').addEventListener('change', function () {
+    checked2SMA = this.checked
+    if (checked2SMA) {
+      sma2.style("display", "block");
+    } else {
+      sma2.style("display", "none");
+    }
+  })
+
+  if (checked2SMA) {
+    sma2.style("display", "block");
+  } else {
+    sma2.style("display", "none");
+  }
+
+  let sma3 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "orange")
+    .style("stroke-width", 1)
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(candlesToShow[i-1].sma3) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(d.sma3) : null);
+
+  document.getElementById('legendCheckbox3SMA').addEventListener('change', function () {
+    checked3SMA = this.checked
+    if (checked3SMA) {
+      sma3.style("display", "block");
+    } else {
+      sma3.style("display", "none");
+    }
+  })
+
+  if (checked3SMA) {
+    sma3.style("display", "block");
+  } else {
+    sma3.style("display", "none");
+  }
+
+  let sma4 = chartBody.selectAll("g.line")
+    .data(candlesToShow)
+    .enter()
+    .append('line')
+    .style("stroke", "red")
+    .style("stroke-width", 1)
+    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(candlesToShow[i-1].sma4) : null)
+    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(d.sma4) : null);
+
+  document.getElementById('legendCheckbox4SMA').addEventListener('change', function () {
+    checked4SMA = this.checked
+    if (checked4SMA) {
+      sma4.style("display", "block");
+    } else {
+      sma4.style("display", "none");
+    }
+  })
+
+  if (checked4SMA) {
+    sma4.style("display", "block");
+  } else {
+    sma4.style("display", "none");
+  }
+
   // EMAs
   let ema1 = chartBody.selectAll("g.line")
     .data(candlesToShow)
@@ -737,16 +871,16 @@ function drawChart(start, end) {
     .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
     .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(d.ema1) : null);
 
-  document.getElementById('legendCheckbox1').addEventListener('change', function () {
-    checked1 = this.checked
-    if (checked1) {
+  document.getElementById('legendCheckbox1EMA').addEventListener('change', function () {
+    checked1EMA = this.checked
+    if (checked1EMA) {
       ema1.style("display", "block");
     } else {
       ema1.style("display", "none");
     }
   })
 
-  if (checked1) {
+  if (checked1EMA) {
     ema1.style("display", "block");
   } else {
     ema1.style("display", "none");
@@ -763,16 +897,16 @@ function drawChart(start, end) {
     .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
     .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(d.ema2) : null);
 
-  document.getElementById('legendCheckbox2').addEventListener('change', function () {
-    checked2 = this.checked
-    if (checked2) {
+  document.getElementById('legendCheckbox2EMA').addEventListener('change', function () {
+    checked2EMA = this.checked
+    if (checked2EMA) {
       ema2.style("display", "block");
     } else {
       ema2.style("display", "none");
     }
   })
 
-  if (checked2) {
+  if (checked2EMA) {
     ema2.style("display", "block");
   } else {
     ema2.style("display", "none");
@@ -789,16 +923,16 @@ function drawChart(start, end) {
     .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
     .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(d.ema3) : null);
 
-  document.getElementById('legendCheckbox3').addEventListener('change', function () {
-    checked3 = this.checked
-    if (checked3) {
+  document.getElementById('legendCheckbox3EMA').addEventListener('change', function () {
+    checked3EMA = this.checked
+    if (checked3EMA) {
       ema3.style("display", "block");
     } else {
       ema3.style("display", "none");
     }
   })
 
-  if (checked3) {
+  if (checked3EMA) {
     ema3.style("display", "block");
   } else {
     ema3.style("display", "none");
@@ -815,16 +949,16 @@ function drawChart(start, end) {
     .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
     .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(d.ema4) : null);
 
-  document.getElementById('legendCheckbox4').addEventListener('change', function () {
-    checked4 = this.checked
-    if (checked4) {
+  document.getElementById('legendCheckbox4EMA').addEventListener('change', function () {
+    checked4EMA = this.checked
+    if (checked4EMA) {
       ema4.style("display", "block");
     } else {
       ema4.style("display", "none");
     }
   })
 
-  if (checked4) {
+  if (checked4EMA) {
     ema4.style("display", "block");
   } else {
     ema4.style("display", "none");
@@ -1047,6 +1181,23 @@ function drawChart(start, end) {
     entryLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
     // exitLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
+    // SMAs
+    sma1
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
+
+    sma2
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
+
+    sma3
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
+
+    sma4
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
+
     // EMAs
     ema1
       .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
@@ -1117,6 +1268,23 @@ function drawChart(start, end) {
         .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
       entryLine.transition().duration(100)
         .attr("y", (d) => yScale(d.StratEnterPrice) + labelYMoveTop)
+
+      // SMAs
+      sma1.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(candlesToShow[i-1].sma1) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(d.sma1) : null);
+
+      sma2.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(candlesToShow[i-1].sma2) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(d.sma2) : null);
+
+      sma3.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(candlesToShow[i-1].sma3) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(d.sma3) : null);
+
+      sma4.transition().duration(100)      
+        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(candlesToShow[i-1].sma4) : null)
+        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(d.sma4) : null);
 
       // EMAs
       ema1.transition().duration(100)      
