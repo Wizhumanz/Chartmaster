@@ -47,17 +47,17 @@
           <div class="col-12 order-2 order-lg-1" id="computeControls">
             <h4 class="chartHeader" id="optionsH" class="chartHeader">Backtest Options</h4>
             <div class="row">
-              <!-- start/end compute controls -->
-              <div class="col-12 col-md-9">
+              <!-- start/end, ticker, period controls -->
+              <div class="col-12 col-xl-8">
                 <div class="row">
-                  <div class="col-12 col-md-2">
+                  <div class="col-12 col-md-3">
                     <div id="brand-controls">
                       <img src="./logo.png" alt="chartmaster logo">
                       <h5>Chartmaster</h5>
                     </div>
                   </div>
                   <!-- compute start + end datetime -->
-                  <div class="col-12 col-md-4">
+                  <div class="col-12 col-md-5">
                     <div class="topControls">
                       <div class="row">
                         <div class="col-4">
@@ -78,7 +78,7 @@
                     </div>
                   </div>
                   <!-- ticker + period select -->
-                  <div class="col-12 col-md-3 center">
+                  <div class="col-12 col-md-4 center">
                     <select name="tickerSelect" id="tickerSelect">
                       <!-- filled dynamically by API call -->
                     </select>
@@ -104,8 +104,13 @@
                       <option value="2DAY">2d</option>
                     </select>
                   </div>
+                </div>
+              </div>
+              <!-- extra params, compute + history controls -->
+              <div class="col-12 col-xl-4">
+                <div class="row">
                   <!-- more compute settings -->
-                  <div class="col-12 col-md-3">
+                  <div class="col-6">
                     <div class="row">
                       <div class="col-4">
                         <label>Risk/Trade(%)</label>
@@ -131,53 +136,54 @@
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <!-- compute + history controls -->
-              <div class="col-12 col-md-3">
 
-                <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
-                  style="display: none;">Share Results</button>
-                <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> COMPUTE</button>
-                <p id="wsStatus"></p>
+                  <div class="col-6">
+                    <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
+                      style="display: none;">Share Results</button>
+                    <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> COMPUTE</button>
+                    <p id="wsStatus"></p>
 
-                <!-- history select + loading -->
-                <div class="topControls">
-                  <select name="resSelect" id="resSelect" onchange="tickerSelectChanged()">
-                    <!-- filled dynamically by API call -->
-                  </select>
-                  <button id="loadResBtn" onclick="loadBacktestRes()">Load</button>
-                </div>
+                    <!-- history select + loading -->
+                    <div class="topControls">
+                      <select name="resSelect" id="resSelect" onchange="tickerSelectChanged()">
+                        <!-- filled dynamically by API call -->
+                      </select>
+                      <button id="loadResBtn" onclick="loadBacktestRes()">Load</button>
+                    </div>
 
-                <!-- sharing btn + modal -->
-                <div class="controls-sub">
-                  <!-- share controls -->
-                  <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Share Results</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <label for="shareTitle">Title</label>
-                          <input id="shareTitle" type="text">
-                          <br>
-                          <label for="shareDesc">Description</label>
-                          <textarea id="shareDesc" type="text"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" data-bs-dismiss="modal">Close</button>
-                          <button type="button" onclick="shareResult()" id="shareBtn">Share</button>
+                    <!-- sharing btn + modal -->
+                    <div class="controls-sub">
+                      <!-- share controls -->
+                      <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Share Results</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <label for="shareTitle">Title</label>
+                              <input id="shareTitle" type="text">
+                              <br>
+                              <label for="shareDesc">Description</label>
+                              <textarea id="shareDesc" type="text"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" data-bs-dismiss="modal">Close</button>
+                              <button type="button" onclick="shareResult()" id="shareBtn">Share</button>
 
-                          <!-- TODO: copy share link to clipboard -->
-                          <!-- <a href="" id="copyLink" style="display:hidden">Copy Link</a> -->
-                          <div class="tooltips">
-                            <button onclick="clipBoard()" onmouseout="outFunc()" style="display: none;" id="copyLink">
-                              <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-                              Copy text
-                            </button>
+                              <!-- TODO: copy share link to clipboard -->
+                              <!-- <a href="" id="copyLink" style="display:hidden">Copy Link</a> -->
+                              <div class="tooltips">
+                                <button onclick="clipBoard()" onmouseout="outFunc()" style="display: none;"
+                                  id="copyLink">
+                                  <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                                  Copy text
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
