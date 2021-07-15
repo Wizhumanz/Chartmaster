@@ -1,4 +1,3 @@
-
 let baseURL = "http://localhost:8001"
 let wsStatus = document.getElementById("wsStatus")
 
@@ -9,6 +8,25 @@ let copyLink
 let userID = getParams(window.location.href).user
 if (userID === undefined) {
   document.getElementById("undefinedUserErr").style.display = "block"
+}
+
+let shareID = getParams(window.location.href).share
+if (shareID !== undefined) {
+  document.getElementById("undefinedUserErr").style.display = "none"
+  document.getElementById("startDateTimePicker").disabled = true
+  document.getElementById("endDateTimePicker").disabled = true
+  document.getElementById("tickerSelect").disabled = true
+  document.getElementById("periodSelect").disabled = true
+  document.getElementById("risk").disabled = true
+  document.getElementById("leverage").disabled = true
+  document.getElementById("size").disabled = true
+  document.getElementById("modeTogglerBtn").style.display = "none"
+  document.getElementById("chunkProcessTogglerBtn").style.display = "none"
+  document.getElementById("saveCandles").style.display = "none"
+  document.getElementById("candlesSelect").style.display = "none"
+  document.getElementById("computeBtn").style.display = "none"
+  document.getElementById("wsStatus").style.display = "none"
+  document.getElementById("resSelect").style.display = "none"
 }
 
 // Hide Load Btn
@@ -605,6 +623,19 @@ function sharedLink() {
       })
       .then((res) => {
         console.log(res.data)
+        var startTimeInput = document.getElementById("startDateTimePicker")
+        var endTimeInput = document.getElementById("endDateTimePicker")
+        var periodInput = document.getElementById("periodSelect")
+        var tickerInput = document.getElementById("tickerSelect")
+        document.getElementById("risk").value = res.data[0]
+        document.getElementById("leverage").value = res.data[1]
+        document.getElementById("size").value = res.data[2]
+        var selectedOptionText = res.data[3]
+      
+        startTimeInput.value = selectedOptionText.substring(0, selectedOptionText.indexOf("~")).replace("_", "T").slice(0, -3)
+        endTimeInput.value = selectedOptionText.substring(selectedOptionText.indexOf("~") + 1, selectedOptionText.indexOf("(")).replace("_", "T").slice(0, -3)
+        periodInput.value = selectedOptionText.substring(selectedOptionText.indexOf("(") + 1, selectedOptionText.indexOf(","))
+        tickerInput.value = selectedOptionText.substring(selectedOptionText.indexOf(" ") + 1, selectedOptionText.indexOf(")"))
       })
       .catch((error) => {
         console.log(error);
