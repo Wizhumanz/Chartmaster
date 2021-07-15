@@ -1,8 +1,11 @@
 let baseURL = "http://localhost:8001"
 let wsStatus = document.getElementById("wsStatus")
 
-// copyLink
+// link url
 let copyLink
+
+// Used for progress bar for loading and sharing
+let loadHistory = false
 
 // Get parameters from a URL string
 let userID = getParams(window.location.href).user
@@ -266,6 +269,16 @@ function loadSavedCandles() {
 
 loadSavedCandles()
 
+function loadProgressBar(progress) {
+  document.getElementById("progress").style.display = "block";
+  document.getElementById("progressBar").style = `width: ${progress}%`
+  if (progress >= 98) {
+    setTimeout(() => {
+      document.getElementById("progress").style.display = "none";
+    }, 1000)
+  }
+}
+
 function connectWs(id) {
   wsStatus.innerText = "Loading websockets..."
   var socket
@@ -302,13 +315,7 @@ function connectWs(id) {
 
       // Progress bar
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Progress) > 0) {
-        document.getElementById("progress").style.display = "block";
-        document.getElementById("progressBar").style = `width: ${JSON.parse(msg.data).Data[0].Progress}%`
-        if (JSON.parse(msg.data).Data[0].Progress >= 98) {
-          setTimeout(() => {
-            document.getElementById("progress").style.display = "none";
-          }, 1000)
-        }
+        loadProgressBar(JSON.parse(msg.data).Data[0].Progress)
       }
 
       // Scatter plot
@@ -372,6 +379,9 @@ function connectWs(id) {
           }
           drawChart(0, candleDisplayNumber)
         }
+        if (loadHistory) {
+          loadProgressBar(100)
+        }
       }
 
       //profit curve
@@ -388,6 +398,9 @@ function connectWs(id) {
           //add new data to existing array
           allProfitCurve[0].Data = allProfitCurve[0].Data.concat(JSON.parse(msg.data).Data[0].Data)
           drawPC(allProfitCurve)
+        }
+        if (loadHistory) {
+          loadProgressBar(70)
         }
       }
 
@@ -411,12 +424,16 @@ function connectWs(id) {
 
           plotHistory(allSimTrades)
         }
+        if (loadHistory) {
+          loadProgressBar(80)
+        }
       }
-
     };
   }
 }
 connectWs(userID)
+// Progress bar reset
+loadHistory = false
 
 let riskInput
 let leverageInput
@@ -542,6 +559,7 @@ getExchanges()
 function loadBacktestRes() {
   var s = document.getElementById("resSelect")
   selectedRes = s.value
+  loadHistory = true
 
   let getURL = baseURL + `/backtestHistory/${selectedRes}?user=` + userID + "&candlePacketSize=100"
 
@@ -606,9 +624,8 @@ function shareResult() {
 
 function sharedLink() {
   if (getParams(window.location.href).share) {
-    console.log(getParams(window.location.href).share)
     let shareLink = getParams(window.location.href).share
-
+    loadHistory = true
     let hd = {
       // "Content-Type": "application/json",
       // Authorization: user.password,
@@ -622,14 +639,13 @@ function sharedLink() {
         // mode: "cors",
       })
       .then((res) => {
-        console.log(res.data)
         var startTimeInput = document.getElementById("startDateTimePicker")
         var endTimeInput = document.getElementById("endDateTimePicker")
         var periodInput = document.getElementById("periodSelect")
         var tickerInput = document.getElementById("tickerSelect")
-        document.getElementById("risk").value = res.data[0]
-        document.getElementById("leverage").value = res.data[1]
-        document.getElementById("size").value = res.data[2]
+        document.getElementById("risk").value = parseFloat(res.data[0])
+        document.getElementById("leverage").value = parseFloat(res.data[1])
+        document.getElementById("size").value = parseFloat(res.data[2])
         var selectedOptionText = res.data[3]
       
         startTimeInput.value = selectedOptionText.substring(0, selectedOptionText.indexOf("~")).replace("_", "T").slice(0, -3)
