@@ -81,7 +81,7 @@ div#computeControls {
 
 #indicatorCtrls {
   position: absolute;
-  left: 9%;
+  left: 11%;
   width: 300px;
   z-index: 100;
 
@@ -135,9 +135,7 @@ h4.chartHeader#optionsH {
 }
 
 .arrows {
-  margin: 0 0.5rem;
-  margin-bottom: -1rem;
-  color: $cream;
+  margin-left: 1rem;
 
   button {
     all: unset;
@@ -311,7 +309,7 @@ div.modal-content {
 }
 
 #ohlcDisplay {
-  margin: 1.5rem 4.5rem;
+  margin: 1rem 4.5rem;
   padding: 0.35rem;
   width: fit-content;
   font-size: x-small;
@@ -360,20 +358,20 @@ label {
   display: inline-block;
   position: relative;
   width: 100%;
-  // padding-bottom: 100%;
   vertical-align: top;
+  // padding-bottom: 100%;
   // overflow: hidden;
   height: 830px;
 
-  @media only screen and (max-width: 700px) {
-    height: 600px;
-  }
+  // @media only screen and (max-width: 700px) {
+  //   height: 600px;
+  // }
 }
 
 .svg-content {
   display: inline-block;
   position: absolute;
-  top: 0.5%;
+  top: 0%;
   left: 1%;
 }
 
