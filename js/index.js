@@ -11,6 +11,10 @@ if (userID === undefined) {
   document.getElementById("undefinedUserErr").style.display = "block"
 }
 
+// Hide Load Btn
+var res = document.getElementById("loadResBtn")
+res.style.display = "none"
+
 // Histogram Btns
 let histBins
 let histIndex = 0
@@ -169,10 +173,8 @@ function loadResult() {
       let sel = document.getElementById('resSelect');
       let opt = document.createElement('option');
       sel.length = 0
-
       opt.appendChild(document.createTextNode("History..."));
       sel.appendChild(opt);
-      // console.log(res.data)
       res.data.forEach((l) => {
         // get reference to select element
         let sel = document.getElementById('resSelect');
@@ -449,6 +451,7 @@ function computeBacktest() {
       mode: "cors",
     })
     .then(() => {
+      selectedRes = document.getElementById('startDateTimePicker').value + ":00~" + document.getElementById('endDateTimePicker').value + ":00(" + document.getElementById('periodSelect').value + ", " + document.getElementById('tickerSelect').value + ")"
       if (!retrieveCandles) {
         document.getElementById("saveCandles").style.display = "block"
       }
@@ -473,15 +476,12 @@ function getInputValues() {
 
   function riskFunc(e) {
     riskInput = e.target.value;
-    console.log(riskInput)
   }
   function leverageFunc(e) {
     leverageInput = e.target.value;
-    console.log(leverageInput)
   }
   function sizeFunc(e) {
     sizeInput = e.target.value;
-    console.log(sizeInput)
   }
 }
 
@@ -540,6 +540,9 @@ function loadBacktestRes() {
       mode: "cors",
     })
     .then((res) => {
+      document.getElementById("risk").value = res.data[0]
+      document.getElementById("leverage").value = res.data[1]
+      document.getElementById("size").value = res.data[2]
       document.getElementById("shareResult").style = "display: block;"
     })
     .catch((error) => {
@@ -550,6 +553,9 @@ function loadBacktestRes() {
 function shareResult() {
   var titleText = document.getElementById("shareTitle").value
   var descText = document.getElementById("shareDesc").value
+
+  // var s = document.getElementById("resSelect")
+  // selectedRes = s.value
 
   let result = {
     "title": titleText,
@@ -605,7 +611,6 @@ function sharedLink() {
       });
 
     let randomID = Date.now().toString().concat(generateString(20))
-    console.log(randomID)
     connectWs(randomID)
   }
 }
@@ -2244,15 +2249,18 @@ function getLocalTimezone() {
 }
 
 function tickerSelectChanged() {
-  var s = document.getElementById("resSelect")
+  historyLoadChanged()
+  var res = document.getElementById("resSelect")
+  var computeBtn = document.getElementById("computeBtn")
   var btn = document.getElementById("loadResBtn")
-  if (s.value !== "") {
-    btn.style.display = "inline"
+  if (res.value !== "History...") {
+    btn.style.display = "block"
+    computeBtn.style.display = "none"
   } else {
     btn.style.display = "none"
+    computeBtn.style.display = "block"
   }
 }
-tickerSelectChanged()
 
 function saveCandlesChanged() {
   var selectedOption = document.getElementById("candlesSelect")
@@ -2271,6 +2279,23 @@ function saveCandlesChanged() {
   retrieveCandles = true
 }
 saveCandlesChanged()
+
+function historyLoadChanged() {
+  var selectedOption = document.getElementById("resSelect")
+  var selectedOptionText = selectedOption.options[selectedOption.selectedIndex].text;
+
+  var startTimeInput = document.getElementById("startDateTimePicker")
+  var endTimeInput = document.getElementById("endDateTimePicker")
+  var periodInput = document.getElementById("periodSelect")
+  var tickerInput = document.getElementById("tickerSelect")
+
+  startTimeInput.value = selectedOptionText.substring(0, selectedOptionText.indexOf("~")).replace("_", "T").slice(0, -3)
+  endTimeInput.value = selectedOptionText.substring(selectedOptionText.indexOf("~") + 1, selectedOptionText.indexOf("(")).replace("_", "T").slice(0, -3)
+  periodInput.value = selectedOptionText.substring(selectedOptionText.indexOf("(") + 1, selectedOptionText.indexOf(","))
+  tickerInput.value = selectedOptionText.substring(selectedOptionText.indexOf(" ") + 1, selectedOptionText.indexOf(")"))
+
+  retrieveCandles = true
+}
 
 function processXAxisLabel(d, dates) {
   d = new Date(dates[d])

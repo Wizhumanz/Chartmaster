@@ -138,18 +138,18 @@
                   </div>
 
                   <div class="col-6">
-                    <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
-                      style="display: none;">Share Results</button>
                     <button id="computeBtn" onclick="computeBacktest()"><i class="bi bi-hammer"></i> COMPUTE</button>
+                    <button id="loadResBtn" onclick="loadBacktestRes()"><i class="bi bi-hammer"></i> Load</button>
                     <p id="wsStatus"></p>
 
                     <!-- history select + loading -->
                     <div class="topControls">
-                      <select name="resSelect" id="resSelect" onchange="tickerSelectChanged()">
+                      <select name="resSelect" value="History..." id="resSelect" onchange="tickerSelectChanged()">
                         <!-- filled dynamically by API call -->
                       </select>
-                      <button id="loadResBtn" onclick="loadBacktestRes()">Load</button>
                     </div>
+                    <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
+                    style="display: none;">Share Results</button>
 
                     <!-- sharing btn + modal -->
                     <div class="controls-sub">
@@ -180,7 +180,7 @@
                                 <button onclick="clipBoard()" onmouseout="outFunc()" style="display: none;"
                                   id="copyLink">
                                   <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-                                  Copy text
+                                  Copy Link
                                 </button>
                               </div>
                             </div>
