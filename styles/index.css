@@ -219,9 +219,15 @@ h4.chartHeader#optionsH {
 }
 
 #shareResult {
-  margin: 0.5rem;
   font-size: inherit;
   padding: auto 0.75rem;
+  color: #fffff0;
+  background-color: transparent;
+}
+
+#shareResult:hover {
+  color: black;
+  background-color: #fffdd0;
 }
 
 #computeParamsDiv {
@@ -301,9 +307,17 @@ select {
 }
 
 #computeBtn {
-  margin-left: 1.5rem;
+  margin-left: 0.5rem;
+  margin-bottom: 0.5rem;
   background-color: #8a0000;
   color: #fffdd0;
+  border-color: #fffdd0;
+}
+
+#computeBtn:hover {
+  background-color: #fffdd0;
+  color: #8a0000;
+  border-color: #8a0000;
 }
 
 #wsStatus {
@@ -608,6 +622,11 @@ tr:hover {
 .tooltips:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
+}
+
+button {
+  font-family: "Alata", sans-serif !important;
+  font-size: larger !important;
 }
 
 /*# sourceMappingURL=index.css.map */

@@ -174,9 +174,15 @@ h4.chartHeader#optionsH {
 }
 
 #shareResult {
-  margin: 0.5rem;
   font-size: inherit;
   padding: auto 0.75rem;
+  color: $ivory;
+  background-color: transparent;
+}
+
+#shareResult:hover {
+  color: black;
+  background-color: $cream;
 }
 
 #computeParamsDiv {
@@ -254,9 +260,17 @@ select {
 }
 
 #computeBtn {
-  margin-left: 1.5rem;
+  margin-left: 0.5rem;
+  margin-bottom: 0.5rem;
   background-color: $blood;
   color: $cream;
+  border-color: $cream;
+}
+
+#computeBtn:hover {
+  background-color: $cream;
+  color: $blood;
+  border-color: $blood;
 }
 
 #wsStatus {
@@ -563,4 +577,9 @@ tr:hover {
 .tooltips:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
+}
+
+button {
+  font-family: $body-font !important;
+  font-size: larger !important;
 }
