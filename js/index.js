@@ -7,6 +7,10 @@ let copyLink
 // Used for progress bar for loading and sharing
 let loadHistory = false
 
+// Slider
+let slider = document.getElementById("chartSlider")
+  slider.style.display = "none"
+
 // Get parameters from a URL string
 let userID = getParams(window.location.href).user
 if (userID === undefined) {
@@ -355,6 +359,8 @@ function connectWs(id) {
 
       //candlestick
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Open) > 0) {
+        candleChartSlider()
+      
         //check if concat needed, or new data
         if (existingWSResID === "" || existingWSResID !== JSON.parse(msg.data).ResultID) {
           allCandles = JSON.parse(msg.data).Data
@@ -2259,6 +2265,9 @@ function moveLeft() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
 
+  let slider = document.getElementById("chartSlider")
+  slider.value = candleDrawStartIndex / (allCandles.length - candleDisplayNumber/2) * 100
+
   lBtn.style.display = "inline"
   candleDrawStartIndex -= candleDisplayNumber / 2
   candleDrawEndIndex -= candleDisplayNumber / 2
@@ -2275,6 +2284,9 @@ function moveRight() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
 
+  let slider = document.getElementById("chartSlider")
+  slider.value = candleDrawEndIndex / (allCandles.length - candleDisplayNumber/2) * 100
+
   rBtn.style.display = "inline"
   candleDrawStartIndex += candleDisplayNumber / 2
   candleDrawEndIndex += candleDisplayNumber / 2
@@ -2285,6 +2297,25 @@ function moveRight() {
   lBtn.style.display = "inline"
 
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
+}
+
+function candleChartSlider() {
+  let slider = document.getElementById("chartSlider")
+  slider.style.display = "inline"
+  slider.addEventListener('change', function () {
+    let sliderDisplayNumber = Math.round((allCandles.length - candleDisplayNumber) * (slider.value / 100))
+    candleDrawStartIndex = sliderDisplayNumber
+    candleDrawEndIndex = candleDisplayNumber + sliderDisplayNumber
+
+    console.log(candleDrawEndIndex, allCandles.length)
+    if (candleDrawEndIndex >= allCandles.length) {
+      document.getElementById("panCandlesRightBtn").style.display = "none"
+    } else if (candleDrawStartIndex == 0) {
+      document.getElementById("panCandlesLeftBtn").style.display = "none"
+    }
+
+    drawChart(candleDrawStartIndex, candleDrawEndIndex)
+  })
 }
 
 function getPickerDateTime(pickerID) {
