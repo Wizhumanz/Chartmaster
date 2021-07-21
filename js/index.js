@@ -1,4 +1,4 @@
-let baseURL = "http://localhost:8001"
+let baseURL = "https://strategy-svc-jg42qhdbpq-as.a.run.app"
 let wsStatus = document.getElementById("wsStatus")
 
 // link url
