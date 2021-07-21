@@ -1665,7 +1665,7 @@ function plotHistory(data) {
   var tableHeader = document.getElementById("history")
   tableHeader.innerHTML = ""
   let row = tableHeader.insertRow()
-  let tableHeaderEle = ["EntryDateTime", "ExitDateTime", "Profit($)", "Position Size", "Exit Price", "Raw Profit(%)", "Entry Price", "Risked Equity", "Fees($)", "Direction", "Index", "Parameter"]
+  let tableHeaderEle = ["EntryDateTime", "ExitDateTime", "Profit($)", "Position Size", "Exit Price", "Raw Profit(%)", "Entry Price", "Risked Equity", "Fees($)", "Direction", "pivotLowsToEnter", "maxDurationCandles", "slPerc", "slCooldownCandles", "tpSingle", "Index", "Parameter"]
 
   tableHeaderEle.forEach(t => {
     let newCell = row.insertCell()
@@ -1680,6 +1680,7 @@ function plotHistory(data) {
     //for each trade history item in that param
     d.Data.forEach((s, i) => {
       let row = table.insertRow()
+      console.log(s)
       row.insertCell().innerHTML = s.EntryDateTime
       row.insertCell().innerHTML = s.ExitDateTime
       row.insertCell().innerHTML = s.Profit != undefined ? s.Profit.toFixed(4) : s.Profit
@@ -1690,6 +1691,11 @@ function plotHistory(data) {
       row.insertCell().innerHTML = s.RiskedEquity != undefined ? s.RiskedEquity.toFixed(3) : s.RiskedEquity
       row.insertCell().innerHTML = s.TotalFees != undefined ? s.TotalFees.toFixed(3) : s.TotalFees
       row.insertCell().innerHTML = s.Direction
+      row.insertCell().innerHTML = s.Settings["pivotLowsToEnter"]
+      row.insertCell().innerHTML = s.Settings["maxDurationCandles"]
+      row.insertCell().innerHTML = s.Settings["slPerc"]
+      row.insertCell().innerHTML = s.Settings["slCooldownCandles"]
+      row.insertCell().innerHTML = s.Settings["tpSingle"]
       row.insertCell().innerHTML = indexST
       row.style.color = "white"
       //param name
