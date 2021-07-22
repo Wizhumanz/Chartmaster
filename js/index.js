@@ -367,6 +367,7 @@ function connectWs(id) {
 
           //if candlestick chart empty
           drawChart(0, candleDisplayNumber)
+          volumeGraph(0, candleDisplayNumber)
           if (candleDisplayNumber < allCandles.length) {
             //show right arrow btn
             document.getElementById("panCandlesRightBtn").style.display = "inline"
@@ -384,6 +385,7 @@ function connectWs(id) {
             document.getElementById("panCandlesRightBtn").style.display = "inline"
           }
           drawChart(0, candleDisplayNumber)
+          volumeGraph(0, allCandles.slice(start, end))
         }
         if (loadHistory) {
           loadProgressBar(100)
@@ -1477,6 +1479,96 @@ function wrap(text, width) {
   // horizontalScroll()
 }
 
+function volumeGraph(start, end) {
+  //reset chart
+  d3.selectAll("#volumeGraph > *").remove();
+
+  let data = allCandles.slice(start, end)
+  let data1 = []
+  let data2 = []
+  let data3 = []
+  let allVolAverage = []
+  data.forEach(d => {
+    data1.push({"VolumeAverage": d.VolumeAverage[0], "DateTime": d.DateTime})
+    data2.push({"VolumeAverage": d.VolumeAverage[1], "DateTime": d.DateTime})
+    data3.push({"VolumeAverage": d.VolumeAverage[2], "DateTime": d.DateTime})
+
+    if (d.VolumeAverage[0] != undefined) {
+      allVolAverage.push(d.VolumeAverage[0])
+    }
+    if (d.VolumeAverage[1] != undefined) {
+      allVolAverage.push(d.VolumeAverage[1])
+    }
+    if (d.VolumeAverage[2] != undefined) {
+      allVolAverage.push(d.VolumeAverage[2])
+    }
+  })
+  let volumeData = [{"key": "Data1", "values": data1}, {"key": "Data2", "values": data2}, {"key": "Data3", "values": data3}]
+  console.log(volumeData)
+  console.log(data)
+  // console.log(data1[0]["DateTime"], data3[data3.length - 1]["DateTime"])
+  console.log(d3.extent(data, function(d) { return d.DateTime; }))
+
+  // set the dimensions and margins of the graph
+  var margin = {top: 10, right: 30, bottom: 30, left: 60},
+  width = 460 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
+
+  // append the svg object to the body of the page
+  var svg = d3.select("#volumeGraph")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+  // group the data: I want to draw one line per group
+  // var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
+  // .key(function(d) { return d.name;})
+  // .entries(data);
+
+  // Add X axis --> it is a date format
+  var x = d3.scaleTime()
+  .domain(d3.extent(data, function(d) { return d.DateTime; }))
+  .range([ 0, width ]);
+  svg.append("g")
+  .attr("transform", "translate(0," + height + ")")
+  .call(d3.axisBottom(x).ticks(5))
+  .style("color", "white")
+  .attr("stroke", "white")
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+  .domain([0, d3.max(allVolAverage)])
+  .range([ height, 0 ]);
+  svg.append("g")
+  .call(d3.axisLeft(y))
+  .style("color", "white")
+  .attr("stroke", "white")
+
+  // color palette
+  var res = volumeData.map(function(d){ return d.key }) // list of group names
+  var color = d3.scaleOrdinal()
+  .domain(res)
+  .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+
+  // Draw the line
+  svg.selectAll(".line")
+    .data(volumeData)
+    .enter()
+    .append("path")
+      .attr("fill", "none")
+      .attr("stroke", function(d){ return color(d.key) })
+      .attr("stroke-width", 1.5)
+      .attr("d", function(d){
+        return d3.line()
+          .x(function(d) { return x(d.DateTime); })
+          .y(function(d) { return y(d.VolumeAverage != undefined? d.VolumeAverage : 0); })
+          (d.values)
+      })
+}
+
 /// PROFIT CURVE
 function drawPC(data) {
   //  Calculate starting, ending, and Growth
@@ -2282,6 +2374,7 @@ function moveLeft() {
   rBtn.style.display = "inline"
 
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
+  volumeGraph(candleDrawStartIndex, candleDrawEndIndex)
 }
 
 function moveRight() {
@@ -2301,6 +2394,7 @@ function moveRight() {
   lBtn.style.display = "inline"
 
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
+  volumeGraph(candleDrawStartIndex, candleDrawEndIndex)
 }
 
 function candleChartSlider() {
@@ -2319,6 +2413,7 @@ function candleChartSlider() {
     }
 
     drawChart(candleDrawStartIndex, candleDrawEndIndex)
+    volumeGraph(candleDrawStartIndex, candleDrawEndIndex)
   })
 }
 
