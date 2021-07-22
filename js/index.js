@@ -1665,7 +1665,7 @@ function plotHistory(data) {
   var tableHeader = document.getElementById("history")
   tableHeader.innerHTML = ""
   let row = tableHeader.insertRow()
-  let tableHeaderEle = ["EntryDateTime", "ExitDateTime", "Profit($)", "Position Size", "Exit Price", "Raw Profit(%)", "Entry Price", "Risked Equity", "Fees($)", "Direction", "Index", "Parameter"]
+  let tableHeaderEle = ["EntryDateTime", "ExitDateTime", "Profit($)", "Position Size", "Exit Price", "Raw Profit(%)", "Entry Price", "Risked Equity", "Fees($)", "Direction", "pivotLowsToEnter", "maxDurationCandles", "slPerc", "slCooldownCandles", "tpSingle", "Index", "Parameter"]
 
   tableHeaderEle.forEach(t => {
     let newCell = row.insertCell()
@@ -1690,6 +1690,11 @@ function plotHistory(data) {
       row.insertCell().innerHTML = s.RiskedEquity != undefined ? s.RiskedEquity.toFixed(3) : s.RiskedEquity
       row.insertCell().innerHTML = s.TotalFees != undefined ? s.TotalFees.toFixed(3) : s.TotalFees
       row.insertCell().innerHTML = s.Direction
+      row.insertCell().innerHTML = s.Settings["pivotLowsToEnter"]
+      row.insertCell().innerHTML = s.Settings["maxDurationCandles"]
+      row.insertCell().innerHTML = s.Settings["slPerc"]
+      row.insertCell().innerHTML = s.Settings["slCooldownCandles"]
+      row.insertCell().innerHTML = s.Settings["tpSingle"]
       row.insertCell().innerHTML = indexST
       row.style.color = "white"
       //param name
@@ -2017,8 +2022,7 @@ function drawScatterPlot(data) {
     let chunkEnd = chunkRange
     let barGraphData = []
     let floatPrecision = 1000000
-    console.log(dataPoints)
-    console.log(chunkRange)
+
     // Loop until the end of xAxis
     while (true) {
       let filteredX = dataPoints.filter((d) => { return d.x >= chunkStart && d.x <= chunkEnd })
@@ -2307,7 +2311,7 @@ function candleChartSlider() {
     candleDrawStartIndex = sliderDisplayNumber
     candleDrawEndIndex = candleDisplayNumber + sliderDisplayNumber
 
-    console.log(candleDrawEndIndex, allCandles.length)
+    // console.log(candleDrawEndIndex, allCandles.length)
     if (candleDrawEndIndex >= allCandles.length) {
       document.getElementById("panCandlesRightBtn").style.display = "none"
     } else if (candleDrawStartIndex == 0) {
