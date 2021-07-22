@@ -287,7 +287,7 @@ function connectWs(id) {
   wsStatus.innerText = "Loading websockets..."
   var socket
   try {
-    socket = new WebSocket("ws://localhost:8001/ws-cm/" + "5632499082330112");
+    socket = new WebSocket("wss://strategy-svc-jg42qhdbpq-as.a.run.app/ws-cm/" + "5632499082330112");
     console.log(socket)
   } catch (err) {
     console.log(err);
