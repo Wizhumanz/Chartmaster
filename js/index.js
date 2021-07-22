@@ -1680,7 +1680,6 @@ function plotHistory(data) {
     //for each trade history item in that param
     d.Data.forEach((s, i) => {
       let row = table.insertRow()
-      console.log(s)
       row.insertCell().innerHTML = s.EntryDateTime
       row.insertCell().innerHTML = s.ExitDateTime
       row.insertCell().innerHTML = s.Profit != undefined ? s.Profit.toFixed(4) : s.Profit
@@ -2023,8 +2022,7 @@ function drawScatterPlot(data) {
     let chunkEnd = chunkRange
     let barGraphData = []
     let floatPrecision = 1000000
-    console.log(dataPoints)
-    console.log(chunkRange)
+
     // Loop until the end of xAxis
     while (true) {
       let filteredX = dataPoints.filter((d) => { return d.x >= chunkStart && d.x <= chunkEnd })
@@ -2313,7 +2311,7 @@ function candleChartSlider() {
     candleDrawStartIndex = sliderDisplayNumber
     candleDrawEndIndex = candleDisplayNumber + sliderDisplayNumber
 
-    console.log(candleDrawEndIndex, allCandles.length)
+    // console.log(candleDrawEndIndex, allCandles.length)
     if (candleDrawEndIndex >= allCandles.length) {
       document.getElementById("panCandlesRightBtn").style.display = "none"
     } else if (candleDrawStartIndex == 0) {
