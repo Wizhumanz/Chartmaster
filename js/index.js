@@ -468,7 +468,7 @@ function computeBacktest() {
   displayCandlesChunks = [] // chunks of candles for display
 
   let operation = (document.getElementById("modeTogglerBtn").innerHTML === "Switch to Scan Mode") ? "BACKTEST" : "SCAN"
-  let chunkProcessOption = (document.getElementById("chunkProcessTogglerBtn").innerHTML === "Switch to Waterfall") ? "RAINDROPS" : "WATERFALL"
+  // let chunkProcessOption = (document.getElementById("chunkProcessTogglerBtn").innerHTML === "Switch to Waterfall") ? "RAINDROPS" : "WATERFALL"
 
   let backendInfo = {
     "process": chunkProcessOption,
