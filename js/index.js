@@ -98,6 +98,12 @@ document.getElementById("legendCheckbox3EMA").style.display = "none"
 document.getElementById("legendLabel4EMA").style.display = "none"
 document.getElementById("legendCheckbox4EMA").style.display = "none"
 
+// VOLUME
+document.getElementById("legendLabel1Average").style = "display: none;"
+document.getElementById("legendLabel2Average").style = "display: none;"
+document.getElementById("legendLabel3Average").style = "display: none;"
+document.getElementById("legendLabel4Average").style = "display: none;"
+
 /// CANDLESTICKS
 let candleDisplayNumber = 260
 let candleDrawStartIndex = 0
@@ -363,7 +369,6 @@ function connectWs(id) {
         //check if concat needed, or new data
         if (existingWSResID === "" || existingWSResID !== JSON.parse(msg.data).ResultID) {
           allCandles = JSON.parse(msg.data).Data
-
           //if candlestick chart empty
           drawChart(0, candleDisplayNumber)
           volumeGraph(0, candleDisplayNumber)
@@ -1481,16 +1486,22 @@ function wrap(text, width) {
 function volumeGraph(start, end) {
   //reset chart
   d3.selectAll("#volumeGraph > *").remove();
+  document.getElementById("legendLabel1Average").style = "display: block;"
+  document.getElementById("legendLabel2Average").style = "display: block;"
+  document.getElementById("legendLabel3Average").style = "display: block;"
+  document.getElementById("legendLabel4Average").style = "display: block;"
 
   let data = allCandles.slice(start, end)
   let data1 = []
   let data2 = []
   let data3 = []
+  let data4 = []
   let allVolAverage = []
   data.forEach(d => {
     data1.push({"VolumeAverage": d.VolumeAverage[0], "DateTime": d.DateTime})
     data2.push({"VolumeAverage": d.VolumeAverage[1], "DateTime": d.DateTime})
     data3.push({"VolumeAverage": d.VolumeAverage[2], "DateTime": d.DateTime})
+    data4.push({"VolumeAverage": d.Volume, "DateTime": d.DateTime})
 
     if (d.VolumeAverage[0] != undefined) {
       allVolAverage.push(d.VolumeAverage[0])
@@ -1501,8 +1512,11 @@ function volumeGraph(start, end) {
     if (d.VolumeAverage[2] != undefined) {
       allVolAverage.push(d.VolumeAverage[2])
     }
+    if (d.Volume != undefined) {
+      allVolAverage.push(d.Volume)
+    }
   })
-  let volumeData = [{"key": "Data1", "values": data1}, {"key": "Data2", "values": data2}, {"key": "Data3", "values": data3}]
+  let volumeData = [{"key": "Data1", "values": data1}, {"key": "Data2", "values": data2}, {"key": "Data3", "values": data3}, {"key": "Data4", "values": data4}]
 
   // console.log(data1[0]["DateTime"], data3[data3.length - 1]["DateTime"])
   // console.log(d3.extent(data, function(d) { return d.DateTime; }))
@@ -1551,6 +1565,10 @@ function volumeGraph(start, end) {
   .domain(res)
   .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
 
+  document.getElementById("legendLabel1Average").style = "color: #e41a1c;"
+  document.getElementById("legendLabel2Average").style = "color: #377eb8;"
+  document.getElementById("legendLabel3Average").style = "color: #4daf4a;"
+  document.getElementById("legendLabel4Average").style = "color: #984ea3;"
   // Draw the line
   svg.selectAll(".line")
     .data(volumeData)
