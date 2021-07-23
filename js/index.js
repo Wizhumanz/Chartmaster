@@ -1580,7 +1580,7 @@ function volumeGraph(start, end) {
       .attr("d", function(d){
         return d3.line()
           .x(function(d) { return x(d.DateTime); })
-          .y(function(d,i) { return y(d.VolumeAverage != undefined? d.VolumeAverage : 0); })
+          .y(function(d,i) { return y(d.VolumeAverage != undefined? d.VolumeAverage : null); })
           (d.values)
       })
 }
@@ -2432,15 +2432,16 @@ function moveLeft() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
 
-  let slider = document.getElementById("chartSlider")
-  slider.value = candleDrawStartIndex / (allCandles.length - candleDisplayNumber/2) * 100
-
   lBtn.style.display = "inline"
   candleDrawStartIndex -= candleDisplayNumber / 2
   candleDrawEndIndex -= candleDisplayNumber / 2
   if (candleDrawStartIndex <= 0) {
+    candleDrawStartIndex = 0
     lBtn.style.display = "none"
   }
+
+  let slider = document.getElementById("chartSlider")
+  slider.value = candleDrawStartIndex / (allCandles.length - candleDisplayNumber) * 100.0
 
   rBtn.style.display = "inline"
 
@@ -2452,15 +2453,16 @@ function moveRight() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
 
-  let slider = document.getElementById("chartSlider")
-  slider.value = candleDrawEndIndex / (allCandles.length - candleDisplayNumber/2) * 100
-
   rBtn.style.display = "inline"
   candleDrawStartIndex += candleDisplayNumber / 2
   candleDrawEndIndex += candleDisplayNumber / 2
   if (candleDrawEndIndex >= allCandles.length) {
+    candleDrawEndIndex = allCandles.length
     rBtn.style.display = "none"
   }
+
+  let slider = document.getElementById("chartSlider")
+  slider.value = (candleDrawEndIndex - candleDisplayNumber) / (allCandles.length - candleDisplayNumber) * 100.0
 
   lBtn.style.display = "inline"
 
@@ -2481,6 +2483,9 @@ function candleChartSlider() {
       document.getElementById("panCandlesRightBtn").style.display = "none"
     } else if (candleDrawStartIndex == 0) {
       document.getElementById("panCandlesLeftBtn").style.display = "none"
+    } else {
+      document.getElementById("panCandlesLeftBtn").style.display = "block"
+      document.getElementById("panCandlesRightBtn").style.display = "block"
     }
 
     drawChart(candleDrawStartIndex, candleDrawEndIndex)
