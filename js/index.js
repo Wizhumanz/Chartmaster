@@ -98,7 +98,6 @@ document.getElementById("legendCheckbox3EMA").style.display = "none"
 document.getElementById("legendLabel4EMA").style.display = "none"
 document.getElementById("legendCheckbox4EMA").style.display = "none"
 
-
 /// CANDLESTICKS
 let candleDisplayNumber = 260
 let candleDrawStartIndex = 0
@@ -1504,15 +1503,14 @@ function volumeGraph(start, end) {
     }
   })
   let volumeData = [{"key": "Data1", "values": data1}, {"key": "Data2", "values": data2}, {"key": "Data3", "values": data3}]
-  console.log(volumeData)
-  console.log(data)
-  // console.log(data1[0]["DateTime"], data3[data3.length - 1]["DateTime"])
-  console.log(d3.extent(data, function(d) { return d.DateTime; }))
 
+  // console.log(data1[0]["DateTime"], data3[data3.length - 1]["DateTime"])
+  // console.log(d3.extent(data, function(d) { return d.DateTime; }))
+ 
   // set the dimensions and margins of the graph
-  var margin = {top: 10, right: 30, bottom: 30, left: 60},
-  width = 460 - margin.left - margin.right,
-  height = 400 - margin.top - margin.bottom;
+  var margin = {top: 10, right: 20, bottom: 205, left: 45},
+  width = 860 - margin.left - margin.right,
+  height = 800 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   var svg = d3.select("#volumeGraph")
@@ -1564,7 +1562,7 @@ function volumeGraph(start, end) {
       .attr("d", function(d){
         return d3.line()
           .x(function(d) { return x(d.DateTime); })
-          .y(function(d) { return y(d.VolumeAverage != undefined? d.VolumeAverage : 0); })
+          .y(function(d,i) { return y(d.VolumeAverage != undefined? d.VolumeAverage : 0); })
           (d.values)
       })
 }
@@ -1717,7 +1715,7 @@ function drawPC(data) {
     return drawNewLines(v.slice(1), d)
   }
   drawNewLines(valueline, data)
-
+  
   // Add the X Axis
   pcSvg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -1733,6 +1731,61 @@ function drawPC(data) {
     .style("font-size", pcFontSz)
     .attr("stroke", "white")
 
+  // This allows to find the closest X index of the mouse:
+  var bisect = d3.bisector(function(d) { return d.date; }).left;
+
+  // Create the circle that travels along the curve of chart
+  var focus = pcSvg
+    .append('g')
+    .append('circle')
+      .style("fill", "none")
+      .attr("stroke", "white")
+      .attr('r', 8.5)
+      .style("opacity", 0)
+
+  // Add the line
+  pcSvg
+    .append("path")
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-width", 1.5)
+    .attr("d", d3.line()
+      .x(function(d) { return x(d.date) })
+      .y(function(d) { return y(d.strat1) })
+      )
+
+  // Create a rect on top of the svg area: this rectangle recovers mouse position
+  pcSvg
+    .append('rect')
+    .style("fill", "none")
+    .style("pointer-events", "all")
+    .attr('width', width)
+    .attr('height', height)
+    .on('mouseover', mouseover)
+    .on('mousemove', mousemove)
+    .on('mouseout', mouseout);
+
+
+  // What happens when the mouse move -> show the annotations at the right positions.
+  function mouseover() {
+    focus.style("opacity", 1)
+  }
+
+  function mousemove() {
+    // recover coordinate we need
+    var x0 = x.invert(d3.mouse(this)[0]);
+    var i = bisect(data, x0, 0);
+    selectedData = data[i]
+    focus
+      .attr("cx", x(selectedData.date))
+      .attr("cy", y(selectedData.strat1))
+    document.getElementById("profitText").innerText = "Date: "+ selectedData.date + "\nProfit: " + selectedData.strat1
+    document.getElementById("profitText").style = "color: white"
+    }
+  function mouseout() {
+    focus.style("opacity", 0)
+  }
 }
 
 /// SIMULATED TRADES

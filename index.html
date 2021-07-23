@@ -265,6 +265,22 @@
               <!-- <div id="scroll">
             </div> -->
             </div>
+            <div id="indicatorCtrls">
+              <div class="row">
+                <div class="col-3">
+                  <label style="color: lightblue" id="legendLabel1Average" for="legendCheckbox">Volume Average 1</label>
+                  <input type="checkbox" id="legendCheckbox1Average" name="legendCheckbox">
+                </div>
+                <div class="col-3">
+                  <label style="color: chartreuse" id="legendLabel2Average" for="legendCheckbox">Volume Average 2</label>
+                  <input type="checkbox" id="legendCheckbox2Average" name="legendCheckbox">
+                </div>
+                <div class="col-3">
+                  <label style="color: orange" id="legendLabel3Average" for="legendCheckbox">Volume Average 3</label>
+                  <input type="checkbox" id="legendCheckbox3Average" name="legendCheckbox">
+                </div>
+              </div>
+            </div>
             <div id="volumeGraph"></div>
           </div>
         </div>
@@ -284,6 +300,7 @@
             <h5>Growth:</h5>
             <h5 class="value" id="growth">68.26%</h5>
           </div>
+          <p id="profitText"></p>
           <div class="stacked" id="profitCurveDiv">
             <!-- <h4>Profit Curve</h4> -->
             <div id="profit"></div>
