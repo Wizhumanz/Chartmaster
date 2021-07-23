@@ -468,7 +468,7 @@ function computeBacktest() {
   displayCandlesChunks = [] // chunks of candles for display
 
   let operation = (document.getElementById("modeTogglerBtn").innerHTML === "Switch to Scan Mode") ? "BACKTEST" : "SCAN"
-  // let chunkProcessOption = (document.getElementById("chunkProcessTogglerBtn").innerHTML === "Switch to Waterfall") ? "RAINDROPS" : "WATERFALL"
+  let chunkProcessOption = (document.getElementById("chunkProcessTogglerBtn").innerHTML === "Switch to Waterfall") ? "RAINDROPS" : "WATERFALL"
 
   let backendInfo = {
     "process": chunkProcessOption,
@@ -500,7 +500,7 @@ function computeBacktest() {
     .then(() => {
       selectedRes = document.getElementById('startDateTimePicker').value + ":00~" + document.getElementById('endDateTimePicker').value + ":00(" + document.getElementById('periodSelect').value + ", " + document.getElementById('tickerSelect').value + ")"
       if (!retrieveCandles) {
-        document.getElementById("saveCandles").style.display = "block"
+        document.getElementById("saveCandles").style.display = "inline"
       }
       setTimeout(() => {
         loadResult()
@@ -2484,8 +2484,8 @@ function candleChartSlider() {
     } else if (candleDrawStartIndex == 0) {
       document.getElementById("panCandlesLeftBtn").style.display = "none"
     } else {
-      document.getElementById("panCandlesLeftBtn").style.display = "block"
-      document.getElementById("panCandlesRightBtn").style.display = "block"
+      document.getElementById("panCandlesLeftBtn").style.display = "inline"
+      document.getElementById("panCandlesRightBtn").style.display = "inline"
     }
 
     drawChart(candleDrawStartIndex, candleDrawEndIndex)
@@ -2531,7 +2531,6 @@ function saveCandlesChanged() {
 
   retrieveCandles = true
 }
-saveCandlesChanged()
 
 function historyLoadChanged() {
   var selectedOption = document.getElementById("resSelect")
