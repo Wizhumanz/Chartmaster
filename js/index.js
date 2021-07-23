@@ -372,6 +372,8 @@ function connectWs(id) {
           //if candlestick chart empty
           drawChart(0, candleDisplayNumber)
           volumeGraph(0, candleDisplayNumber)
+          volatilityGraph(0, candleDisplayNumber)
+
           if (candleDisplayNumber < allCandles.length) {
             //show right arrow btn
             document.getElementById("panCandlesRightBtn").style.display = "inline"
@@ -389,7 +391,9 @@ function connectWs(id) {
             document.getElementById("panCandlesRightBtn").style.display = "inline"
           }
           drawChart(0, candleDisplayNumber)
-          volumeGraph(0, allCandles.slice(start, end))
+          volumeGraph(0, candleDisplayNumber)
+          volatilityGraph(0, candleDisplayNumber)
+
         }
         if (loadHistory) {
           loadProgressBar(100)
@@ -1583,6 +1587,73 @@ function volumeGraph(start, end) {
           .y(function(d,i) { return y(d.VolumeAverage != undefined? d.VolumeAverage : null); })
           (d.values)
       })
+}
+
+function volatilityGraph(start, end) {
+  let data = allCandles.slice(start, end)
+  let formattedData = []
+  let allVolatility = []
+  data.forEach((d, i) => {
+    formattedData.push({"DateTime": d.DateTime, "Volatility": d.Volatility})
+    allVolatility.push(d.Volatility)
+  })
+
+  // set the dimensions and margins of the graph
+  var margin = {top: 10, right: 30, bottom: 190, left: 40},
+      width = 860 - margin.left - margin.right,
+      height = 850 - margin.top - margin.bottom;
+
+  // append the svg object to the body of the page
+  var svg = d3.select("#volatilityGraph")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+  // X axis
+  var x = d3.scaleBand()
+    .range([ 0, width ])
+    .domain(formattedData.map(function(d) { return d.DateTime.toString().split("(")[0]; }))
+    .padding(0.2);
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end")
+      .style("opacity", 0)
+      .attr("opacity", 0)
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, d3.max(allVolatility)])
+    .range([ height, 0]);
+  svg.append("g")
+    .call(d3.axisLeft(y))
+    .style("color", "white")
+    .attr("stroke", "white")
+
+  // Bars
+  svg.selectAll("mybar")
+    .data(formattedData)
+    .enter()
+    .append("rect")
+      .attr("x", function(d) { return x(d.DateTime.toString().split("(")[0]); })
+      .attr("width", x.bandwidth())
+      .attr("fill", "#69b3a2")
+      // no bar at the beginning thus:
+      .attr("height", function(d) { return height - y(0); }) // always equal to 0
+      .attr("y", function(d) { return y(0); })
+
+  // Animation
+  svg.selectAll("rect")
+    .transition()
+    .duration(10)
+    .attr("y", function(d) { return y(d.Volatility); })
+    .attr("height", function(d) { return height - y(d.Volatility); })
+    .delay(function(d,i){return(i*100)})
 }
 
 /// PROFIT CURVE
