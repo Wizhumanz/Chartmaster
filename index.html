@@ -195,7 +195,7 @@
 
             <div id="extraControls">
               <button id="modeTogglerBtn" onclick="showScanResults()">Switch to Scan Mode</button>
-              <button id="chunkProcessTogglerBtn" onclick="chunkProcessOption()">Switch to Waterfall</button>
+              <!-- <button id="chunkProcessTogglerBtn" onclick="chunkProcessOption()">Switch to Waterfall</button> -->
               <button id="saveCandles" onclick="saveCandlesToJson()">Save Candles</button>
               <select name="candlesSelect" id="candlesSelect" onchange="saveCandlesChanged()">
                 <!-- filled dynamically by API call -->
@@ -300,7 +300,7 @@
             <h5>Growth:</h5>
             <h5 class="value" id="growth">68.26%</h5>
           </div>
-          <p id="profitText"></p>
+          <p id="profitCurveValHighlightText"></p>
           <div class="stacked" id="profitCurveDiv">
             <!-- <h4>Profit Curve</h4> -->
             <div id="profit"></div>

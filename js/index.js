@@ -1798,8 +1798,8 @@ function drawPC(data) {
     focus
       .attr("cx", x(selectedData.date))
       .attr("cy", y(selectedData.strat1))
-    document.getElementById("profitText").innerText = "Date: "+ selectedData.date + "\nProfit: " + selectedData.strat1
-    document.getElementById("profitText").style = "color: white"
+    document.getElementById("profitCurveValHighlightText").innerText = "Date: "+ selectedData.date + "\nProfit: " + selectedData.strat1
+    document.getElementById("profitCurveValHighlightText").style = "color: white"
     }
   function mouseout() {
     focus.style("opacity", 0)
