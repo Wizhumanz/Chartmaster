@@ -1527,8 +1527,8 @@ function volumeGraph(start, end) {
  
   // set the dimensions and margins of the graph
   var margin = {top: 10, right: 20, bottom: 205, left: 45},
-  width = 860 - margin.left - margin.right,
-  height = 800 - margin.top - margin.bottom;
+  width = 1050,
+  height = 630
 
   // append the svg object to the body of the page
   var svg = d3.select("#volumeGraph")
@@ -1600,14 +1600,14 @@ function volatilityGraph(start, end) {
 
   // set the dimensions and margins of the graph
   var margin = {top: 10, right: 30, bottom: 190, left: 40},
-      width = 860 - margin.left - margin.right,
-      height = 850 - margin.top - margin.bottom;
+      width = 750,
+      height = 430;
 
   // append the svg object to the body of the page
   var svg = d3.select("#volatilityGraph")
     .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", width)
+      .attr("height", height)
     .append("g")
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
@@ -1650,10 +1650,10 @@ function volatilityGraph(start, end) {
   // Animation
   svg.selectAll("rect")
     .transition()
-    .duration(10)
+    .duration(1)
     .attr("y", function(d) { return y(d.Volatility); })
     .attr("height", function(d) { return height - y(d.Volatility); })
-    .delay(function(d,i){return(i*100)})
+    .delay(function(d,i){return(i*1)})
 }
 
 /// PROFIT CURVE

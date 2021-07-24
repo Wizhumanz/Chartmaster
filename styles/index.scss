@@ -354,7 +354,7 @@ label {
   }
 }
 
-.svg-container {
+.svg-container, #volatilityGraph, #volumeGraph {
   display: inline-block;
   position: relative;
   width: 100%;
