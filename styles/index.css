@@ -221,6 +221,7 @@ h4.chartHeader#optionsH {
   padding: auto 0.75rem;
   color: #fffff0;
   background-color: transparent;
+  position: absolute;
 }
 
 #shareResult:hover {
@@ -356,7 +357,7 @@ div.modal-content {
 
 #ohlcDisplay {
   position: absolute;
-  margin-left: 3rem;
+  margin-left: 7rem;
   margin-top: -1rem;
   padding: 0.35rem;
   width: fit-content;
