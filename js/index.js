@@ -1550,7 +1550,7 @@ function volumeGraph(start, end) {
   .range([ 0, width ]);
   svg.append("g")
   .attr("transform", "translate(0," + height + ")")
-  .call(d3.axisBottom(x).ticks(5))
+  .call(d3.axisBottom(x).ticks(25))
   .style("color", "white")
   .attr("stroke", "white")
 
@@ -1590,6 +1590,8 @@ function volumeGraph(start, end) {
 }
 
 function volatilityGraph(start, end) {
+  d3.selectAll("#volatilityGraph > *").remove();
+
   let data = allCandles.slice(start, end)
   let formattedData = []
   let allVolatility = []
@@ -2518,6 +2520,7 @@ function moveLeft() {
 
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
   volumeGraph(candleDrawStartIndex, candleDrawEndIndex)
+  volatilityGraph(candleDrawStartIndex, candleDrawEndIndex)
 }
 
 function moveRight() {
@@ -2534,11 +2537,12 @@ function moveRight() {
 
   let slider = document.getElementById("chartSlider")
   slider.value = (candleDrawEndIndex - candleDisplayNumber) / (allCandles.length - candleDisplayNumber) * 100.0
-
+  
   lBtn.style.display = "inline"
 
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
   volumeGraph(candleDrawStartIndex, candleDrawEndIndex)
+  volatilityGraph(candleDrawStartIndex, candleDrawEndIndex) 
 }
 
 function candleChartSlider() {
@@ -2561,6 +2565,7 @@ function candleChartSlider() {
 
     drawChart(candleDrawStartIndex, candleDrawEndIndex)
     volumeGraph(candleDrawStartIndex, candleDrawEndIndex)
+    volatilityGraph(candleDrawStartIndex, candleDrawEndIndex)
   })
 }
 
