@@ -156,51 +156,18 @@ document.getElementById("panCandlesRightBtn").style.display = "none"
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
 //default display
-// allCandles = [{ "DateTime": new Date(), "Open": 58206.890625, "High": 58253.21875, "Low": 58206.890625, "Close": 58252.78125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "", "Volume": 349.29998779296875, "Volatility": 345.45 }]
-allCandles = [{Close: 54849.4609375,
-  DateTime: new Date('2021-01-17T03:24:00'),
-  High: 55172.05078125,
-  LabelBottom: "",
-  LabelMiddle: "",
-  LabelTop: "",
-  Low: 54634.73828125,
-  Open: 54855.48046875,
-  StratEnterPrice: 0,
-  StratExitPrice: [],
-  Volatility: 875.8458883539131,
-  Volume: 1041.740966796875,
-  VolumeAverage: [346.9330139160156, 1130.6521836714312, 1345,23452],
-  ema1: 54116.24910368705,
-  ema2: 55585.20612020891,
-  ema3: 0,
-  ema4: 0,
-  index: 59,
-  sma1: 54145.075390625,
-  sma2: 53727.560639880954,
-  sma3: 55070.741171875,
-  sma4: 0},
-{Close: 54849.4609375,
-  DateTime: new Date('2021-01-18T03:24:00'),
-  High: 55172.05078125,
-  LabelBottom: "",
-  LabelMiddle: "",
-  LabelTop: "",
-  Low: 54634.73828125,
-  Open: 54855.48046875,
-  StratEnterPrice: 0,
-  StratExitPrice: [],
-  Volatility: 575.8458883539131,
-  Volume: 2041.740966796875,
-  VolumeAverage: [1346.9330139160156, 1830.6521836714312, 2345,23452],
-  ema1: 54116.24910368705,
-  ema2: 55585.20612020891,
-  ema3: 0,
-  ema4: 0,
-  index: 59,
-  sma1: 54145.075390625,
-  sma2: 53727.560639880954,
-  sma3: 55070.741171875,
-  sma4: 0}]
+async function fetchCandlesJSON() {
+  const response = await fetch('../exampleData/exampleCandles.json');
+  const candles = await response.json();
+  console.log(candles)
+  return candles;
+}
+fetchCandlesJSON().then(candles => {
+  allCandles = candles; // fetched movies
+
+// allCandles.forEach(d => {
+//   d.DateTime = new Date(d.DateTime)
+// })
 drawChart(0, candleDisplayNumber)
 volumeGraph(0, candleDisplayNumber)
 volatilityGraph(0, candleDisplayNumber)
@@ -416,6 +383,7 @@ function connectWs(id) {
         if (existingWSResID === "" || existingWSResID !== JSON.parse(msg.data).ResultID) {
           allCandles = JSON.parse(msg.data).Data
           //if candlestick chart empty
+
           drawChart(0, candleDisplayNumber)
           volumeGraph(0, candleDisplayNumber)
           volatilityGraph(0, candleDisplayNumber)
@@ -2505,6 +2473,9 @@ function histogram(data) {
 
   // });
 }
+
+// Fetching Example Data
+});
 
 function histMoveRight() {
   if (histIndex + 1 < histBins.length) {
