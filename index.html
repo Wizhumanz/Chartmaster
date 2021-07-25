@@ -149,7 +149,7 @@
                       </select>
                     </div>
                     <button onclick="" data-bs-toggle="modal" data-bs-target="#shareModal" id="shareResult"
-                    style="display: none;">Share Results</button>
+                      style="display: none;">Share Results</button>
 
                     <!-- sharing btn + modal -->
                     <div class="controls-sub">
@@ -205,39 +205,45 @@
             <!-- Legend -->
             <div id="indicatorCtrls">
               <div class="row">
-                <div class="col-3">
-                  <label style="color: lightblue" id="legendLabel1SMA" for="legendCheckbox">SMA 1</label>
-                  <input type="checkbox" id="legendCheckbox1SMA" name="legendCheckbox">
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-3">
+                      <label style="color: lightblue" id="legendLabel1SMA" for="legendCheckbox">SMA 1</label>
+                      <input type="checkbox" id="legendCheckbox1SMA" name="legendCheckbox">
+                    </div>
+                    <div class="col-3">
+                      <label style="color: chartreuse" id="legendLabel2SMA" for="legendCheckbox">SMA 2</label>
+                      <input type="checkbox" id="legendCheckbox2SMA" name="legendCheckbox">
+                    </div>
+                    <div class="col-3">
+                      <label style="color: orange" id="legendLabel3SMA" for="legendCheckbox">SMA 3</label>
+                      <input type="checkbox" id="legendCheckbox3SMA" name="legendCheckbox">
+                    </div>
+                    <div class="col-3">
+                      <label style="color: red" id="legendLabel4SMA" for="legendCheckbox">SMA 4</label>
+                      <input type="checkbox" id="legendCheckbox4SMA" name="legendCheckbox">
+                    </div>
+                  </div>
                 </div>
-                <div class="col-3">
-                  <label style="color: chartreuse" id="legendLabel2SMA" for="legendCheckbox">SMA 2</label>
-                  <input type="checkbox" id="legendCheckbox2SMA" name="legendCheckbox">
-                </div>
-                <div class="col-3">
-                  <label style="color: orange" id="legendLabel3SMA" for="legendCheckbox">SMA 3</label>
-                  <input type="checkbox" id="legendCheckbox3SMA" name="legendCheckbox">
-                </div>
-                <div class="col-3">
-                  <label style="color: red" id="legendLabel4SMA" for="legendCheckbox">SMA 4</label>
-                  <input type="checkbox" id="legendCheckbox4SMA" name="legendCheckbox">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-3">
-                  <label style="color: lightblue" id="legendLabel1EMA" for="legendCheckbox">EMA 1</label>
-                  <input type="checkbox" id="legendCheckbox1EMA" name="legendCheckbox">
-                </div>
-                <div class="col-3">
-                  <label style="color: chartreuse" id="legendLabel2EMA" for="legendCheckbox">EMA 2</label>
-                  <input type="checkbox" id="legendCheckbox2EMA" name="legendCheckbox">
-                </div>
-                <div class="col-3">
-                  <label style="color: orange" id="legendLabel3EMA" for="legendCheckbox">EMA 3</label>
-                  <input type="checkbox" id="legendCheckbox3EMA" name="legendCheckbox">
-                </div>
-                <div class="col-3">
-                  <label style="color: red" id="legendLabel4EMA" for="legendCheckbox">EMA 4</label>
-                  <input type="checkbox" id="legendCheckbox4EMA" name="legendCheckbox">
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-3">
+                      <label style="color: lightblue" id="legendLabel1EMA" for="legendCheckbox">EMA 1</label>
+                      <input type="checkbox" id="legendCheckbox1EMA" name="legendCheckbox">
+                    </div>
+                    <div class="col-3">
+                      <label style="color: chartreuse" id="legendLabel2EMA" for="legendCheckbox">EMA 2</label>
+                      <input type="checkbox" id="legendCheckbox2EMA" name="legendCheckbox">
+                    </div>
+                    <div class="col-3">
+                      <label style="color: orange" id="legendLabel3EMA" for="legendCheckbox">EMA 3</label>
+                      <input type="checkbox" id="legendCheckbox3EMA" name="legendCheckbox">
+                    </div>
+                    <div class="col-3">
+                      <label style="color: red" id="legendLabel4EMA" for="legendCheckbox">EMA 4</label>
+                      <input type="checkbox" id="legendCheckbox4EMA" name="legendCheckbox">
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -245,7 +251,7 @@
 
           <!-- candlestick chart and arrows -->
           <div class="col-12 order-1 order-lg-2">
-             <!-- Slider -->
+            <!-- Slider -->
             <div class="slidecontainer">
               <input type="range" min="0" max="100" value="0" class="slider" id="chartSlider">
             </div>
@@ -261,21 +267,21 @@
             <!-- candlestick chart -->
             <div class="svg-container">
               <p id="ohlcDisplay"></p>
-              <svg id="container"></svg>
-              <!-- <div id="scroll">
-            </div> -->
+              <svg id="candlestickChart"></svg>
             </div>
+            <!-- volatility index -->
             <div id="volatilityGraph"></div>
-            <div id="indicatorCtrls">
+            <!-- volumes -->
+            <div id="volumeLegend">
               <div class="row">
                 <div class="col-3">
-                  <label style="color: #e41a1c" id="legendLabel1Average" for="legendCheckbox">Volume Average 1</label>
+                  <label style="color: #e41a1c" id="legendLabel1Average" for="legendCheckbox">Volume SMA 10</label>
                 </div>
                 <div class="col-3">
-                  <label style="color: #377eb8" id="legendLabel2Average" for="legendCheckbox">Volume Average 2</label>
+                  <label style="color: #377eb8" id="legendLabel2Average" for="legendCheckbox">Volume SMA 55</label>
                 </div>
                 <div class="col-3">
-                  <label style="color: #4daf4a" id="legendLabel3Average" for="legendCheckbox">Volume Average 3</label>
+                  <label style="color: #4daf4a" id="legendLabel3Average" for="legendCheckbox">Volume SMA 200</label>
                 </div>
                 <div class="col-3">
                   <label style="color: #984ea3" id="legendLabel4Average" for="legendCheckbox">Volume</label>

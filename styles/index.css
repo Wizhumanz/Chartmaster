@@ -133,9 +133,9 @@ div#computeControls {
 
 #indicatorCtrls {
   position: absolute;
-  left: 11%;
-  width: 300px;
-  z-index: 100;
+  left: 600px;
+  margin-top: -1rem;
+  width: 450px;
 }
 #indicatorCtrls ul li {
   list-style-type: none;
@@ -355,7 +355,9 @@ div.modal-content {
 }
 
 #ohlcDisplay {
-  margin: 1rem 4.5rem;
+  position: absolute;
+  margin-left: 3rem;
+  margin-top: -1rem;
   padding: 0.35rem;
   width: fit-content;
   font-size: x-small;
@@ -371,6 +373,10 @@ div.modal-content {
 #ohlcDisplay span {
   color: hotpink;
   margin-left: 0.25rem;
+}
+
+#candlestickChart {
+  height: 360px;
 }
 
 .center {
@@ -401,12 +407,30 @@ label {
   }
 }
 
-.svg-container, #volatilityGraph, #volumeGraph {
-  display: inline-block;
+#candlestickChart, #volatilityGraph, #volumeGraph {
+  display: block;
   position: relative;
   width: 100%;
-  vertical-align: top;
-  height: 830px;
+}
+
+#candlestickChart {
+  height: 450px !important;
+}
+
+#volatilityGraph {
+  height: 150px;
+}
+
+#volumeGraph {
+  height: 150px;
+}
+
+#volumeLegend {
+  position: absolute;
+  width: fit-content;
+  margin-left: 3.5rem;
+  margin-top: 1rem;
+  font-size: x-small;
 }
 
 .svg-content {

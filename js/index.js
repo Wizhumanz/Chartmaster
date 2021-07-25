@@ -111,10 +111,10 @@ let tickNumCandles = 10
 let tickNumProfitX = 6
 let tickNumProfitY = 8
 let candlestickChartLabelFontSize = "13px"
-let margin = { top: 10, right: 20, bottom: 205, left: 45 },
-  w = 1050,
-  h = 630;
-let candlesViewBoxHeight = "1000"
+let margin = { top: 10, right: 20, bottom: 0, left: 45 },
+  w = 1150,
+  h = 330;
+let candlesViewBoxHeight = "420"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
 
@@ -746,7 +746,7 @@ function drawChart(start, end) {
   }
 
   //reset chart
-  d3.selectAll("#container > *").remove();
+  d3.selectAll("#candlestickChart > *").remove();
 
   //build datetime array
   let dateTimes = []
@@ -765,7 +765,7 @@ function drawChart(start, end) {
     }
   }
 
-  var svg = d3.select("#container")
+  var svg = d3.select("#candlestickChart")
     // .attr("width", "100%")
     // .attr("height", "110%")
     // .attr("padding-bottom", "3rem")
@@ -1470,7 +1470,7 @@ function drawChart(start, end) {
 
       stemsXArray.forEach((x, i) => {
         if ((mouse[0] > (x - 4)) && (mouse[0] < (x + 4))) {
-          document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> <br>H <span>${candlesToShow[i].High}</span> <br>L <span>${candlesToShow[i].Low}</span> <br>C <span>${candlesToShow[i].Close}</span>`
+          document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> / H <span>${candlesToShow[i].High}</span> / L <span>${candlesToShow[i].Low}</span> / C <span>${candlesToShow[i].Close}</span>`
         }
       })
     });
@@ -1540,9 +1540,9 @@ function volumeGraph(start, end) {
   // console.log(d3.extent(data, function(d) { return d.DateTime; }))
  
   // set the dimensions and margins of the graph
-  var margin = {top: 10, right: 20, bottom: 205, left: 45},
-  width = 1050,
-  height = 630
+  var margin = {top: 10, right: 0, bottom: 205, left: 50},
+  width = 1200,
+  height = 140
 
   // append the svg object to the body of the page
   var svg = d3.select("#volumeGraph")
@@ -1615,9 +1615,9 @@ function volatilityGraph(start, end) {
   })
 
   // set the dimensions and margins of the graph
-  var margin = {top: 10, right: 30, bottom: 190, left: 40},
-      width = 750,
-      height = 430;
+  var margin = {top: 10, right: 0, bottom: 190, left: 50},
+      width = 1250,
+      height = 140;
 
   // append the svg object to the body of the page
   var svg = d3.select("#volatilityGraph")
