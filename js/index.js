@@ -104,6 +104,8 @@ document.getElementById("legendLabel2Average").style = "display: none;"
 document.getElementById("legendLabel3Average").style = "display: none;"
 document.getElementById("legendLabel4Average").style = "display: none;"
 
+console.log(document.getElementById("candlestickContainer").clientWidth)
+console.log(window.innerWidth)
 /// CANDLESTICKS
 let candleDisplayNumber = 260
 let candleDrawStartIndex = 0
@@ -114,9 +116,9 @@ let candlestickChartLabelFontSize = "13px"
 let margin = { top: 10, right: 20, bottom: 0, left: 45 },
   // w = 1150,
   // h = 330;
-  w = window.innerWidth * .9,
+  w = document.getElementById("candlestickContainer").clientWidth,
   h = window.innerHeight * .45
-let candlesViewBoxHeight = "420"
+let candlesViewBoxHeight = "10"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
 
@@ -806,7 +808,7 @@ function drawChart(start, end) {
     // .attr("height", "110%")
     // .attr("padding-bottom", "3rem")
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 1200 " + candlesViewBoxHeight)
+    .attr("viewBox", "0 0 900 " + candlesViewBoxHeight)
     .classed("svg-content", true)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
@@ -1579,17 +1581,22 @@ function volumeGraph(start, end) {
   let margin = { top: 10, right: 20, bottom: 0, left: 45 }
   // width = 1200,
   // height = 140
-  width = window.innerWidth * 0.9,
-  height = window.innerHeight * .2
+  width = document.getElementById("candlestickContainer").clientWidth,
+  height = document.getElementById("candlestickContainer").clientHeight * .2
 
   // append the svg object to the body of the page
   var svg = d3.select("#volumeGraph")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height + margin.top + margin.bottom)
+  // .append("svg")
+  // .attr("preserveAspectRatio", "xMinYMin meet")
+  // .attr("viewBox", "0 0 1200 " + candlesViewBoxHeight)
+  // .append("g")
+  // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  .attr("preserveAspectRatio", "xMinYMin meet")
+  .attr("viewBox", "0 0 900 " + candlesViewBoxHeight)
+  .classed("svg-content", true)
   .append("g")
-  .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
+  .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
 
   // group the data: I want to draw one line per group
   // var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
@@ -1656,17 +1663,22 @@ function volatilityGraph(start, end) {
   let margin = { top: 10, right: 20, bottom: 0, left: 45 }
   // width = 1200,
   // height = 140
-  width = window.innerWidth * 1,
+  width = document.getElementById("candlestickContainer").clientWidth,
   height = window.innerHeight * .2
 
   // append the svg object to the body of the page
   var svg = d3.select("#volatilityGraph")
-    .append("svg")
-      .attr("width", width)
-      .attr("height", height)
+    // .append("svg")
+    //   .attr("width", width)
+    //   .attr("height", height)
+    // .append("g")
+    //   .attr("transform",
+    //         "translate(" + margin.left + "," + margin.top + ")");
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", "0 0 900 " + candlesViewBoxHeight)
+    .classed("svg-content", true)
     .append("g")
-      .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
 
   // X axis
   var x = d3.scaleBand()
