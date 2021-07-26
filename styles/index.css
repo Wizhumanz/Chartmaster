@@ -412,7 +412,7 @@ label {
 #candlestickChart, #volatilityGraph, #volumeGraph {
   display: block;
   position: relative;
-  width: 95%;
+  width: 100%;
 }
 
 #volumeLegend {
