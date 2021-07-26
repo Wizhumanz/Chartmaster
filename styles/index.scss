@@ -82,6 +82,13 @@ div#computeControls {
   }
 }
 
+#chartSlider {
+  position: absolute;
+  margin-left: 7rem;
+  margin-top: 0.5rem;
+  width: 300px;
+}
+
 #indicatorCtrls {
   position: absolute;
   left: 600px;
@@ -314,8 +321,8 @@ div.modal-content {
 
 #ohlcDisplay {
   position: absolute;
-  margin-left: 7rem;
-  margin-top: -1rem;
+  margin-left: 5rem;
+  margin-top: 0;
   padding: 0.35rem;
   width: fit-content;
   font-size: x-small;
@@ -334,6 +341,7 @@ div.modal-content {
 }
 
 #candlestickChart {
+  margin-top: 0;
   height: 360px;
 }
 
