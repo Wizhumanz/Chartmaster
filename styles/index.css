@@ -108,8 +108,8 @@ html,
   display: inline;
 }
 
-#extraControls {
-  margin-bottom: 1rem;
+#extraControls button {
+  font-size: x-small !important;
 }
 
 #modeTogglerBtn {
@@ -134,7 +134,7 @@ div#computeControls {
 #indicatorCtrls {
   position: absolute;
   left: 600px;
-  margin-top: -1rem;
+  margin-top: 1rem;
   width: 450px;
 }
 #indicatorCtrls ul li {

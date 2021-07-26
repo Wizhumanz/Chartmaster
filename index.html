@@ -36,7 +36,7 @@
       aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Loading...</div>
   </div>
 
-  <h4 id="undefinedUserErr">USER ID UNDEFINED</h4>
+  <!-- <h4 id="undefinedUserErr">USER ID UNDEFINED</h4> -->
 
   <div class="container-fluid">
     <div class="row">
@@ -103,6 +103,15 @@
                       <option value="1DAY">1d</option>
                       <option value="2DAY">2d</option>
                     </select>
+
+                    <div id="extraControls">
+                      <button id="modeTogglerBtn" onclick="showScanResults()">Switch to Scan Mode</button>
+                      <button id="chunkProcessTogglerBtn" onclick="chunkProcessOption()">Switch to Waterfall</button>
+                      <button id="saveCandles" onclick="saveCandlesToJson()">Save Candles</button>
+                      <select name="candlesSelect" id="candlesSelect" onchange="saveCandlesChanged()">
+                        <!-- filled dynamically by API call -->
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -191,15 +200,6 @@
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div id="extraControls">
-              <button id="modeTogglerBtn" onclick="showScanResults()">Switch to Scan Mode</button>
-              <button id="chunkProcessTogglerBtn" onclick="chunkProcessOption()">Switch to Waterfall</button>
-              <button id="saveCandles" onclick="saveCandlesToJson()">Save Candles</button>
-              <select name="candlesSelect" id="candlesSelect" onchange="saveCandlesChanged()">
-                <!-- filled dynamically by API call -->
-              </select>
             </div>
 
             <!-- Legend -->
