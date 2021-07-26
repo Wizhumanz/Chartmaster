@@ -808,7 +808,7 @@ function drawChart(start, end) {
     // .attr("height", "110%")
     // .attr("padding-bottom", "3rem")
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 900 " + candlesViewBoxHeight)
+    .attr("viewBox", "0 0 " + w + " " + h)
     .classed("svg-content", true)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
@@ -1593,7 +1593,7 @@ function volumeGraph(start, end) {
   // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   .attr("preserveAspectRatio", "xMinYMin meet")
-  .attr("viewBox", "0 0 900 " + candlesViewBoxHeight)
+  .attr("viewBox", "0 0 " + width + " " + height)
   .classed("svg-content", true)
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
@@ -1669,13 +1669,13 @@ function volatilityGraph(start, end) {
   // append the svg object to the body of the page
   var svg = d3.select("#volatilityGraph")
     // .append("svg")
-    //   .attr("width", width)
-    //   .attr("height", height)
+      // .attr("width", width)
+      // .attr("height", height)
     // .append("g")
     //   .attr("transform",
     //         "translate(" + margin.left + "," + margin.top + ")");
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 900 " + candlesViewBoxHeight)
+    .attr("viewBox", "0 0 " + width + " " + height)
     .classed("svg-content", true)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
