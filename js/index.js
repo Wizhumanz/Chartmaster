@@ -112,8 +112,10 @@ let tickNumProfitX = 6
 let tickNumProfitY = 8
 let candlestickChartLabelFontSize = "13px"
 let margin = { top: 10, right: 20, bottom: 0, left: 45 },
-  w = 1150,
-  h = 330;
+  // w = 1150,
+  // h = 330;
+  w = window.innerWidth * .9,
+  h = window.innerHeight * .45
 let candlesViewBoxHeight = "420"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
@@ -1574,14 +1576,16 @@ function volumeGraph(start, end) {
   // console.log(d3.extent(data, function(d) { return d.DateTime; }))
  
   // set the dimensions and margins of the graph
-  var margin = {top: 10, right: 0, bottom: 205, left: 50},
-  width = 1200,
-  height = 140
+  let margin = { top: 10, right: 20, bottom: 0, left: 45 }
+  // width = 1200,
+  // height = 140
+  width = window.innerWidth * 0.9,
+  height = window.innerHeight * .2
 
   // append the svg object to the body of the page
   var svg = d3.select("#volumeGraph")
   .append("svg")
-  .attr("width", width + margin.left + margin.right)
+  .attr("width", width)
   .attr("height", height + margin.top + margin.bottom)
   .append("g")
   .attr("transform",
@@ -1649,9 +1653,11 @@ function volatilityGraph(start, end) {
   })
 
   // set the dimensions and margins of the graph
-  var margin = {top: 10, right: 0, bottom: 190, left: 50},
-      width = 1250,
-      height = 140;
+  let margin = { top: 10, right: 20, bottom: 0, left: 45 }
+  // width = 1200,
+  // height = 140
+  width = window.innerWidth * 1,
+  height = window.innerHeight * .2
 
   // append the svg object to the body of the page
   var svg = d3.select("#volatilityGraph")
