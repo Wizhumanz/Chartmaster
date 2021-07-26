@@ -140,9 +140,7 @@ div#computeControls {
 
 #indicatorCtrls {
   position: absolute;
-  left: 600px;
-  margin-top: 1rem;
-  width: 450px;
+  font-size: x-small;
 }
 #indicatorCtrls ul li {
   list-style-type: none;

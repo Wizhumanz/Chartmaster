@@ -192,7 +192,6 @@
                 </div>
               </div>
             </div>
-
             <div id="extraControls">
               <button id="modeTogglerBtn" onclick="showScanResults()">Switch to Scan Mode</button>
               <button id="chunkProcessTogglerBtn" onclick="chunkProcessOption()">Switch to Waterfall</button>
@@ -201,97 +200,102 @@
                 <!-- filled dynamically by API call -->
               </select>
             </div>
-
-            <!-- Legend -->
-            <div id="indicatorCtrls">
-              <div class="row">
-                <div class="col-6">
-                  <div class="row">
-                    <div class="col-3">
-                      <label style="color: lightblue" id="legendLabel1SMA" for="legendCheckbox">SMA 1</label>
-                      <input type="checkbox" id="legendCheckbox1SMA" name="legendCheckbox">
-                    </div>
-                    <div class="col-3">
-                      <label style="color: chartreuse" id="legendLabel2SMA" for="legendCheckbox">SMA 2</label>
-                      <input type="checkbox" id="legendCheckbox2SMA" name="legendCheckbox">
-                    </div>
-                    <div class="col-3">
-                      <label style="color: orange" id="legendLabel3SMA" for="legendCheckbox">SMA 3</label>
-                      <input type="checkbox" id="legendCheckbox3SMA" name="legendCheckbox">
-                    </div>
-                    <div class="col-3">
-                      <label style="color: red" id="legendLabel4SMA" for="legendCheckbox">SMA 4</label>
-                      <input type="checkbox" id="legendCheckbox4SMA" name="legendCheckbox">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="row">
-                    <div class="col-3">
-                      <label style="color: lightblue" id="legendLabel1EMA" for="legendCheckbox">EMA 1</label>
-                      <input type="checkbox" id="legendCheckbox1EMA" name="legendCheckbox">
-                    </div>
-                    <div class="col-3">
-                      <label style="color: chartreuse" id="legendLabel2EMA" for="legendCheckbox">EMA 2</label>
-                      <input type="checkbox" id="legendCheckbox2EMA" name="legendCheckbox">
-                    </div>
-                    <div class="col-3">
-                      <label style="color: orange" id="legendLabel3EMA" for="legendCheckbox">EMA 3</label>
-                      <input type="checkbox" id="legendCheckbox3EMA" name="legendCheckbox">
-                    </div>
-                    <div class="col-3">
-                      <label style="color: red" id="legendLabel4EMA" for="legendCheckbox">EMA 4</label>
-                      <input type="checkbox" id="legendCheckbox4EMA" name="legendCheckbox">
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- candlestick chart and arrows -->
           <div class="col-12 order-1 order-lg-2">
-            <!-- Slider -->
-            <div class="slidecontainer">
-              <input type="range" min="0" max="100" value="0" class="slider" id="chartSlider">
-            </div>
-            <!-- candlestick chart controls -->
-            <div class="topControls arrows">
-              <button id="panCandlesLeftBtn" onclick="moveLeft()">
-                <h2><i class="bi bi-arrow-left-circle-fill"></i></h2>
-              </button>
-              <button id="panCandlesRightBtn" onclick="moveRight()">
-                <h2><i class="bi bi-arrow-right-circle-fill"></i></h2>
-              </button>
-            </div>
-            <!-- candlestick chart -->
-            <div id="candlestickContainer" class="svg-container" style="background-color: red;">
-              <p id="ohlcDisplay"></p>
-              <svg id="candlestickChart"></svg>
-            </div>
-            <!-- volatility index -->
-            <div class="svg-container" style="background-color: yellow;">
-              <svg id="volatilityGraph"></svg>
-            </div>
-            <!-- volumes -->
-            <div class="svg-container" style="background-color: blue;">
-              <div id="volumeLegend">
-                <div class="row">
-                  <div class="col-3">
-                    <label style="color: #e41a1c" id="legendLabel1Average" for="legendCheckbox">Volume SMA 10</label>
-                  </div>
-                  <div class="col-3">
-                    <label style="color: #377eb8" id="legendLabel2Average" for="legendCheckbox">Volume SMA 21</label>
-                  </div>
-                  <div class="col-3">
-                    <label style="color: #4daf4a" id="legendLabel3Average" for="legendCheckbox">Volume SMA 55</label>
-                  </div>
-                  <div class="col-3">
-                    <label style="color: #984ea3" id="legendLabel4Average" for="legendCheckbox">Volume</label>
+            <div class="row">
+              <div class="col-6">
+                <!-- Slider -->
+                <div class="slidecontainer">
+                  <input type="range" min="0" max="100" value="0" class="slider" id="chartSlider">
+                </div>
+                <!-- candlestick chart controls -->
+                <div class="topControls arrows">
+                  <button id="panCandlesLeftBtn" onclick="moveLeft()">
+                    <h2><i class="bi bi-arrow-left-circle-fill"></i></h2>
+                  </button>
+                  <button id="panCandlesRightBtn" onclick="moveRight()">
+                    <h2><i class="bi bi-arrow-right-circle-fill"></i></h2>
+                  </button>
+                </div>
+              </div>
+              <div class="col-6">
+              <!-- Legend -->
+                <div id="indicatorCtrls">
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="row">
+                        <div class="col-3">
+                          <label style="color: lightblue" id="legendLabel1SMA" for="legendCheckbox">SMA1</label>
+                          <input type="checkbox" id="legendCheckbox1SMA" name="legendCheckbox">
+                        </div>
+                        <div class="col-3">
+                          <label style="color: chartreuse" id="legendLabel2SMA" for="legendCheckbox">SMA2</label>
+                          <input type="checkbox" id="legendCheckbox2SMA" name="legendCheckbox">
+                        </div>
+                        <div class="col-3">
+                          <label style="color: orange" id="legendLabel3SMA" for="legendCheckbox">SMA3</label>
+                          <input type="checkbox" id="legendCheckbox3SMA" name="legendCheckbox">
+                        </div>
+                        <div class="col-3">
+                          <label style="color: red" id="legendLabel4SMA" for="legendCheckbox">SMA4</label>
+                          <input type="checkbox" id="legendCheckbox4SMA" name="legendCheckbox">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="row">
+                        <div class="col-3">
+                          <label style="color: lightblue" id="legendLabel1EMA" for="legendCheckbox">EMA1</label>
+                          <input type="checkbox" id="legendCheckbox1EMA" name="legendCheckbox">
+                        </div>
+                        <div class="col-3">
+                          <label style="color: chartreuse" id="legendLabel2EMA" for="legendCheckbox">EMA2</label>
+                          <input type="checkbox" id="legendCheckbox2EMA" name="legendCheckbox">
+                        </div>
+                        <div class="col-3">
+                          <label style="color: orange" id="legendLabel3EMA" for="legendCheckbox">EMA3</label>
+                          <input type="checkbox" id="legendCheckbox3EMA" name="legendCheckbox">
+                        </div>
+                        <div class="col-3">
+                          <label style="color: red" id="legendLabel4EMA" for="legendCheckbox">EMA4</label>
+                          <input type="checkbox" id="legendCheckbox4EMA" name="legendCheckbox">
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <svg id="volumeGraph"></svg>
+              <!-- candlestick chart -->
+              <div id="candlestickContainer" class="svg-container" style="background-color: red;">
+                <p id="ohlcDisplay"></p>
+                <svg id="candlestickChart"></svg>
+              </div>
+              <!-- volatility index -->
+              <div class="svg-container" style="background-color: yellow;">
+                <svg id="volatilityGraph"></svg>
+              </div>
+              <!-- volumes -->
+              <div class="svg-container" style="background-color: blue;">
+                <div id="volumeLegend">
+                  <div class="row">
+                    <div class="col-3">
+                      <label style="color: #e41a1c" id="legendLabel1Average" for="legendCheckbox">Volume SMA 10</label>
+                    </div>
+                    <div class="col-3">
+                      <label style="color: #377eb8" id="legendLabel2Average" for="legendCheckbox">Volume SMA 21</label>
+                    </div>
+                    <div class="col-3">
+                      <label style="color: #4daf4a" id="legendLabel3Average" for="legendCheckbox">Volume SMA 55</label>
+                    </div>
+                    <div class="col-3">
+                      <label style="color: #984ea3" id="legendLabel4Average" for="legendCheckbox">Volume</label>
+                    </div>
+                  </div>
+                </div>
+                <svg id="volumeGraph"></svg>
+              </div>
             </div>
           </div>
         </div>
