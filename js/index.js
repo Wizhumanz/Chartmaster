@@ -326,6 +326,12 @@ function connectWs(id) {
       drawChart(0, candleDisplayNumber)
       volumeGraph(0, candleDisplayNumber)
       volatilityGraph(0, candleDisplayNumber)
+
+      candleChartSlider()
+      if (candleDisplayNumber < allCandles.length) {
+        //show right arrow btn
+        document.getElementById("panCandlesRightBtn").style.display = "inline"
+      }
     });
 
     socket.onopen = () => {
