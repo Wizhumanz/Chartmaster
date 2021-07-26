@@ -116,11 +116,15 @@ let candlestickChartLabelFontSize = "13px"
 let margin = { top: 10, right: 20, bottom: 0, left: 45 },
   // w = 1150,
   // h = 330;
-  w = document.getElementById("candlestickContainer").clientWidth,
-  h = window.innerHeight * .45
+  w = window.innerWidth,
+  h = window.innerHeight * 0.55
 let candlesViewBoxHeight = "10"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
+
+document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.45) + "px"
+document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.2) + "px"
+document.getElementById("volumeGraph").style.height = (window.innerHeight * 0.2) + "px"
 
 //mobile display options
 if (screen.availWidth < 700) {
@@ -1581,8 +1585,8 @@ function volumeGraph(start, end) {
   let margin = { top: 10, right: 20, bottom: 0, left: 45 }
   // width = 1200,
   // height = 140
-  width = document.getElementById("candlestickContainer").clientWidth,
-  height = document.getElementById("candlestickContainer").clientHeight * .2
+  width = window.innerWidth,
+  height = window.innerHeight * 0.25
 
   // append the svg object to the body of the page
   var svg = d3.select("#volumeGraph")
@@ -1596,7 +1600,7 @@ function volumeGraph(start, end) {
   .attr("viewBox", "0 0 " + width + " " + height)
   .classed("svg-content", true)
   .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
   // group the data: I want to draw one line per group
   // var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
@@ -1663,8 +1667,8 @@ function volatilityGraph(start, end) {
   let margin = { top: 10, right: 20, bottom: 0, left: 45 }
   // width = 1200,
   // height = 140
-  width = document.getElementById("candlestickContainer").clientWidth,
-  height = window.innerHeight * .2
+  width = window.innerWidth,
+  height = window.innerHeight * .25
 
   // append the svg object to the body of the page
   var svg = d3.select("#volatilityGraph")
@@ -1678,7 +1682,7 @@ function volatilityGraph(start, end) {
     .attr("viewBox", "0 0 " + width + " " + height)
     .classed("svg-content", true)
     .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
   // X axis
   var x = d3.scaleBand()

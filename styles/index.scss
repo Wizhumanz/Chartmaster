@@ -370,7 +370,7 @@ label {
 #candlestickChart, #volatilityGraph, #volumeGraph {
   display: block;
   position: relative;
-  width: 100%;
+  width: 95%;
   // padding-bottom: 100%;
   // overflow: hidden;
 
@@ -379,17 +379,17 @@ label {
   // }
 }
 
-#candlestickChart {
-  height: 450px !important;
-}
+// #candlestickChart {
+//   height: 100% ;
+// }
 
-#volatilityGraph {
-  height: 150px;
-}
+// #volatilityGraph {
+//   height: 150px;
+// }
 
-#volumeGraph {
-  height: 150px;
-}
+// #volumeGraph {
+//   height: 150px;
+// }
 
 #volumeLegend {
   position: absolute;
