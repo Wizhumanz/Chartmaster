@@ -319,10 +319,15 @@ function connectWs(id) {
     }
     fetchCandlesJSON().then(candles => {
       allCandles = candles; // fetched movies
-
-    // allCandles.forEach(d => {
-    //   d.DateTime = new Date(d.DateTime)
-    // })
+      
+      checked1SMA = true
+      checked2SMA = true
+      checked3SMA = true
+      checked4SMA = true
+      checked1EMA = true
+      checked2EMA = true
+      checked3EMA = true
+      checked4EMA = true
       drawChart(0, candleDisplayNumber)
       volumeGraph(0, candleDisplayNumber)
       volatilityGraph(0, candleDisplayNumber)
@@ -332,6 +337,14 @@ function connectWs(id) {
         //show right arrow btn
         document.getElementById("panCandlesRightBtn").style.display = "inline"
       }
+      document.getElementById('legendCheckbox1SMA').checked = true
+      document.getElementById('legendCheckbox2SMA').checked = true
+      document.getElementById('legendCheckbox3SMA').checked = true
+      document.getElementById('legendCheckbox4SMA').checked = true
+      document.getElementById('legendCheckbox1EMA').checked = true
+      document.getElementById('legendCheckbox2EMA').checked = true
+      document.getElementById('legendCheckbox3EMA').checked = true
+      document.getElementById('legendCheckbox4EMA').checked = true
     });
 
     socket.onopen = () => {
