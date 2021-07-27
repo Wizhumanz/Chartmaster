@@ -1477,6 +1477,7 @@ function drawChart(start, end) {
       .style("color", "white")
       .style("font-size", candlesYAxisFontSize)
       .attr("stroke", "white")
+      .style("fill", "white")
 
     }, 50)
 
@@ -1658,6 +1659,7 @@ function volumeGraph(start, end) {
   .style("font-size", volumeXFont)
   .style("color", "white")
   .attr("stroke", "white")
+  .style("fill", "white")
 
   // Add Y axis
   var y = d3.scaleLinear()
@@ -1668,6 +1670,7 @@ function volumeGraph(start, end) {
   .style("font-size", volumeYFont)
   .style("color", "white")
   .attr("stroke", "white")
+  .style("fill", "white")
 
   // color palette
   var res = volumeData.map(function(d){ return d.key }) // list of group names
@@ -1759,6 +1762,8 @@ function volatilityGraph(start, end) {
     .style("font-size", volatilityYFont)
     .style("color", "white")
     .attr("stroke", "white")
+    .style("fill", "white")
+    .style('stroke-width', '1px')
 
   // Bars
   svg.selectAll("mybar")
@@ -1934,16 +1939,19 @@ function drawPC(data) {
   pcSvg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .style("font-size", pcFontSz)
-    .call(d3.axisBottom(x).ticks(tickNumProfitX))
     .style("color", "white")
+    .style("fill", "white")
     .attr("stroke", "white")
+    .call(d3.axisBottom(x).ticks(tickNumProfitX))
 
   // Add the Y Axis
   pcSvg.append("g")
-    .call(d3.axisLeft(y).ticks(tickNumProfitY))
+    .style("fill", "white")
     .style("color", "white")
     .style("font-size", pcFontSz)
     .attr("stroke", "white")
+    .call(d3.axisLeft(y).ticks(tickNumProfitY))
+
 
   // This allows to find the closest X index of the mouse:
   var bisect = d3.bisector(function(d) { return d.date; }).left;
