@@ -105,7 +105,7 @@ document.getElementById("legendLabel3Average").style = "display: none;"
 document.getElementById("legendLabel4Average").style = "display: none;"
 
 console.log(document.getElementById("candlestickContainer").clientWidth)
-console.log(window.innerWidth)
+console.log(window.innerWidth/10)
 /// CANDLESTICKS
 let candleDisplayNumber = 260
 let candleDrawStartIndex = 0
@@ -117,12 +117,12 @@ let margin = { top: 10, right: 20, bottom: 0, left: 45 },
   // w = 1150,
   // h = 330;
   w = window.innerWidth,
-  h = window.innerHeight * 0.45
+  h = window.innerHeight * 0.55
 let candlesViewBoxHeight = "10"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
-let candlesXAxisFontSize = "10px"
-let candlesYAxisFontSize = "10px"
+let candlesXAxisFontSize = "15px"
+let candlesYAxisFontSize = "12px"
 
 document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.45) + "px"
 document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.2) + "px"
