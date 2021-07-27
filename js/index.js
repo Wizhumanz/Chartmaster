@@ -123,6 +123,9 @@ let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
 let candlesXAxisFontSize = "15px"
 let candlesYAxisFontSize = "12px"
+let volatilityYFont = "12px"
+let volumeXFont = "18px"
+let volumeYFont = "12px"
 
 document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.45) + "px"
 document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.2) + "px"
@@ -130,12 +133,12 @@ document.getElementById("volumeGraph").style.height = (window.innerHeight * 0.2)
 
 //mobile display options
 if (screen.availWidth < 700) {
-  margin = { top: 5, right: 0, bottom: 0, left: 30 }
-  w = window.innerWidth * 1,
-  h = window.innerHeight * 0.25
-  document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.4) + "px"
-  document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.12) + "px"
-  document.getElementById("volumeGraph").style.height = (window.innerHeight * 0.12) + "px"
+  margin = { top: 5, right: 10, bottom: 0, left: 25 }
+  w = window.innerWidth,
+  h = window.innerHeight * 0.50
+  document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.65) + "px"
+  document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.15) + "px"
+  document.getElementById("volumeGraph").style.height = (window.innerHeight * 0.15) + "px"
   candleDisplayNumber = 30
   tickNumCandles = 7
   candlestickChartLabelFontSize = "17px"
@@ -145,6 +148,9 @@ if (screen.availWidth < 700) {
   tickNumProfitY = 7
   candlesXAxisFontSize = "7px"
   candlesYAxisFontSize = "8px"
+  volatilityYFont = "8px"
+  volumeXFont = "13px"
+  volumeYFont = "8px"
   pcFontSz = "25px"
 }
 
@@ -867,7 +873,7 @@ function drawChart(start, end) {
 
   var ymin = d3.min(candlesToShow.map(r => r.Low).concat(emaValues).concat(smaValues));
   var ymax = d3.max(candlesToShow.map(r => r.High).concat(emaValues).concat(smaValues));
-  var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h, 0]).nice();
+  var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h+0, 0]).nice();
   var yAxis = d3.axisLeft()
     .scale(yScale)
 
@@ -1606,19 +1612,21 @@ function volumeGraph(start, end) {
 
   // console.log(data1[0]["DateTime"], data3[data3.length - 1]["DateTime"])
   // console.log(d3.extent(data, function(d) { return d.DateTime; }))
-  let volumeTicks = 25
+  let volumeXTicks = 25
+  let volumeYTicks = 10
   // set the dimensions and margins of the graph
   let margin = { top: 10, right: 20, bottom: 0, left: 45 }
   // width = 1200,
   // height = 140
   width = window.innerWidth,
-  height = window.innerHeight * 0.25
+  height = window.innerHeight * 0.2
 
   if (screen.availWidth < 700) {
-   margin = { top: 0, right: 20, bottom: 0, left: 25 }
+   margin = { top: 10, right: 20, bottom: 0, left: 25 }
     width = window.innerWidth * 1,
     height = window.innerHeight * .10
-    volumeTicks = 10
+    volumeXTicks = 10
+    volumeYTicks = 4
   }
 
   // append the svg object to the body of the page
@@ -1646,7 +1654,8 @@ function volumeGraph(start, end) {
   .range([ 0, width-50 ]);
   svg.append("g")
   .attr("transform", "translate(0," + height + ")")
-  .call(d3.axisBottom(x).ticks(volumeTicks))
+  .call(d3.axisBottom(x).ticks(volumeXTicks))
+  .style("font-size", volumeXFont)
   .style("color", "white")
   .attr("stroke", "white")
 
@@ -1655,7 +1664,8 @@ function volumeGraph(start, end) {
   .domain([0, d3.max(allVolAverage)])
   .range([ height, 0 ]);
   svg.append("g")
-  .call(d3.axisLeft(y))
+  .call(d3.axisLeft(y).ticks(volumeYTicks))
+  .style("font-size", volumeYFont)
   .style("color", "white")
   .attr("stroke", "white")
 
@@ -1702,11 +1712,14 @@ function volatilityGraph(start, end) {
   // height = 140
   width = window.innerWidth,
   height = window.innerHeight * .25
+  
+  let volatilityYTicks = 10
 
   if (screen.availWidth < 700) {
     margin = { top: 5, right: 20, bottom: 0, left: 25 }
      width = window.innerWidth * 1,
-     height = window.innerHeight * .10
+     height = window.innerHeight * .15
+     volatilityYTicks = 5
    }
 
   // append the svg object to the body of the page
@@ -1742,7 +1755,8 @@ function volatilityGraph(start, end) {
     .domain([0, d3.max(allVolatility)])
     .range([ height, 0]);
   svg.append("g")
-    .call(d3.axisLeft(y))
+    .call(d3.axisLeft(y).ticks(volatilityYTicks))
+    .style("font-size", volatilityYFont)
     .style("color", "white")
     .attr("stroke", "white")
 
