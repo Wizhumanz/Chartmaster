@@ -98,7 +98,14 @@ document.getElementById("legendCheckbox3EMA").style.display = "none"
 document.getElementById("legendLabel4EMA").style.display = "none"
 document.getElementById("legendCheckbox4EMA").style.display = "none"
 
+// VOLUME
+document.getElementById("legendLabel1Average").style = "display: none;"
+document.getElementById("legendLabel2Average").style = "display: none;"
+document.getElementById("legendLabel3Average").style = "display: none;"
+document.getElementById("legendLabel4Average").style = "display: none;"
 
+console.log(document.getElementById("candlestickContainer").clientWidth)
+console.log(window.innerWidth/10)
 /// CANDLESTICKS
 let candleDisplayNumber = 260
 let candleDrawStartIndex = 0
@@ -106,26 +113,45 @@ let tickNumCandles = 10
 let tickNumProfitX = 6
 let tickNumProfitY = 8
 let candlestickChartLabelFontSize = "13px"
-let margin = { top: 10, right: 20, bottom: 205, left: 45 },
-  w = 1050,
-  h = 630;
-let candlesViewBoxHeight = "1000"
+let margin = { top: 10, right: 20, bottom: 0, left: 45 },
+  // w = 1150,
+  // h = 330;
+  w = window.innerWidth,
+  h = window.innerHeight * 0.55
+let candlesViewBoxHeight = "10"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
+let candlesXAxisFontSize = "15px"
+let candlesYAxisFontSize = "12px"
+let volatilityYFont = "12px"
+let volumeXFont = "18px"
+let volumeYFont = "12px"
+
+document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.45) + "px"
+document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.2) + "px"
+document.getElementById("volumeGraph").style.height = (window.innerHeight * 0.2) + "px"
 
 //mobile display options
 if (screen.availWidth < 700) {
-  h = 1800
-  margin.left = 140
-  margin.top = 40
-  candleDisplayNumber = 30
+  margin = { top: 5, right: 10, bottom: 0, left: 25 }
+  w = window.innerWidth,
+  h = window.innerHeight * 0.50
+  document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.65) + "px"
+  document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.15) + "px"
+  document.getElementById("volumeGraph").style.height = (window.innerHeight * 0.15) + "px"
+  candleDisplayNumber = 90
   tickNumCandles = 7
-  candlestickChartLabelFontSize = "40px"
-  candlesViewBoxHeight = "2200"
-  candlestickLabelStroke = "3px"
+  candlestickChartLabelFontSize = "17px"
+  // candlesViewBoxHeight = "2200"
+  candlestickLabelStroke = "1px"
   tickNumProfitX = 4
   tickNumProfitY = 7
-  pcFontSz = "20px"
+  candlesXAxisFontSize = "7px"
+  candlesYAxisFontSize = "8px"
+  volatilityYFont = "8px"
+  volumeXFont = "13px"
+  volumeYFont = "8px"
+  pcFontSz = "25px"
 }
 
 let candleDrawEndIndex = candleDisplayNumber
@@ -151,8 +177,21 @@ document.getElementById("panCandlesRightBtn").style.display = "none"
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
 //default display
-// allCandles = [{ "DateTime": "2021-05-01T04:00:00", "Open": 58206.890625, "High": 58253.21875, "Low": 58206.890625, "Close": 58252.78125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:01:00", "Open": 58252.78125, "High": 58277.109375, "Low": 58232.73828125, "Close": 58273, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:02:00", "Open": 58271.03125, "High": 58271.03125, "Low": 58167.01953125, "Close": 58167.01953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:03:00", "Open": 58167.01953125, "High": 58181.33984375, "Low": 58100.80078125, "Close": 58118.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:04:00", "Open": 58118.01171875, "High": 58120, "Low": 58050, "Close": 58067.46875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:05:00", "Open": 58067.46875, "High": 58100, "Low": 58060.5, "Close": 58097.3203125, "StratEnterPrice": 57693, "StratExitPrice": 0, "Label": "▼ 57410.00 / 0.04" }, { "DateTime": "2021-05-01T04:06:00", "Open": 58096.8203125, "High": 58098.48046875, "Low": 58061.33984375, "Close": 58075.859375, "StratEnterPrice": 0, "StratExitPrice": 57711.7890625, "Label": "" }, { "DateTime": "2021-05-01T04:07:00", "Open": 58075.87109375, "High": 58123.94921875, "Low": 58073.76953125, "Close": 58120, "StratEnterPrice": 57784.8515625, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:08:00", "Open": 58120.01171875, "High": 58162.8984375, "Low": 58087.94140625, "Close": 58153.76953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:09:00", "Open": 58156.1796875, "High": 58190.19921875, "Low": 58153.6796875, "Close": 58190.19140625, "StratEnterPrice": 0, "StratExitPrice": 57769.140625, "Label": "▼ 57669.99" }, { "DateTime": "2021-05-01T04:10:00", "Open": 58190.19921875, "High": 58248.37109375, "Low": 58190.19140625, "Close": 58223.26953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:11:00", "Open": 58223.26953125, "High": 58264.7890625, "Low": 58216.6484375, "Close": 58249.51171875, "StratEnterPrice": 57848.19921875, "StratExitPrice": 0, "Label": "▼ 57742.96 / 0.11" }, { "DateTime": "2021-05-01T04:12:00", "Open": 58249.51171875, "High": 58277, "Low": 58230.859375, "Close": 58257.87109375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:13:00", "Open": 58257.87890625, "High": 58259.98828125, "Low": 58212.01171875, "Close": 58226.9609375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:14:00", "Open": 58227.62890625, "High": 58249.96875, "Low": 58206.73046875, "Close": 58215, "StratEnterPrice": 0, "StratExitPrice": 57949.640625, "Label": "▼ 57410.00" }, { "DateTime": "2021-05-01T04:15:00", "Open": 58215, "High": 58243.1796875, "Low": 58213.6484375, "Close": 58227.578125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:16:00", "Open": 58227.640625, "High": 58239.9609375, "Low": 58211.44921875, "Close": 58223.55078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:17:00", "Open": 58223.55078125, "High": 58229.75, "Low": 58137.28125, "Close": 58163.80078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:18:00", "Open": 58163.80078125, "High": 58163.80078125, "Low": 58107.671875, "Close": 58128.140625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:19:00", "Open": 58128.12890625, "High": 58146.48828125, "Low": 58075, "Close": 58135.359375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:20:00", "Open": 58135.359375, "High": 58168.1796875, "Low": 58117.91015625, "Close": 58141.03125, "StratEnterPrice": 57911.28125, "StratExitPrice": 0, "Label": "▼ 57789.42 / 0.10" }, { "DateTime": "2021-05-01T04:21:00", "Open": 58135.21875, "High": 58135.21875, "Low": 58083.828125, "Close": 58123.41015625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:22:00", "Open": 58123.41015625, "High": 58157.3984375, "Low": 58120, "Close": 58141.921875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:23:00", "Open": 58141.921875, "High": 58149.83984375, "Low": 58120, "Close": 58149.71875, "StratEnterPrice": 0, "StratExitPrice": 57975.76171875, "Label": "▼ 57789.42" }, { "DateTime": "2021-05-01T04:24:00", "Open": 58149.71875, "High": 58169.80859375, "Low": 58139.80078125, "Close": 58147.28125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:25:00", "Open": 58147.26953125, "High": 58150, "Low": 58122.98046875, "Close": 58130.08984375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:26:00", "Open": 58130.1015625, "High": 58140, "Low": 58119.05859375, "Close": 58136.05078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:27:00", "Open": 58136.05078125, "High": 58138.05078125, "Low": 58060, "Close": 58060.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:28:00", "Open": 58060.01171875, "High": 58089.48046875, "Low": 58000, "Close": 58005.78125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:29:00", "Open": 58005.7890625, "High": 58070, "Low": 58002.83984375, "Close": 58062.94140625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:30:00", "Open": 58062.94140625, "High": 58068.94921875, "Low": 58004.26171875, "Close": 58024.73046875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:31:00", "Open": 58024.73046875, "High": 58024.73046875, "Low": 57845.21875, "Close": 57895.33984375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:32:00", "Open": 57894.73046875, "High": 57939.94921875, "Low": 57875.91015625, "Close": 57918.96875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:33:00", "Open": 57919, "High": 57958.44921875, "Low": 57891.58984375, "Close": 57946.25, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:34:00", "Open": 57946.26171875, "High": 57948.9609375, "Low": 57888.109375, "Close": 57908.109375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:35:00", "Open": 57909.98828125, "High": 57912.3984375, "Low": 57817.359375, "Close": 57820, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:36:00", "Open": 57820, "High": 57847.2109375, "Low": 57722.87109375, "Close": 57780.12890625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:37:00", "Open": 57780.140625, "High": 57840.30078125, "Low": 57720, "Close": 57832.76171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:38:00", "Open": 57832.7890625, "High": 57876.62109375, "Low": 57826, "Close": 57862.26953125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:39:00", "Open": 57862.28125, "High": 57887.55859375, "Low": 57831.73046875, "Close": 57885.140625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:40:00", "Open": 57885.12890625, "High": 57900, "Low": 57877.21875, "Close": 57899.5, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:41:00", "Open": 57899.98828125, "High": 57941.05859375, "Low": 57899.25, "Close": 57927.4609375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:42:00", "Open": 57927.44921875, "High": 57950, "Low": 57918.87109375, "Close": 57920.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:43:00", "Open": 57920.01171875, "High": 57920.01171875, "Low": 57872, "Close": 57872, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:44:00", "Open": 57872.01171875, "High": 57926.5703125, "Low": 57870, "Close": 57910.828125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:45:00", "Open": 57913.19140625, "High": 57924.640625, "Low": 57872.7109375, "Close": 57880.55078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:46:00", "Open": 57880.55078125, "High": 57922.828125, "Low": 57826.328125, "Close": 57908.171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:47:00", "Open": 57907.4609375, "High": 57935.8984375, "Low": 57888.37890625, "Close": 57891.98046875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:48:00", "Open": 57891.98046875, "High": 57942.69921875, "Low": 57891.96875, "Close": 57942.55859375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:49:00", "Open": 57942.55859375, "High": 57980.5, "Low": 57914.51171875, "Close": 57974.01171875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:50:00", "Open": 57974.01953125, "High": 58049.30078125, "Low": 57970.921875, "Close": 58017.859375, "StratEnterPrice": 57866.140625, "StratExitPrice": 0, "Label": "▼ 57786.00 / 0.15" }, { "DateTime": "2021-05-01T04:51:00", "Open": 58016.87109375, "High": 58046.44140625, "Low": 58016.859375, "Close": 58040.03125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:52:00", "Open": 58036.37890625, "High": 58060, "Low": 58030, "Close": 58037.7890625, "StratEnterPrice": 0, "StratExitPrice": 57863.03125, "Label": "▼ 57600.08" }, { "DateTime": "2021-05-01T04:53:00", "Open": 58037.3203125, "High": 58041.69140625, "Low": 57959.2109375, "Close": 57994.859375, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:54:00", "Open": 57994.859375, "High": 58035.921875, "Low": 57990.12109375, "Close": 58023.78125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:55:00", "Open": 58027.71875, "High": 58045, "Low": 58009.671875, "Close": 58045, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:56:00", "Open": 58044.98046875, "High": 58127.328125, "Low": 58044.58984375, "Close": 58125.55078125, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:57:00", "Open": 58125.55859375, "High": 58138.37890625, "Low": 58078.75, "Close": 58117.19921875, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:58:00", "Open": 58117.2109375, "High": 58117.2109375, "Low": 58082.23828125, "Close": 58090.66015625, "StratEnterPrice": 0, "StratExitPrice": 0, "Label": "" }, { "DateTime": "2021-05-01T04:59:00", "Open": 58090.66015625, "High": 58121.8203125, "Low": 58057.9296875, "Close": 58100.6484375, "StratEnterPrice": 57787.28125, "StratExitPrice": 0, "Label": "▼ 57669.99 / 0.10" }, { "DateTime": "2021-05-01T05:00:00", "Open": 58100.26953125, "High": 58150, "Low": 58065.53125, "Close": 58079.328125, "StratEnterPrice": 0, "StratExitPrice": 57807.6484375, "Label": "" }]
+// async function fetchCandlesJSON() {
+//   const response = await fetch('../exampleData/exampleCandles.json');
+//   const candles = await response.json();
+//   console.log(candles)
+//   return candles;
+// }
+// fetchCandlesJSON().then(candles => {
+//   allCandles = candles; // fetched movies
+
+// // allCandles.forEach(d => {
+// //   d.DateTime = new Date(d.DateTime)
+// // })
 // drawChart(0, candleDisplayNumber)
+// volumeGraph(0, candleDisplayNumber)
+// volatilityGraph(0, candleDisplayNumber)
 allProfitCurve = [{ "DataLabel": "strat1", "Data": [{ "DateTime": "2021-05-01T00:06:00", "Equity": 503.2285777385159 }, { "DateTime": "2021-05-01T00:11:00", "Equity": 514.7956316711843 }, { "DateTime": "2021-05-01T00:20:00", "Equity": 521.1452918840314 }, { "DateTime": "2021-05-01T00:49:00", "Equity": 520.679704050146 }, { "DateTime": "2021-05-01T00:58:00", "Equity": 522.346204200011 }, { "DateTime": "2021-05-01T01:12:00", "Equity": 524.5089442514854 }, { "DateTime": "2021-05-01T01:14:00", "Equity": 520.8258235514659 }, { "DateTime": "2021-05-01T01:17:00", "Equity": 517.0176397972828 }, { "DateTime": "2021-05-01T01:27:00", "Equity": 520.2462175357987 }, { "DateTime": "2021-05-01T01:32:00", "Equity": 531.8132714684671 }, { "DateTime": "2021-05-01T01:41:00", "Equity": 538.1629316813141 }, { "DateTime": "2021-05-01T02:10:00", "Equity": 537.6973438474288 }, { "DateTime": "2021-05-01T02:18:00", "Equity": 539.7810684952456 }, { "DateTime": "2021-05-01T02:35:00", "Equity": 546.1505002909307 }, { "DateTime": "2021-05-01T02:38:00", "Equity": 542.3423165367476 }, { "DateTime": "2021-05-01T02:48:00", "Equity": 545.5708942752635 }, { "DateTime": "2021-05-01T02:53:00", "Equity": 557.1379482079319 }, { "DateTime": "2021-05-01T03:02:00", "Equity": 563.487608420779 }, { "DateTime": "2021-05-01T03:31:00", "Equity": 563.0220205868936 }, { "DateTime": "2021-05-01T03:40:00", "Equity": 564.6885207367586 }, { "DateTime": "2021-05-01T03:56:00", "Equity": 571.0579525324447 }, { "DateTime": "2021-05-01T03:59:00", "Equity": 567.2497687782616 }, { "DateTime": "2021-05-01T04:06:00", "Equity": 568.0464781422188 }, { "DateTime": "2021-05-01T04:09:00", "Equity": 566.1770846957861 }, { "DateTime": "2021-05-01T04:14:00", "Equity": 577.7441386284545 }, { "DateTime": "2021-05-01T04:23:00", "Equity": 584.0937988413016 }, { "DateTime": "2021-05-01T04:52:00", "Equity": 583.6282110074162 }] }]
 drawPC(allProfitCurve)
 // allSimTrades = [{ "DataLabel": "strat1", "Data": [{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 },{ "DateTime": "2021-05-01T01:25:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57784.8515625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.1592074645104259 }, { "DateTime": "2021-05-01T01:27:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57769.140625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.13197549962733782 }, { "DateTime": "2021-05-01T01:32:00", "Direction": "LONG", "EntryPrice": 57693, "ExitPrice": 57949.640625, "PosSize": 0.042402826855123664, "RiskedEquity": 2446.3462897526497, "RawProfitPerc": 0.44483841193905677 }, { "DateTime": "2021-05-01T01:41:00", "Direction": "LONG", "EntryPrice": 57848.19921875, "ExitPrice": 57975.76171875, "PosSize": 0.11402694777476709, "RiskedEquity": 6596.253591180728, "RawProfitPerc": 0.22051248219089578 }, { "DateTime": "2021-05-01T02:10:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57863.03125, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.00537339274127546 }, { "DateTime": "2021-05-01T02:18:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57807.6484375, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.10108188807519942 }, { "DateTime": "2021-05-01T02:19:00", "Direction": "LONG", "EntryPrice": 57866.140625, "ExitPrice": 57803.5703125, "PosSize": 0.1497367907974264, "RiskedEquity": 8664.690193020082, "RawProfitPerc": -0.10812940317807829 }, { "DateTime": "2021-05-01T02:33:00", "Direction": "LONG", "EntryPrice": 57787.28125, "ExitPrice": 57619.859375, "PosSize": 0.10230792286941753, "RiskedEquity": 5912.096712958338, "RawProfitPerc": -0.2897209755823216 }, { "DateTime": "2021-05-01T02:35:00", "Direction": "LONG", "EntryPrice": 57609.19140625, "ExitPrice": 57640.609375, "PosSize": 0.20273213225103942, "RiskedEquity": 11679.234211047318, "RawProfitPerc": 0.05453638209994296 }, { "DateTime": "2021-05-01T02:38:00", "Direction": "LONG", "EntryPrice": 57609.19140625, "ExitPrice": 57710.73046875, "PosSize": 0.20273213225103942, "RiskedEquity": 11679.234211047318, "RawProfitPerc": 0.17625496907943766 }] }]
@@ -294,6 +333,41 @@ function connectWs(id) {
   }
 
   if (socket) {
+    async function fetchCandlesJSON() {
+      const response = await fetch('../exampleData/exampleCandles.json');
+      const candles = await response.json();
+      return candles;
+    }
+    fetchCandlesJSON().then(candles => {
+      allCandles = candles; // fetched movies
+      
+      checked1SMA = true
+      checked2SMA = true
+      checked3SMA = true
+      checked4SMA = true
+      checked1EMA = true
+      checked2EMA = true
+      checked3EMA = true
+      checked4EMA = true
+      drawChart(0, candleDisplayNumber)
+      volumeGraph(0, candleDisplayNumber)
+      volatilityGraph(0, candleDisplayNumber)
+
+      candleChartSlider()
+      if (candleDisplayNumber < allCandles.length) {
+        //show right arrow btn
+        document.getElementById("panCandlesRightBtn").style.display = "inline"
+      }
+      document.getElementById('legendCheckbox1SMA').checked = true
+      document.getElementById('legendCheckbox2SMA').checked = true
+      document.getElementById('legendCheckbox3SMA').checked = true
+      document.getElementById('legendCheckbox4SMA').checked = true
+      document.getElementById('legendCheckbox1EMA').checked = true
+      document.getElementById('legendCheckbox2EMA').checked = true
+      document.getElementById('legendCheckbox3EMA').checked = true
+      document.getElementById('legendCheckbox4EMA').checked = true
+    });
+
     socket.onopen = () => {
       socket.send("Client connected");
       wsStatus.innerText = "OK"
@@ -316,7 +390,6 @@ function connectWs(id) {
       if (!(msg.data.includes("\"") || msg.data.includes("{") || msg.data.includes("}"))) {
         return
       }
-
       // Progress bar
       if (JSON.parse(msg.data) != undefined && parseFloat(JSON.parse(msg.data).Data[0].Progress) > 0) {
         loadProgressBar(JSON.parse(msg.data).Data[0].Progress)
@@ -364,9 +437,12 @@ function connectWs(id) {
         //check if concat needed, or new data
         if (existingWSResID === "" || existingWSResID !== JSON.parse(msg.data).ResultID) {
           allCandles = JSON.parse(msg.data).Data
-
           //if candlestick chart empty
+
           drawChart(0, candleDisplayNumber)
+          volumeGraph(0, candleDisplayNumber)
+          volatilityGraph(0, candleDisplayNumber)
+
           if (candleDisplayNumber < allCandles.length) {
             //show right arrow btn
             document.getElementById("panCandlesRightBtn").style.display = "inline"
@@ -384,6 +460,9 @@ function connectWs(id) {
             document.getElementById("panCandlesRightBtn").style.display = "inline"
           }
           drawChart(0, candleDisplayNumber)
+          volumeGraph(0, candleDisplayNumber)
+          volatilityGraph(0, candleDisplayNumber)
+
         }
         if (loadHistory) {
           loadProgressBar(100)
@@ -494,7 +573,7 @@ function computeBacktest() {
     .then(() => {
       selectedRes = document.getElementById('startDateTimePicker').value + ":00~" + document.getElementById('endDateTimePicker').value + ":00(" + document.getElementById('periodSelect').value + ", " + document.getElementById('tickerSelect').value + ")"
       if (!retrieveCandles) {
-        document.getElementById("saveCandles").style.display = "block"
+        document.getElementById("saveCandles").style.display = "inline"
       }
       setTimeout(() => {
         loadResult()
@@ -722,7 +801,7 @@ function drawChart(start, end) {
   }
 
   //reset chart
-  d3.selectAll("#container > *").remove();
+  d3.selectAll("#candlestickChart > *").remove();
 
   //build datetime array
   let dateTimes = []
@@ -741,12 +820,12 @@ function drawChart(start, end) {
     }
   }
 
-  var svg = d3.select("#container")
-    // .attr("width", "100%")
-    // .attr("height", "110%")
-    // .attr("padding-bottom", "3rem")
+  var svg = d3.select("#candlestickChart")
+    // .attr("width", "30px")
+    // .attr("height", "50px")
+    // // .attr("padding-bottom", "3rem")
     .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 1200 " + candlesViewBoxHeight)
+    .attr("viewBox", "0 0 " + w + " " + h)
     .classed("svg-content", true)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
@@ -754,12 +833,11 @@ function drawChart(start, end) {
   var xmin = d3.min(dateTimes);
   var xmax = d3.max(dateTimes);
   var xScale = d3.scaleLinear().domain([-1, dateTimes.length])
-    .range([0, w])
+    .range([0, w-50])
   var xDateScale = d3.scaleQuantize().domain([0, dateTimes.length]).range(dateTimes)
   let xBand = d3.scaleBand().domain(d3.range(-1, dateTimes.length)).range([0, w]).padding(0.3)
   var xAxis = d3.axisBottom()
     .scale(xScale).ticks(tickNumCandles)
-    // .attr("font-size", "5px")
     .tickFormat(function (d) {
       return processXAxisLabel(d, dateTimes)
     });
@@ -778,6 +856,9 @@ function drawChart(start, end) {
     .call(xAxis)
 
   gX.selectAll(".tick text")
+    .style("color", "white")
+    .style("font-size", candlesXAxisFontSize)
+    .attr("stroke", "white")
     .call(wrap, xBand.bandwidth())
 
   var smaValues = []
@@ -792,7 +873,7 @@ function drawChart(start, end) {
 
   var ymin = d3.min(candlesToShow.map(r => r.Low).concat(emaValues).concat(smaValues));
   var ymax = d3.max(candlesToShow.map(r => r.High).concat(emaValues).concat(smaValues));
-  var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h, 0]).nice();
+  var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h+0, 0]).nice();
   var yAxis = d3.axisLeft()
     .scale(yScale)
 
@@ -800,9 +881,14 @@ function drawChart(start, end) {
     .attr("class", "axis y-axis")
     .call(yAxis);
 
+  gY.selectAll(".tick text")
+  .style("color", "white")
+  .style("font-size", candlesYAxisFontSize)
+  .attr("stroke", "white")
+
   var chartBody = svg.append("g")
     .attr("class", "chartBody")
-    .attr("clip-path", "url(#clip)");
+    .attr("clip-path", "url(#clip)")
 
   // draw rectangles
   let candles = chartBody.selectAll(".candle")
@@ -812,6 +898,7 @@ function drawChart(start, end) {
     .attr('x', (d, i) => xScale(i) - xBand.bandwidth())
     .attr("class", "candle")
     .attr('y', d => yScale(Math.max(d.Open, d.Close)))
+    .attr("font-size", "10px")
     .attr('width', xBand.bandwidth())
     .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
     .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
@@ -1284,6 +1371,9 @@ function drawChart(start, end) {
     hideTicksWithoutLabel();
 
     gX.selectAll(".tick text")
+    .style("color", "white")
+    .style("font-size", candlesXAxisFontSize)
+    .attr("stroke", "white")
       .call(wrap, xBand.bandwidth())
   }
 
@@ -1378,7 +1468,16 @@ function drawChart(start, end) {
       // })
 
 
-      gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
+      gY.transition()
+      .duration(100)
+      .call(d3.axisLeft()
+      .scale(yScale));
+      
+      gY.selectAll(".tick text")
+      .style("color", "white")
+      .style("font-size", candlesYAxisFontSize)
+      .attr("stroke", "white")
+      .style("fill", "white")
 
     }, 50)
 
@@ -1446,7 +1545,7 @@ function drawChart(start, end) {
 
       stemsXArray.forEach((x, i) => {
         if ((mouse[0] > (x - 4)) && (mouse[0] < (x + 4))) {
-          document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> <br>H <span>${candlesToShow[i].High}</span> <br>L <span>${candlesToShow[i].Low}</span> <br>C <span>${candlesToShow[i].Close}</span>`
+          document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> / H <span>${candlesToShow[i].High}</span> / L <span>${candlesToShow[i].Low}</span> / C <span>${candlesToShow[i].Close}</span>`
         }
       })
     });
@@ -1475,6 +1574,216 @@ function wrap(text, width) {
     }
   });
   // horizontalScroll()
+}
+
+function volumeGraph(start, end) {
+  //reset chart
+  d3.selectAll("#volumeGraph > *").remove();
+  document.getElementById("legendLabel1Average").style = "display: block;"
+  document.getElementById("legendLabel2Average").style = "display: block;"
+  document.getElementById("legendLabel3Average").style = "display: block;"
+  document.getElementById("legendLabel4Average").style = "display: block;"
+
+  let data = allCandles.slice(start, end)
+  let data1 = []
+  let data2 = []
+  let data3 = []
+  let data4 = []
+  let allVolAverage = []
+  data.forEach(d => {
+    data1.push({"VolumeAverage": d.VolumeAverage[0], "DateTime": d.DateTime})
+    data2.push({"VolumeAverage": d.VolumeAverage[1], "DateTime": d.DateTime})
+    data3.push({"VolumeAverage": d.VolumeAverage[2], "DateTime": d.DateTime})
+    data4.push({"VolumeAverage": d.Volume, "DateTime": d.DateTime})
+
+    if (d.VolumeAverage[0] != undefined) {
+      allVolAverage.push(d.VolumeAverage[0])
+    }
+    if (d.VolumeAverage[1] != undefined) {
+      allVolAverage.push(d.VolumeAverage[1])
+    }
+    if (d.VolumeAverage[2] != undefined) {
+      allVolAverage.push(d.VolumeAverage[2])
+    }
+    if (d.Volume != undefined) {
+      allVolAverage.push(d.Volume)
+    }
+  })
+  let volumeData = [{"key": "Data1", "values": data1}, {"key": "Data2", "values": data2}, {"key": "Data3", "values": data3}, {"key": "Data4", "values": data4}]
+
+  // console.log(data1[0]["DateTime"], data3[data3.length - 1]["DateTime"])
+  // console.log(d3.extent(data, function(d) { return d.DateTime; }))
+  let volumeXTicks = 25
+  let volumeYTicks = 10
+  // set the dimensions and margins of the graph
+  let margin = { top: 10, right: 20, bottom: 0, left: 45 }
+  // width = 1200,
+  // height = 140
+  width = window.innerWidth,
+  height = window.innerHeight * 0.2
+
+  if (screen.availWidth < 700) {
+   margin = { top: 10, right: 20, bottom: 0, left: 25 }
+    width = window.innerWidth * 1,
+    height = window.innerHeight * .10
+    volumeXTicks = 10
+    volumeYTicks = 4
+  }
+
+  // append the svg object to the body of the page
+  var svg = d3.select("#volumeGraph")
+  // .append("svg")
+  // .attr("preserveAspectRatio", "xMinYMin meet")
+  // .attr("viewBox", "0 0 1200 " + candlesViewBoxHeight)
+  // .append("g")
+  // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  .attr("preserveAspectRatio", "xMinYMin meet")
+  .attr("viewBox", "0 0 " + width + " " + height)
+  .classed("svg-content", true)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+  // group the data: I want to draw one line per group
+  // var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
+  // .key(function(d) { return d.name;})
+  // .entries(data);
+
+  // Add X axis --> it is a date format
+  var x = d3.scaleTime()
+  .domain(d3.extent(data, function(d) { return d.DateTime; }))
+  .range([ 0, width-50 ]);
+  svg.append("g")
+  .attr("transform", "translate(0," + height + ")")
+  .call(d3.axisBottom(x).ticks(volumeXTicks))
+  .style("font-size", volumeXFont)
+  .style("color", "white")
+  .attr("stroke", "white")
+  .style("fill", "white")
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+  .domain([0, d3.max(allVolAverage)])
+  .range([ height, 0 ]);
+  svg.append("g")
+  .call(d3.axisLeft(y).ticks(volumeYTicks))
+  .style("font-size", volumeYFont)
+  .style("color", "white")
+  .attr("stroke", "white")
+  .style("fill", "white")
+
+  // color palette
+  var res = volumeData.map(function(d){ return d.key }) // list of group names
+  var color = d3.scaleOrdinal()
+  .domain(res)
+  .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+
+  document.getElementById("legendLabel1Average").style = "color: #e41a1c;"
+  document.getElementById("legendLabel2Average").style = "color: #377eb8;"
+  document.getElementById("legendLabel3Average").style = "color: #4daf4a;"
+  document.getElementById("legendLabel4Average").style = "color: #984ea3;"
+  // Draw the line
+  svg.selectAll(".line")
+    .data(volumeData)
+    .enter()
+    .append("path")
+      .attr("fill", "none")
+      .attr("stroke", function(d){ return color(d.key) })
+      .attr("stroke-width", 1.5)
+      .attr("d", function(d){
+        return d3.line()
+          .x(function(d) { return x(d.DateTime); })
+          .y(function(d,i) { return y(d.VolumeAverage != undefined? d.VolumeAverage : null); })
+          (d.values)
+      })
+}
+
+function volatilityGraph(start, end) {
+  d3.selectAll("#volatilityGraph > *").remove();
+
+  let data = allCandles.slice(start, end)
+  let formattedData = []
+  let allVolatility = []
+  data.forEach((d, i) => {
+    formattedData.push({"DateTime": d.DateTime, "Volatility": d.Volatility})
+    allVolatility.push(d.Volatility)
+  })
+
+  // set the dimensions and margins of the graph
+  let margin = { top: 10, right: 20, bottom: 0, left: 45 }
+  // width = 1200,
+  // height = 140
+  width = window.innerWidth,
+  height = window.innerHeight * .25
+  
+  let volatilityYTicks = 10
+
+  if (screen.availWidth < 700) {
+    margin = { top: 5, right: 20, bottom: 0, left: 25 }
+     width = window.innerWidth * 1,
+     height = window.innerHeight * .15
+     volatilityYTicks = 5
+   }
+
+  // append the svg object to the body of the page
+  var svg = d3.select("#volatilityGraph")
+    // .append("svg")
+      // .attr("width", width)
+      // .attr("height", height)
+    // .append("g")
+    //   .attr("transform",
+    //         "translate(" + margin.left + "," + margin.top + ")");
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", "0 0 " + width + " " + height)
+    .classed("svg-content", true)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+  // X axis
+  var x = d3.scaleBand()
+    .range([ 0, width-50 ])
+    .domain(formattedData.map(function(d) { return d.DateTime.toString().split("(")[0]; }))
+    .padding(0.2);
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end")
+      .style("opacity", 0)
+      .attr("opacity", 0)
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, d3.max(allVolatility)])
+    .range([ height, 0]);
+  svg.append("g")
+    .call(d3.axisLeft(y).ticks(volatilityYTicks))
+    .style("font-size", volatilityYFont)
+    .style("color", "white")
+    .attr("stroke", "white")
+    .style("fill", "white")
+    .style('stroke-width', '1px')
+
+  // Bars
+  svg.selectAll("mybar")
+    .data(formattedData)
+    .enter()
+    .append("rect")
+      .attr("x", function(d) { return x(d.DateTime.toString().split("(")[0]); })
+      .attr("width", x.bandwidth())
+      .attr("fill", "#69b3a2")
+      // no bar at the beginning thus:
+      .attr("height", function(d) { return height - y(0); }) // always equal to 0
+      .attr("y", function(d) { return y(0); })
+
+  // Animation
+  svg.selectAll("rect")
+    .transition()
+    .duration(1)
+    .attr("y", function(d) { return y(d.Volatility); })
+    .attr("height", function(d) { return height - y(d.Volatility); })
+    .delay(function(d,i){return(i*1)})
 }
 
 /// PROFIT CURVE
@@ -1625,22 +1934,80 @@ function drawPC(data) {
     return drawNewLines(v.slice(1), d)
   }
   drawNewLines(valueline, data)
-
+  
   // Add the X Axis
   pcSvg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .style("font-size", pcFontSz)
-    .call(d3.axisBottom(x).ticks(tickNumProfitX))
     .style("color", "white")
+    .style("fill", "white")
     .attr("stroke", "white")
+    .call(d3.axisBottom(x).ticks(tickNumProfitX))
 
   // Add the Y Axis
   pcSvg.append("g")
-    .call(d3.axisLeft(y).ticks(tickNumProfitY))
+    .style("fill", "white")
     .style("color", "white")
     .style("font-size", pcFontSz)
     .attr("stroke", "white")
+    .call(d3.axisLeft(y).ticks(tickNumProfitY))
 
+
+  // This allows to find the closest X index of the mouse:
+  var bisect = d3.bisector(function(d) { return d.date; }).left;
+
+  // Create the circle that travels along the curve of chart
+  var focus = pcSvg
+    .append('g')
+    .append('circle')
+      .style("fill", "none")
+      .attr("stroke", "white")
+      .attr('r', 8.5)
+      .style("opacity", 0)
+
+  // Add the line
+  pcSvg
+    .append("path")
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-width", 1.5)
+    .attr("d", d3.line()
+      .x(function(d) { return x(d.date) })
+      .y(function(d) { return y(d.strat1) })
+      )
+
+  // Create a rect on top of the svg area: this rectangle recovers mouse position
+  pcSvg
+    .append('rect')
+    .style("fill", "none")
+    .style("pointer-events", "all")
+    .attr('width', width)
+    .attr('height', height)
+    .on('mouseover', mouseover)
+    .on('mousemove', mousemove)
+    .on('mouseout', mouseout);
+
+
+  // What happens when the mouse move -> show the annotations at the right positions.
+  function mouseover() {
+    focus.style("opacity", 1)
+  }
+
+  function mousemove() {
+    // recover coordinate we need
+    var x0 = x.invert(d3.mouse(this)[0]);
+    var i = bisect(data, x0, 0);
+    selectedData = data[i]
+    focus
+      .attr("cx", x(selectedData.date))
+      .attr("cy", y(selectedData.strat1))
+    document.getElementById("profitCurveValHighlightText").innerText = "Date: "+ selectedData.date + "\nProfit: " + selectedData.strat1
+    document.getElementById("profitCurveValHighlightText").style = "color: white"
+    }
+  function mouseout() {
+    focus.style("opacity", 0)
+  }
 }
 
 /// SIMULATED TRADES
@@ -2269,38 +2636,44 @@ function moveLeft() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
 
-  let slider = document.getElementById("chartSlider")
-  slider.value = candleDrawStartIndex / (allCandles.length - candleDisplayNumber/2) * 100
-
   lBtn.style.display = "inline"
   candleDrawStartIndex -= candleDisplayNumber / 2
   candleDrawEndIndex -= candleDisplayNumber / 2
   if (candleDrawStartIndex <= 0) {
+    candleDrawStartIndex = 0
     lBtn.style.display = "none"
   }
+
+  let slider = document.getElementById("chartSlider")
+  slider.value = candleDrawStartIndex / (allCandles.length - candleDisplayNumber) * 100.0
 
   rBtn.style.display = "inline"
 
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
+  volumeGraph(candleDrawStartIndex, candleDrawEndIndex)
+  volatilityGraph(candleDrawStartIndex, candleDrawEndIndex)
 }
 
 function moveRight() {
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
 
-  let slider = document.getElementById("chartSlider")
-  slider.value = candleDrawEndIndex / (allCandles.length - candleDisplayNumber/2) * 100
-
   rBtn.style.display = "inline"
   candleDrawStartIndex += candleDisplayNumber / 2
   candleDrawEndIndex += candleDisplayNumber / 2
   if (candleDrawEndIndex >= allCandles.length) {
+    candleDrawEndIndex = allCandles.length
     rBtn.style.display = "none"
   }
 
+  let slider = document.getElementById("chartSlider")
+  slider.value = (candleDrawEndIndex - candleDisplayNumber) / (allCandles.length - candleDisplayNumber) * 100.0
+  
   lBtn.style.display = "inline"
 
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
+  volumeGraph(candleDrawStartIndex, candleDrawEndIndex)
+  volatilityGraph(candleDrawStartIndex, candleDrawEndIndex) 
 }
 
 function candleChartSlider() {
@@ -2316,9 +2689,14 @@ function candleChartSlider() {
       document.getElementById("panCandlesRightBtn").style.display = "none"
     } else if (candleDrawStartIndex == 0) {
       document.getElementById("panCandlesLeftBtn").style.display = "none"
+    } else {
+      document.getElementById("panCandlesLeftBtn").style.display = "inline"
+      document.getElementById("panCandlesRightBtn").style.display = "inline"
     }
 
     drawChart(candleDrawStartIndex, candleDrawEndIndex)
+    volumeGraph(candleDrawStartIndex, candleDrawEndIndex)
+    volatilityGraph(candleDrawStartIndex, candleDrawEndIndex)
   })
 }
 
@@ -2360,7 +2738,6 @@ function saveCandlesChanged() {
 
   retrieveCandles = true
 }
-saveCandlesChanged()
 
 function historyLoadChanged() {
   var selectedOption = document.getElementById("resSelect")

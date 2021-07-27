@@ -1,0 +1,78 @@
+[
+ {
+  "EntryDateTime": "2021-04-18T00:28:00",
+  "ExitDateTime": "",
+  "Direction": "LONG",
+  "EntryPrice": 59875.62814257813,
+  "ExitPrice": 0,
+  "PosSize": 0.014293737820201933,
+  "RiskedEquity": 1.4415346951008383,
+  "Profit": 0,
+  "RawProfitPerc": 0,
+  "TotalFees": 0.6423666728720911,
+  "Settings": {
+   "maxDurationCandles": "1023",
+   "pivotLowsToEnter": "3",
+   "slCooldownCandles": "25",
+   "slPerc": "1.1675574584943331",
+   "tpSingle": "1.2300923711553273"
+  }
+ },
+ {
+  "EntryDateTime": "",
+  "ExitDateTime": "2021-04-18T01:21:00",
+  "Direction": "",
+  "EntryPrice": 0,
+  "ExitPrice": 58999.28203865058,
+  "PosSize": 0.014293737820201933,
+  "RiskedEquity": 0,
+  "Profit": -12.526261449295816,
+  "RawProfitPerc": -1.4636107062472248,
+  "TotalFees": 0.6324902017804653,
+  "Settings": {
+   "maxDurationCandles": "1023",
+   "pivotLowsToEnter": "3",
+   "slCooldownCandles": "25",
+   "slPerc": "1.1675574584943331",
+   "tpSingle": "1.2300923711553273"
+  }
+ },
+ {
+  "EntryDateTime": "2021-04-18T01:48:00",
+  "ExitDateTime": "",
+  "Direction": "LONG",
+  "EntryPrice": 59653.815453125004,
+  "ExitPrice": 0,
+  "PosSize": 0.008719837709960557,
+  "RiskedEquity": 4.666696588177365,
+  "Profit": 0,
+  "RawProfitPerc": 0,
+  "TotalFees": 0.39042150827960015,
+  "Settings": {
+   "maxDurationCandles": "895",
+   "pivotLowsToEnter": "3",
+   "slCooldownCandles": "24",
+   "slPerc": "1.8957227523736973",
+   "tpSingle": "1.8150336454372107"
+  }
+ },
+ {
+  "EntryDateTime": "",
+  "ExitDateTime": "2021-04-18T03:10:00",
+  "Direction": "",
+  "EntryPrice": 0,
+  "ExitPrice": 58347.63862623037,
+  "PosSize": 0.008719837709960557,
+  "RiskedEquity": 0,
+  "Profit": -11.389649951032482,
+  "RawProfitPerc": -2.189594776081012,
+  "TotalFees": 0.3815864546851161,
+  "Settings": {
+   "maxDurationCandles": "895",
+   "pivotLowsToEnter": "3",
+   "slCooldownCandles": "24",
+   "slPerc": "1.8957227523736973",
+   "tpSingle": "1.8150336454372107"
+  }
+ }
+]

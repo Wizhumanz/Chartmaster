@@ -58,7 +58,10 @@ html,
 }
 
 #extraControls {
-  margin-bottom: 1rem;
+  button {
+    font-size: x-small !important;
+
+  }
 }
 
 #modeTogglerBtn {
@@ -68,7 +71,7 @@ html,
 }
 
 div#computeControls {
-  margin: 0.5rem auto;
+  // margin: 0.5rem auto;
   font-size: x-small;
 
   @media only screen and (max-width: 700px) {
@@ -79,12 +82,25 @@ div#computeControls {
   }
 }
 
+#chartSlider {
+  position: absolute;
+  margin-left: 7rem;
+  margin-top: 0.5rem;
+  width: 300px;
+  @media only screen and (max-width: 700px) {
+    width: 200px;
+  }
+}
+
 #indicatorCtrls {
   position: absolute;
-  left: 11%;
-  width: 300px;
-  z-index: 100;
-
+  // left: 35%;
+  // margin-top: 1rem;
+  // width: 350px;
+  font-size: x-small;
+  @media only screen and (max-width: 700px) {
+    width: 90%;
+  }
   ul {
     li {
       list-style-type: none;
@@ -127,6 +143,12 @@ h4.chartHeader#optionsH {
   a {
     font-style: italic;
     color: $cream;
+  }
+  @media only screen and (max-width: 700px) {
+    // margin-left: 0rem;
+
+    // width: 60%;
+    // margin-top: 0rem;
   }
 }
 
@@ -176,6 +198,7 @@ h4.chartHeader#optionsH {
   padding: auto 0.75rem;
   color: $ivory;
   background-color: transparent;
+  position: absolute;
 }
 
 #shareResult:hover {
@@ -309,7 +332,9 @@ div.modal-content {
 }
 
 #ohlcDisplay {
-  margin: 1rem 4.5rem;
+  position: absolute;
+  margin-left: 5rem;
+  margin-top: 0;
   padding: 0.35rem;
   width: fit-content;
   font-size: x-small;
@@ -317,8 +342,10 @@ div.modal-content {
   color: $cream;
 
   @media only screen and (max-width: 700px) {
-    margin-left: 3rem;
+    margin-left: 0rem;
     font-size: x-small;
+    margin-top: 3rem;
+    // text-align: left;
   }
 
   span {
@@ -354,18 +381,44 @@ label {
   }
 }
 
-.svg-container {
-  display: inline-block;
+#candlestickChart, #volatilityGraph, #volumeGraph {
+  display: block;
   position: relative;
   width: 100%;
-  vertical-align: top;
   // padding-bottom: 100%;
   // overflow: hidden;
-  height: 830px;
 
   // @media only screen and (max-width: 700px) {
   //   height: 600px;
   // }
+}
+
+#candlestickChart {
+  @media only screen and (max-width: 700px) {
+    padding-top: 5rem;
+    // margin-bottom: -10rem;
+  }
+}
+
+// #volatilityGraph {
+//   height: 150px;
+// }
+
+// #volumeGraph {
+//   height: 150px;
+// }
+
+#volumeLegend {
+  position: absolute;
+  width: fit-content;
+  margin-left: 3.5rem;
+  margin-top: 1rem;
+  font-size: x-small;
+  @media only screen and (max-width: 700px) {
+    margin-left: 1rem;
+    width: 60%;
+    margin-top: 0rem;
+  }
 }
 
 .svg-content {
@@ -406,6 +459,12 @@ div.stacked::-webkit-scrollbar-thumb {
   background-color: darkred; /* color of the scroll thumb */
   border-radius: 20px; /* roundness of the scroll thumb */
   border: 3px solid black;
+}
+
+#profitCurveValHighlightText {
+  font-size: x-small;
+  margin-bottom: -0.5rem;
+  color: $ivory;
 }
 
 #profitCurveDiv {
