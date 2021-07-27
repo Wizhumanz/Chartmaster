@@ -117,10 +117,12 @@ let margin = { top: 10, right: 20, bottom: 0, left: 45 },
   // w = 1150,
   // h = 330;
   w = window.innerWidth,
-  h = window.innerHeight * 0.55
+  h = window.innerHeight * 0.45
 let candlesViewBoxHeight = "10"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
+let candlesXAxisFontSize = "10px"
+let candlesYAxisFontSize = "10px"
 
 document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.45) + "px"
 document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.2) + "px"
@@ -128,17 +130,22 @@ document.getElementById("volumeGraph").style.height = (window.innerHeight * 0.2)
 
 //mobile display options
 if (screen.availWidth < 700) {
-  h = 1800
-  margin.left = 140
-  margin.top = 40
+  margin = { top: 5, right: 0, bottom: 0, left: 30 }
+  w = window.innerWidth * 1,
+  h = window.innerHeight * 0.25
+  document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.4) + "px"
+  document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.12) + "px"
+  document.getElementById("volumeGraph").style.height = (window.innerHeight * 0.12) + "px"
   candleDisplayNumber = 30
   tickNumCandles = 7
-  candlestickChartLabelFontSize = "40px"
-  candlesViewBoxHeight = "2200"
-  candlestickLabelStroke = "3px"
+  candlestickChartLabelFontSize = "17px"
+  // candlesViewBoxHeight = "2200"
+  candlestickLabelStroke = "1px"
   tickNumProfitX = 4
   tickNumProfitY = 7
-  pcFontSz = "20px"
+  candlesXAxisFontSize = "7px"
+  candlesYAxisFontSize = "8px"
+  pcFontSz = "25px"
 }
 
 let candleDrawEndIndex = candleDisplayNumber
@@ -808,9 +815,9 @@ function drawChart(start, end) {
   }
 
   var svg = d3.select("#candlestickChart")
-    // .attr("width", "100%")
-    // .attr("height", "110%")
-    // .attr("padding-bottom", "3rem")
+    // .attr("width", "30px")
+    // .attr("height", "50px")
+    // // .attr("padding-bottom", "3rem")
     .attr("preserveAspectRatio", "xMinYMin meet")
     .attr("viewBox", "0 0 " + w + " " + h)
     .classed("svg-content", true)
@@ -820,12 +827,11 @@ function drawChart(start, end) {
   var xmin = d3.min(dateTimes);
   var xmax = d3.max(dateTimes);
   var xScale = d3.scaleLinear().domain([-1, dateTimes.length])
-    .range([0, w])
+    .range([0, w-50])
   var xDateScale = d3.scaleQuantize().domain([0, dateTimes.length]).range(dateTimes)
   let xBand = d3.scaleBand().domain(d3.range(-1, dateTimes.length)).range([0, w]).padding(0.3)
   var xAxis = d3.axisBottom()
     .scale(xScale).ticks(tickNumCandles)
-    // .attr("font-size", "5px")
     .tickFormat(function (d) {
       return processXAxisLabel(d, dateTimes)
     });
@@ -844,6 +850,9 @@ function drawChart(start, end) {
     .call(xAxis)
 
   gX.selectAll(".tick text")
+    .style("color", "white")
+    .style("font-size", candlesXAxisFontSize)
+    .attr("stroke", "white")
     .call(wrap, xBand.bandwidth())
 
   var smaValues = []
@@ -866,9 +875,14 @@ function drawChart(start, end) {
     .attr("class", "axis y-axis")
     .call(yAxis);
 
+  gY.selectAll(".tick text")
+  .style("color", "white")
+  .style("font-size", candlesYAxisFontSize)
+  .attr("stroke", "white")
+
   var chartBody = svg.append("g")
     .attr("class", "chartBody")
-    .attr("clip-path", "url(#clip)");
+    .attr("clip-path", "url(#clip)")
 
   // draw rectangles
   let candles = chartBody.selectAll(".candle")
@@ -878,6 +892,7 @@ function drawChart(start, end) {
     .attr('x', (d, i) => xScale(i) - xBand.bandwidth())
     .attr("class", "candle")
     .attr('y', d => yScale(Math.max(d.Open, d.Close)))
+    .attr("font-size", "10px")
     .attr('width', xBand.bandwidth())
     .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
     .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
@@ -1350,6 +1365,9 @@ function drawChart(start, end) {
     hideTicksWithoutLabel();
 
     gX.selectAll(".tick text")
+    .style("color", "white")
+    .style("font-size", candlesXAxisFontSize)
+    .attr("stroke", "white")
       .call(wrap, xBand.bandwidth())
   }
 
@@ -1444,7 +1462,15 @@ function drawChart(start, end) {
       // })
 
 
-      gY.transition().duration(100).call(d3.axisLeft().scale(yScale));
+      gY.transition()
+      .duration(100)
+      .call(d3.axisLeft()
+      .scale(yScale));
+      
+      gY.selectAll(".tick text")
+      .style("color", "white")
+      .style("font-size", candlesYAxisFontSize)
+      .attr("stroke", "white")
 
     }, 50)
 
@@ -1580,13 +1606,20 @@ function volumeGraph(start, end) {
 
   // console.log(data1[0]["DateTime"], data3[data3.length - 1]["DateTime"])
   // console.log(d3.extent(data, function(d) { return d.DateTime; }))
- 
+  let volumeTicks = 25
   // set the dimensions and margins of the graph
   let margin = { top: 10, right: 20, bottom: 0, left: 45 }
   // width = 1200,
   // height = 140
   width = window.innerWidth,
   height = window.innerHeight * 0.25
+
+  if (screen.availWidth < 700) {
+   margin = { top: 0, right: 20, bottom: 0, left: 25 }
+    width = window.innerWidth * 1,
+    height = window.innerHeight * .10
+    volumeTicks = 10
+  }
 
   // append the svg object to the body of the page
   var svg = d3.select("#volumeGraph")
@@ -1610,10 +1643,10 @@ function volumeGraph(start, end) {
   // Add X axis --> it is a date format
   var x = d3.scaleTime()
   .domain(d3.extent(data, function(d) { return d.DateTime; }))
-  .range([ 0, width ]);
+  .range([ 0, width-50 ]);
   svg.append("g")
   .attr("transform", "translate(0," + height + ")")
-  .call(d3.axisBottom(x).ticks(25))
+  .call(d3.axisBottom(x).ticks(volumeTicks))
   .style("color", "white")
   .attr("stroke", "white")
 
@@ -1670,6 +1703,12 @@ function volatilityGraph(start, end) {
   width = window.innerWidth,
   height = window.innerHeight * .25
 
+  if (screen.availWidth < 700) {
+    margin = { top: 5, right: 20, bottom: 0, left: 25 }
+     width = window.innerWidth * 1,
+     height = window.innerHeight * .10
+   }
+
   // append the svg object to the body of the page
   var svg = d3.select("#volatilityGraph")
     // .append("svg")
@@ -1686,7 +1725,7 @@ function volatilityGraph(start, end) {
 
   // X axis
   var x = d3.scaleBand()
-    .range([ 0, width ])
+    .range([ 0, width-50 ])
     .domain(formattedData.map(function(d) { return d.DateTime.toString().split("(")[0]; }))
     .padding(0.2);
   svg.append("g")
