@@ -139,7 +139,7 @@ if (screen.availWidth < 700) {
   document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.65) + "px"
   document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.15) + "px"
   document.getElementById("volumeGraph").style.height = (window.innerHeight * 0.15) + "px"
-  candleDisplayNumber = 30
+  candleDisplayNumber = 90
   tickNumCandles = 7
   candlestickChartLabelFontSize = "17px"
   // candlesViewBoxHeight = "2200"
