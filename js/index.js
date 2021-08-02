@@ -122,7 +122,7 @@ let candlesViewBoxHeight = "10"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
 let candlesXAxisFontSize = "15px"
-let candlesYAxisFontSize = "12px"
+let candlesYAxisFontSize = "10px"
 let volatilityYFont = "12px"
 let volumeXFont = "18px"
 let volumeYFont = "12px"
@@ -570,8 +570,8 @@ function computeBacktest() {
       headers: hd,
       mode: "cors",
     })
-    .then(() => {
-      selectedRes = document.getElementById('startDateTimePicker').value + ":00~" + document.getElementById('endDateTimePicker').value + ":00(" + document.getElementById('periodSelect').value + ", " + document.getElementById('tickerSelect').value + ")"
+    .then((res) => {
+      selectedRes = document.getElementById('startDateTimePicker').value + ":00~" + document.getElementById('endDateTimePicker').value + ":00(" + document.getElementById('periodSelect').value + ", " + document.getElementById('tickerSelect').value + ")" + res.data
       if (!retrieveCandles) {
         document.getElementById("saveCandles").style.display = "inline"
       }
@@ -1614,7 +1614,7 @@ function volumeGraph(start, end) {
   // console.log(data1[0]["DateTime"], data3[data3.length - 1]["DateTime"])
   // console.log(d3.extent(data, function(d) { return d.DateTime; }))
   let volumeXTicks = 25
-  let volumeYTicks = 10
+  let volumeYTicks = 7
   // set the dimensions and margins of the graph
   let margin = { top: 10, right: 20, bottom: 0, left: 45 }
   // width = 1200,
@@ -1716,7 +1716,7 @@ function volatilityGraph(start, end) {
   width = window.innerWidth,
   height = window.innerHeight * .25
   
-  let volatilityYTicks = 10
+  let volatilityYTicks = 5
 
   if (screen.availWidth < 700) {
     margin = { top: 5, right: 20, bottom: 0, left: 25 }
