@@ -1,6 +1,8 @@
 let baseURL = "http://localhost:8001"
 let wsStatus = document.getElementById("wsStatus")
 
+let popup = false
+
 // link url
 let copyLink
 
@@ -8,8 +10,10 @@ let copyLink
 let loadHistory = false
 
 // Slider
-let slider = document.getElementById("chartSlider")
-  slider.style.display = "none"
+let slider = document.getElementsByClassName("slider")
+slider[0].style.display = "none"
+slider[1].style.display = "none"
+
 
 // Get parameters from a URL string
 let userID = getParams(window.location.href).user
@@ -69,7 +73,8 @@ document.getElementById("saveCandles").style.display = "none"
 // Disable btns initially
 document.getElementById("panCandlesLeftBtn").style.display = "none"
 document.getElementById("panCandlesRightBtn").style.display = "none"
-
+document.getElementById("panCandlesLeftBtn2").style.display = "none"
+document.getElementById("panCandlesRightBtn2").style.display = "none"
 // SMAs
 let checked1SMA = false
 let checked2SMA = false
@@ -113,11 +118,20 @@ let tickNumCandles = 10
 let tickNumProfitX = 6
 let tickNumProfitY = 8
 let candlestickChartLabelFontSize = "13px"
-let margin = { top: 10, right: 20, bottom: 0, left: 45 },
-  // w = 1150,
-  // h = 330;
-  w = window.innerWidth,
-  h = window.innerHeight * 0.55
+if (popup) {
+  var margin = { top: 10, right: 20, bottom: 0, left: 45 },
+    // w = 1150,
+    // h = 330;
+    w = window.innerWidth * 0.5,
+    h = window.innerHeight * 0.55
+} else {
+  var margin = { top: 10, right: 20, bottom: 0, left: 45 },
+    // w = 1150,
+    // h = 330;
+    w = window.innerWidth,
+    h = window.innerHeight * 0.55
+}
+
 let candlesViewBoxHeight = "10"
 let candlestickLabelStroke = "0.5px"
 let pcFontSz = "14px"
@@ -128,6 +142,7 @@ let volumeXFont = "18px"
 let volumeYFont = "12px"
 
 document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.45) + "px"
+document.getElementById("candlestickChart2").style.height = (window.innerHeight * 0.8) + "px"
 document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.2) + "px"
 document.getElementById("volumeGraph").style.height = (window.innerHeight * 0.2) + "px"
 
@@ -137,6 +152,7 @@ if (screen.availWidth < 700) {
   w = window.innerWidth,
   h = window.innerHeight * 0.50
   document.getElementById("candlestickChart").style.height = (window.innerHeight * 0.65) + "px"
+  document.getElementById("candlestickChart2").style.height = (window.innerHeight * 0.65) + "px"
   document.getElementById("volatilityGraph").style.height = (window.innerHeight * 0.15) + "px"
   document.getElementById("volumeGraph").style.height = (window.innerHeight * 0.15) + "px"
   candleDisplayNumber = 90
@@ -170,10 +186,6 @@ let existingWSResID
 let existingWSResIDPC
 let existingWSResIDST
 
-// Disable btns initially
-document.getElementById("panCandlesLeftBtn").style.display = "none"
-document.getElementById("panCandlesRightBtn").style.display = "none"
-
 const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 'Jul', 7: 'Aug', 8: 'Sep', 9: 'Oct', 10: 'Nov', 11: 'Dec' }
 
 //default display
@@ -189,7 +201,7 @@ const months = { 0: 'Jan', 1: 'Feb', 2: 'Mar', 3: 'Apr', 4: 'May', 5: 'Jun', 6: 
 // // allCandles.forEach(d => {
 // //   d.DateTime = new Date(d.DateTime)
 // // })
-// drawChart(0, candleDisplayNumber)
+// drawChart(candleDrawStartIndex, candleDrawEndIndex)
 // volumeGraph(0, candleDisplayNumber)
 // volatilityGraph(0, candleDisplayNumber)
 allProfitCurve = [{ "DataLabel": "strat1", "Data": [{ "DateTime": "2021-05-01T00:06:00", "Equity": 503.2285777385159 }, { "DateTime": "2021-05-01T00:11:00", "Equity": 514.7956316711843 }, { "DateTime": "2021-05-01T00:20:00", "Equity": 521.1452918840314 }, { "DateTime": "2021-05-01T00:49:00", "Equity": 520.679704050146 }, { "DateTime": "2021-05-01T00:58:00", "Equity": 522.346204200011 }, { "DateTime": "2021-05-01T01:12:00", "Equity": 524.5089442514854 }, { "DateTime": "2021-05-01T01:14:00", "Equity": 520.8258235514659 }, { "DateTime": "2021-05-01T01:17:00", "Equity": 517.0176397972828 }, { "DateTime": "2021-05-01T01:27:00", "Equity": 520.2462175357987 }, { "DateTime": "2021-05-01T01:32:00", "Equity": 531.8132714684671 }, { "DateTime": "2021-05-01T01:41:00", "Equity": 538.1629316813141 }, { "DateTime": "2021-05-01T02:10:00", "Equity": 537.6973438474288 }, { "DateTime": "2021-05-01T02:18:00", "Equity": 539.7810684952456 }, { "DateTime": "2021-05-01T02:35:00", "Equity": 546.1505002909307 }, { "DateTime": "2021-05-01T02:38:00", "Equity": 542.3423165367476 }, { "DateTime": "2021-05-01T02:48:00", "Equity": 545.5708942752635 }, { "DateTime": "2021-05-01T02:53:00", "Equity": 557.1379482079319 }, { "DateTime": "2021-05-01T03:02:00", "Equity": 563.487608420779 }, { "DateTime": "2021-05-01T03:31:00", "Equity": 563.0220205868936 }, { "DateTime": "2021-05-01T03:40:00", "Equity": 564.6885207367586 }, { "DateTime": "2021-05-01T03:56:00", "Equity": 571.0579525324447 }, { "DateTime": "2021-05-01T03:59:00", "Equity": 567.2497687782616 }, { "DateTime": "2021-05-01T04:06:00", "Equity": 568.0464781422188 }, { "DateTime": "2021-05-01T04:09:00", "Equity": 566.1770846957861 }, { "DateTime": "2021-05-01T04:14:00", "Equity": 577.7441386284545 }, { "DateTime": "2021-05-01T04:23:00", "Equity": 584.0937988413016 }, { "DateTime": "2021-05-01T04:52:00", "Equity": 583.6282110074162 }] }]
@@ -322,6 +334,23 @@ function loadProgressBar(progress) {
   }
 }
 
+function modalBtn() {
+  // let createSVG = document.createElement("svg")
+  // let att = document.createAttribute("id");
+  // att.value = "candlestickChart";
+  // createSVG.setAttributeNode(att)
+  // document.body.insertBefore(createSVG, document.getElementById("beforeThis"));
+  // var el = document.getElementById('candlestickChart');
+  // el.remove()
+  popup = true
+  drawChart(candleDrawStartIndex, candleDrawEndIndex)
+}
+
+function modalBtnClose() {
+  popup = false  
+  drawChart(candleDrawStartIndex, candleDrawEndIndex)
+}
+
 function connectWs(id) {
   wsStatus.innerText = "Loading websockets..."
   var socket
@@ -349,7 +378,7 @@ function connectWs(id) {
       checked2EMA = true
       checked3EMA = true
       checked4EMA = true
-      drawChart(0, candleDisplayNumber)
+      drawChart(candleDrawStartIndex, candleDrawEndIndex)
       volumeGraph(0, candleDisplayNumber)
       volatilityGraph(0, candleDisplayNumber)
 
@@ -357,6 +386,7 @@ function connectWs(id) {
       if (candleDisplayNumber < allCandles.length) {
         //show right arrow btn
         document.getElementById("panCandlesRightBtn").style.display = "inline"
+        document.getElementById("panCandlesRightBtn2").style.display = "inline"
       }
       document.getElementById('legendCheckbox1SMA').checked = true
       document.getElementById('legendCheckbox2SMA').checked = true
@@ -439,13 +469,14 @@ function connectWs(id) {
           allCandles = JSON.parse(msg.data).Data
           //if candlestick chart empty
 
-          drawChart(0, candleDisplayNumber)
+          drawChart(candleDrawStartIndex, candleDrawEndIndex)
           volumeGraph(0, candleDisplayNumber)
           volatilityGraph(0, candleDisplayNumber)
 
           if (candleDisplayNumber < allCandles.length) {
             //show right arrow btn
             document.getElementById("panCandlesRightBtn").style.display = "inline"
+            document.getElementById("panCandlesRightBtn2").style.display = "inline"
           }
 
           //save res id so next messages with same ID will be concatenated with existing data
@@ -458,8 +489,9 @@ function connectWs(id) {
           if (candleDisplayNumber < allCandles.length) {
             //show right arrow btn
             document.getElementById("panCandlesRightBtn").style.display = "inline"
+            document.getElementById("panCandlesRightBtn2").style.display = "inline"
           }
-          drawChart(0, candleDisplayNumber)
+          drawChart(candleDrawStartIndex, candleDrawEndIndex)
           volumeGraph(0, candleDisplayNumber)
           volatilityGraph(0, candleDisplayNumber)
 
@@ -799,8 +831,9 @@ function drawChart(start, end) {
   if (!candlesToShow || candlesToShow.length == 0) {
     return
   }
-
+  console.log(start, end)
   //reset chart
+  d3.selectAll("#candlestickChart2 > *").remove();
   d3.selectAll("#candlestickChart > *").remove();
 
   //build datetime array
@@ -820,735 +853,768 @@ function drawChart(start, end) {
     }
   }
 
-  var svg = d3.select("#candlestickChart")
-    // .attr("width", "30px")
-    // .attr("height", "50px")
-    // // .attr("padding-bottom", "3rem")
-    .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 " + w + " " + h)
-    .classed("svg-content", true)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
+  // var svg
+  for (let p = 0; p < 2; p++) {
+    if (p == 1) {
+      var svg = d3.select("#candlestickChart2")
+        // .attr("width", "30px")
+        // .attr("height", "50px")
+        // // .attr("padding-bottom", "3rem")
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 " + w + " " + h)
+        .classed("svg-content", true)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
+    } else {
+      var svg = d3.select("#candlestickChart")
+        // .attr("width", "30px")
+        // .attr("height", "50px")
+        // // .attr("padding-bottom", "3rem")
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 " + w + " " + h)
+        .classed("svg-content", true)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
+    }
+    // var svg = d3.select("#candlestickChart2")
+    //   // .attr("width", "30px")
+    //   // .attr("height", "50px")
+    //   // // .attr("padding-bottom", "3rem")
+    //   .attr("preserveAspectRatio", "xMinYMin meet")
+    //   .attr("viewBox", "0 0 " + w + " " + h)
+    //   .classed("svg-content", true)
+    //   .append("g")
+    //   .attr("transform", "translate(" + margin.left + "," + margin.top * 2 + ")")
 
-  var xmin = d3.min(dateTimes);
-  var xmax = d3.max(dateTimes);
-  var xScale = d3.scaleLinear().domain([-1, dateTimes.length])
-    .range([0, w-50])
-  var xDateScale = d3.scaleQuantize().domain([0, dateTimes.length]).range(dateTimes)
-  let xBand = d3.scaleBand().domain(d3.range(-1, dateTimes.length)).range([0, w]).padding(0.3)
-  var xAxis = d3.axisBottom()
-    .scale(xScale).ticks(tickNumCandles)
-    .tickFormat(function (d) {
-      return processXAxisLabel(d, dateTimes)
-    });
+    var xmin = d3.min(dateTimes);
+    var xmax = d3.max(dateTimes);
+    if (popup) {
+      var xScale = d3.scaleLinear().domain([-1, dateTimes.length])
+      .range([0, w-100])
+    } else {
+      var xScale = d3.scaleLinear().domain([-1, dateTimes.length])
+      .range([0, w-50])
+    }
+    var xDateScale = d3.scaleQuantize().domain([0, dateTimes.length]).range(dateTimes)
+    let xBand = d3.scaleBand().domain(d3.range(-1, dateTimes.length)).range([0, w]).padding(0.3)
+    var xAxis = d3.axisBottom()
+      .scale(xScale).ticks(tickNumCandles)
+      .tickFormat(function (d) {
+        return processXAxisLabel(d, dateTimes)
+      });
 
-  svg.append("rect")
-    .attr("id", "rect")
-    .attr("width", w)
-    .attr("height", h)
-    .style("fill", "none")
-    .style("pointer-events", "all")
-    .attr("clip-path", "url(#clip)")
+    svg.append("rect")
+      .attr("id", "rect")
+      .attr("width", w)
+      .attr("height", h)
+      .style("fill", "none")
+      .style("pointer-events", "all")
+      .attr("clip-path", "url(#clip)")
 
-  var gX = svg.append("g")
-    .attr("class", "axis x-axis") //Assign "axis" class
-    .attr("transform", "translate(0," + h + ")")
-    .call(xAxis)
+    var gX = svg.append("g")
+      .attr("class", "axis x-axis") //Assign "axis" class
+      .attr("transform", "translate(0," + h + ")")
+      .call(xAxis)
 
-  gX.selectAll(".tick text")
-    .style("color", "white")
-    .style("font-size", candlesXAxisFontSize)
-    .attr("stroke", "white")
-    .call(wrap, xBand.bandwidth())
+    gX.selectAll(".tick text")
+      .style("color", "white")
+      .style("font-size", candlesXAxisFontSize)
+      .attr("stroke", "white")
+      .call(wrap, xBand.bandwidth())
 
-  var smaValues = []
-  for (var i = 1; i < 5; i++) {
-    smaValues.push(...candlesToShow.map(r => r["sma"+i.toString()]).filter(s => s !== 0))
-  }
+    var smaValues = []
+    for (var i = 1; i < 5; i++) {
+      smaValues.push(...candlesToShow.map(r => r["sma"+i.toString()]).filter(s => s !== 0))
+    }
 
-  var emaValues = []
-  for (var i = 1; i < 5; i++) {
-    emaValues.push(...candlesToShow.map(r => r["ema"+i.toString()]).filter(e => e !== 0))
-  }
+    var emaValues = []
+    for (var i = 1; i < 5; i++) {
+      emaValues.push(...candlesToShow.map(r => r["ema"+i.toString()]).filter(e => e !== 0))
+    }
 
-  var ymin = d3.min(candlesToShow.map(r => r.Low).concat(emaValues).concat(smaValues));
-  var ymax = d3.max(candlesToShow.map(r => r.High).concat(emaValues).concat(smaValues));
-  var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h+0, 0]).nice();
-  var yAxis = d3.axisLeft()
-    .scale(yScale)
+    var ymin = d3.min(candlesToShow.map(r => r.Low).concat(emaValues).concat(smaValues));
+    var ymax = d3.max(candlesToShow.map(r => r.High).concat(emaValues).concat(smaValues));
+    var yScale = d3.scaleLinear().domain([ymin, ymax]).range([h+0, 0]).nice();
+    var yAxis = d3.axisLeft()
+      .scale(yScale)
 
-  var gY = svg.append("g")
-    .attr("class", "axis y-axis")
-    .call(yAxis);
+    var gY = svg.append("g")
+      .attr("class", "axis y-axis")
+      .call(yAxis);
 
-  gY.selectAll(".tick text")
-  .style("color", "white")
-  .style("font-size", candlesYAxisFontSize)
-  .attr("stroke", "white")
+    gY.selectAll(".tick text")
+      .style("color", "white")
+      .style("font-size", candlesYAxisFontSize)
+      .attr("stroke", "white")
 
-  var chartBody = svg.append("g")
-    .attr("class", "chartBody")
-    .attr("clip-path", "url(#clip)")
+    var chartBody = svg.append("g")
+      .attr("class", "chartBody")
+      .attr("clip-path", "url(#clip)")
 
-  // draw rectangles
-  let candles = chartBody.selectAll(".candle")
-    .data(candlesToShow)
-    .enter()
-    .append("rect")
-    .attr('x', (d, i) => xScale(i) - xBand.bandwidth())
-    .attr("class", "candle")
-    .attr('y', d => yScale(Math.max(d.Open, d.Close)))
-    .attr("font-size", "10px")
-    .attr('width', xBand.bandwidth())
-    .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
-    .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
+    // draw rectangles
+    let candles = chartBody.selectAll(".candle")
+      .data(candlesToShow)
+      .enter()
+      .append("rect")
+      .attr('x', (d, i) => xScale(i) - xBand.bandwidth())
+      .attr("class", "candle")
+      .attr('y', d => yScale(Math.max(d.Open, d.Close)))
+      .attr("font-size", "10px")
+      .attr('width', xBand.bandwidth())
+      .attr('height', d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)))
+      .attr("fill", d => (d.Open === d.Close) ? "silver" : (d.Open > d.Close) ? "red" : "darkgreen")
 
-  // SMAs
-  let sma1 = chartBody.selectAll("g.line")
-    .data(candlesToShow)
-    .enter()
-    .append('line')
-    .style("stroke", "lightblue")
-    .style("stroke-width", 1)
-    .style("stroke-dasharray", ("2, 5"))
-    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
-    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(candlesToShow[i-1].sma1) : null)
-    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
-    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(d.sma1) : null);
+    // SMAs
+    let sma1 = chartBody.selectAll("g.line")
+      .data(candlesToShow)
+      .enter()
+      .append('line')
+      .style("stroke", "lightblue")
+      .style("stroke-width", 1)
+      .style("stroke-dasharray", ("2, 5"))
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(candlesToShow[i-1].sma1) : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+      .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(d.sma1) : null);
 
-  document.getElementById('legendCheckbox1SMA').addEventListener('change', function () {
-    checked1SMA = this.checked
+    document.getElementById('legendCheckbox1SMA').addEventListener('change', function () {
+      checked1SMA = this.checked
+      if (checked1SMA) {
+        sma1.style("display", "block");
+      } else {
+        sma1.style("display", "none");
+      }
+    })
+
     if (checked1SMA) {
       sma1.style("display", "block");
     } else {
       sma1.style("display", "none");
     }
-  })
 
-  if (checked1SMA) {
-    sma1.style("display", "block");
-  } else {
-    sma1.style("display", "none");
-  }
+    let sma2 = chartBody.selectAll("g.line")
+      .data(candlesToShow)
+      .enter()
+      .append('line')
+      .style("stroke", "chartreuse")
+      .style("stroke-width", 1)
+      .style("stroke-dasharray", ("2, 5"))
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(candlesToShow[i-1].sma2) : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+      .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(d.sma2) : null);
 
-  let sma2 = chartBody.selectAll("g.line")
-    .data(candlesToShow)
-    .enter()
-    .append('line')
-    .style("stroke", "chartreuse")
-    .style("stroke-width", 1)
-    .style("stroke-dasharray", ("2, 5"))
-    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
-    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(candlesToShow[i-1].sma2) : null)
-    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
-    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(d.sma2) : null);
+    document.getElementById('legendCheckbox2SMA').addEventListener('change', function () {
+      checked2SMA = this.checked
+      if (checked2SMA) {
+        sma2.style("display", "block");
+      } else {
+        sma2.style("display", "none");
+      }
+    })
 
-  document.getElementById('legendCheckbox2SMA').addEventListener('change', function () {
-    checked2SMA = this.checked
     if (checked2SMA) {
       sma2.style("display", "block");
     } else {
       sma2.style("display", "none");
     }
-  })
 
-  if (checked2SMA) {
-    sma2.style("display", "block");
-  } else {
-    sma2.style("display", "none");
-  }
+    let sma3 = chartBody.selectAll("g.line")
+      .data(candlesToShow)
+      .enter()
+      .append('line')
+      .style("stroke", "orange")
+      .style("stroke-width", 1)
+      .style("stroke-dasharray", ("2, 5"))
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(candlesToShow[i-1].sma3) : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+      .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(d.sma3) : null);
 
-  let sma3 = chartBody.selectAll("g.line")
-    .data(candlesToShow)
-    .enter()
-    .append('line')
-    .style("stroke", "orange")
-    .style("stroke-width", 1)
-    .style("stroke-dasharray", ("2, 5"))
-    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
-    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(candlesToShow[i-1].sma3) : null)
-    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
-    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(d.sma3) : null);
+    document.getElementById('legendCheckbox3SMA').addEventListener('change', function () {
+      checked3SMA = this.checked
+      if (checked3SMA) {
+        sma3.style("display", "block");
+      } else {
+        sma3.style("display", "none");
+      }
+    })
 
-  document.getElementById('legendCheckbox3SMA').addEventListener('change', function () {
-    checked3SMA = this.checked
     if (checked3SMA) {
       sma3.style("display", "block");
     } else {
       sma3.style("display", "none");
     }
-  })
 
-  if (checked3SMA) {
-    sma3.style("display", "block");
-  } else {
-    sma3.style("display", "none");
-  }
+    let sma4 = chartBody.selectAll("g.line")
+      .data(candlesToShow)
+      .enter()
+      .append('line')
+      .style("stroke", "red")
+      .style("stroke-width", 1)
+      .style("stroke-dasharray", ("2, 5"))
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(candlesToShow[i-1].sma4) : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+      .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(d.sma4) : null);
 
-  let sma4 = chartBody.selectAll("g.line")
-    .data(candlesToShow)
-    .enter()
-    .append('line')
-    .style("stroke", "red")
-    .style("stroke-width", 1)
-    .style("stroke-dasharray", ("2, 5"))
-    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
-    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(candlesToShow[i-1].sma4) : null)
-    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
-    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(d.sma4) : null);
+    document.getElementById('legendCheckbox4SMA').addEventListener('change', function () {
+      checked4SMA = this.checked
+      if (checked4SMA) {
+        sma4.style("display", "block");
+      } else {
+        sma4.style("display", "none");
+      }
+    })
 
-  document.getElementById('legendCheckbox4SMA').addEventListener('change', function () {
-    checked4SMA = this.checked
     if (checked4SMA) {
       sma4.style("display", "block");
     } else {
       sma4.style("display", "none");
     }
-  })
 
-  if (checked4SMA) {
-    sma4.style("display", "block");
-  } else {
-    sma4.style("display", "none");
-  }
+    // EMAs
+    let ema1 = chartBody.selectAll("g.line")
+      .data(candlesToShow)
+      .enter()
+      .append('line')
+      .style("stroke", "lightblue")
+      .style("stroke-width", 1)
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(candlesToShow[i-1].ema1) : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+      .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(d.ema1) : null);
 
-  // EMAs
-  let ema1 = chartBody.selectAll("g.line")
-    .data(candlesToShow)
-    .enter()
-    .append('line')
-    .style("stroke", "lightblue")
-    .style("stroke-width", 1)
-    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
-    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(candlesToShow[i-1].ema1) : null)
-    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
-    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(d.ema1) : null);
+    document.getElementById('legendCheckbox1EMA').addEventListener('change', function () {
+      checked1EMA = this.checked
+      if (checked1EMA) {
+        ema1.style("display", "block");
+      } else {
+        ema1.style("display", "none");
+      }
+    })
 
-  document.getElementById('legendCheckbox1EMA').addEventListener('change', function () {
-    checked1EMA = this.checked
     if (checked1EMA) {
       ema1.style("display", "block");
     } else {
       ema1.style("display", "none");
     }
-  })
 
-  if (checked1EMA) {
-    ema1.style("display", "block");
-  } else {
-    ema1.style("display", "none");
-  }
+    let ema2 = chartBody.selectAll("g.line")
+      .data(candlesToShow)
+      .enter()
+      .append('line')
+      .style("stroke", "chartreuse")
+      .style("stroke-width", 1)
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(candlesToShow[i-1].ema2) : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+      .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(d.ema2) : null);
 
-  let ema2 = chartBody.selectAll("g.line")
-    .data(candlesToShow)
-    .enter()
-    .append('line')
-    .style("stroke", "chartreuse")
-    .style("stroke-width", 1)
-    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
-    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(candlesToShow[i-1].ema2) : null)
-    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
-    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(d.ema2) : null);
+    document.getElementById('legendCheckbox2EMA').addEventListener('change', function () {
+      checked2EMA = this.checked
+      if (checked2EMA) {
+        ema2.style("display", "block");
+      } else {
+        ema2.style("display", "none");
+      }
+    })
 
-  document.getElementById('legendCheckbox2EMA').addEventListener('change', function () {
-    checked2EMA = this.checked
     if (checked2EMA) {
       ema2.style("display", "block");
     } else {
       ema2.style("display", "none");
     }
-  })
 
-  if (checked2EMA) {
-    ema2.style("display", "block");
-  } else {
-    ema2.style("display", "none");
-  }
+    let ema3 = chartBody.selectAll("g.line")
+      .data(candlesToShow)
+      .enter()
+      .append('line')
+      .style("stroke", "orange")
+      .style("stroke-width", 1)
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(candlesToShow[i-1].ema3) : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+      .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(d.ema3) : null);
 
-  let ema3 = chartBody.selectAll("g.line")
-    .data(candlesToShow)
-    .enter()
-    .append('line')
-    .style("stroke", "orange")
-    .style("stroke-width", 1)
-    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
-    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(candlesToShow[i-1].ema3) : null)
-    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
-    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(d.ema3) : null);
+    document.getElementById('legendCheckbox3EMA').addEventListener('change', function () {
+      checked3EMA = this.checked
+      if (checked3EMA) {
+        ema3.style("display", "block");
+      } else {
+        ema3.style("display", "none");
+      }
+    })
 
-  document.getElementById('legendCheckbox3EMA').addEventListener('change', function () {
-    checked3EMA = this.checked
     if (checked3EMA) {
       ema3.style("display", "block");
     } else {
       ema3.style("display", "none");
     }
-  })
 
-  if (checked3EMA) {
-    ema3.style("display", "block");
-  } else {
-    ema3.style("display", "none");
-  }
+    let ema4 = chartBody.selectAll("g.line")
+      .data(candlesToShow)
+      .enter()
+      .append('line')
+      .style("stroke", "red")
+      .style("stroke-width", 1)
+      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
+      .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(candlesToShow[i-1].ema4) : null)
+      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
+      .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(d.ema4) : null);
 
-  let ema4 = chartBody.selectAll("g.line")
-    .data(candlesToShow)
-    .enter()
-    .append('line')
-    .style("stroke", "red")
-    .style("stroke-width", 1)
-    .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScale(i-1) - xBand.bandwidth() / 2 : null)
-    .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(candlesToShow[i-1].ema4) : null)
-    .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScale(i) - xBand.bandwidth() / 2 : null)
-    .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(d.ema4) : null);
+    document.getElementById('legendCheckbox4EMA').addEventListener('change', function () {
+      checked4EMA = this.checked
+      if (checked4EMA) {
+        ema4.style("display", "block");
+      } else {
+        ema4.style("display", "none");
+      }
+    })
 
-  document.getElementById('legendCheckbox4EMA').addEventListener('change', function () {
-    checked4EMA = this.checked
     if (checked4EMA) {
       ema4.style("display", "block");
     } else {
       ema4.style("display", "none");
     }
-  })
 
-  if (checked4EMA) {
-    ema4.style("display", "block");
-  } else {
-    ema4.style("display", "none");
-  }
+    // Add index to Price Array
+    candlesToShow.map(p => p["index"] = candlesToShow.indexOf(p))
 
-  // Add index to Price Array
-  candlesToShow.map(p => p["index"] = candlesToShow.indexOf(p))
+    // Create Label Top
+    let labelXMoveTop = 4
+    let labelYMoveTop = 10
+    let labelTextTop = chartBody.selectAll("labelTextTop")
+      .data(candlesToShow.filter((p) => { return p.LabelTop !== "" }))
+      .enter()
+      .append("text")
+      .attr("x", (d) => xScale(d.index) - labelXMoveTop - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.High) - labelYMoveTop)
+      .attr("stroke", "white")
+      .attr("fill", "white")
+      .attr("stroke-width", candlestickLabelStroke)
+      .attr("font-family", "Courier")
+      .attr("font-size", candlestickChartLabelFontSize)
+      .attr("font-weight", "bold")
+      .attr("z-index", "100")
+      .text(d => d.LabelTop);
 
-  // Create Label Top
-  let labelXMoveTop = 4
-  let labelYMoveTop = 10
-  let labelTextTop = chartBody.selectAll("labelTextTop")
-    .data(candlesToShow.filter((p) => { return p.LabelTop !== "" }))
-    .enter()
-    .append("text")
-    .attr("x", (d) => xScale(d.index) - labelXMoveTop - xBand.bandwidth() / 2)
-    .attr("y", d => yScale(d.High) - labelYMoveTop)
-    .attr("stroke", "white")
-    .attr("fill", "white")
-    .attr("stroke-width", candlestickLabelStroke)
-    .attr("font-family", "Courier")
-    .attr("font-size", candlestickChartLabelFontSize)
-    .attr("font-weight", "bold")
-    .attr("z-index", "100")
-    .text(d => d.LabelTop);
+    // Create Label Middle
+    let labelXMoveMid = 7
+    let labelTextMid = chartBody.selectAll("labelTextMid")
+      .data(candlesToShow.filter((p) => { return p.LabelMiddle !== "" }))
+      .enter()
+      .append("text")
+      .attr("x", (d) => xScale(d.index) - labelXMoveMid - xBand.bandwidth() / 2)
+      .attr("y", d => yScale((d.Open + d.Close) / 2))
+      .attr("stroke", "white")
+      .attr("fill", "white")
+      .attr("stroke-width", candlestickLabelStroke)
+      .attr("font-family", "Courier")
+      .attr("font-size", candlestickChartLabelFontSize)
+      .attr("font-weight", "bold")
+      .attr("z-index", "100")
+      .text(d => d.LabelMiddle);
 
-  // Create Label Middle
-  let labelXMoveMid = 7
-  let labelTextMid = chartBody.selectAll("labelTextMid")
-    .data(candlesToShow.filter((p) => { return p.LabelMiddle !== "" }))
-    .enter()
-    .append("text")
-    .attr("x", (d) => xScale(d.index) - labelXMoveMid - xBand.bandwidth() / 2)
-    .attr("y", d => yScale((d.Open + d.Close) / 2))
-    .attr("stroke", "white")
-    .attr("fill", "white")
-    .attr("stroke-width", candlestickLabelStroke)
-    .attr("font-family", "Courier")
-    .attr("font-size", candlestickChartLabelFontSize)
-    .attr("font-weight", "bold")
-    .attr("z-index", "100")
-    .text(d => d.LabelMiddle);
+    // Create Label Bottom
+    let labelXMoveBot = 4
+    let labelYMoveBot = 30
+    let labelTextBot = chartBody.selectAll("labelTextBot")
+      .data(candlesToShow.filter((p) => { return p.LabelBottom !== "" }))
+      .enter()
+      .append("text")
+      .attr("x", (d) => xScale(d.index) - labelXMoveBot - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.Low) + labelYMoveBot)
+      .attr("stroke", "white")
+      .attr("fill", "white")
+      .attr("stroke-width", candlestickLabelStroke)
+      .attr("font-family", "Courier")
+      .attr("font-size", candlestickChartLabelFontSize)
+      .attr("font-weight", "bold")
+      .attr("z-index", "100")
+      .text(d => d.LabelBottom);
 
-  // Create Label Bottom
-  let labelXMoveBot = 4
-  let labelYMoveBot = 30
-  let labelTextBot = chartBody.selectAll("labelTextBot")
-    .data(candlesToShow.filter((p) => { return p.LabelBottom !== "" }))
-    .enter()
-    .append("text")
-    .attr("x", (d) => xScale(d.index) - labelXMoveBot - xBand.bandwidth() / 2)
-    .attr("y", d => yScale(d.Low) + labelYMoveBot)
-    .attr("stroke", "white")
-    .attr("fill", "white")
-    .attr("stroke-width", candlestickLabelStroke)
-    .attr("font-family", "Courier")
-    .attr("font-size", candlestickChartLabelFontSize)
-    .attr("font-weight", "bold")
-    .attr("z-index", "100")
-    .text(d => d.LabelBottom);
+    // Enter and Exit Pointers
+    let pointerWidth = 7
+    let pointerHeight = 15
+    // let rotateAngle = 5
+    let pointerXMove = 0
+    let pointerYMove = 25
 
-  // Enter and Exit Pointers
-  let pointerWidth = 7
-  let pointerHeight = 15
-  // let rotateAngle = 5
-  let pointerXMove = 0
-  let pointerYMove = 25
+    let enterPointer = chartBody.selectAll("enterPointer")
+      .data(candlesToShow.filter((p) => { return p.StratEnterPrice != 0 }))
+      .enter()
+      .append("rect")
+      .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.Low) + pointerYMove)
+      .attr("width", pointerWidth)
+      .attr("height", pointerHeight)
+      .attr("fill", "chartreuse")
 
-  let enterPointer = chartBody.selectAll("enterPointer")
-    .data(candlesToShow.filter((p) => { return p.StratEnterPrice != 0 }))
-    .enter()
-    .append("rect")
-    .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-    .attr("y", d => yScale(d.Low) + pointerYMove)
-    .attr("width", pointerWidth)
-    .attr("height", pointerHeight)
-    .attr("fill", "chartreuse")
+    let exitPointer = chartBody.selectAll("exitPointer")
+      .data(candlesToShow.filter((p) => { return p.StratExitPrice != 0 }))
+      .enter()
+      .append("rect")
+      .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.Low) + pointerYMove)
+      .attr("width", pointerWidth)
+      .attr("height", pointerHeight)
+      .attr("fill", "hotpink")
 
-  let exitPointer = chartBody.selectAll("exitPointer")
-    .data(candlesToShow.filter((p) => { return p.StratExitPrice != 0 }))
-    .enter()
-    .append("rect")
-    .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-    .attr("y", d => yScale(d.Low) + pointerYMove)
-    .attr("width", pointerWidth)
-    .attr("height", pointerHeight)
-    .attr("fill", "hotpink")
+    let entryLine = chartBody.selectAll("entryLine")
+      .data(candlesToShow.filter((p) => { return p.StratEnterPrice != 0 }))
+      .enter()
+      .append("rect")
+      .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+      .attr("y", d => yScale(d.StratEnterPrice) + pointerYMove)
+      .attr("width", pointerWidth + 6)
+      .attr("height", 2)
+      .attr("fill", "white")
 
-  let entryLine = chartBody.selectAll("entryLine")
-    .data(candlesToShow.filter((p) => { return p.StratEnterPrice != 0 }))
-    .enter()
-    .append("rect")
-    .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-    .attr("y", d => yScale(d.StratEnterPrice) + pointerYMove)
-    .attr("width", pointerWidth + 6)
-    .attr("height", 2)
-    .attr("fill", "white")
+    // let exitLine
+    // candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
+    //   if (c.StratExitPrice.length > 1) {
+    //     c.StratExitPrice.forEach((g) => {
+    //       exitLine = chartBody.selectAll("exitLine")
+    //         .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
+    //         .enter()
+    //         .append("rect")
+    //         .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+    //         .attr("y", (d) => yScale(g) + pointerYMove)
+    //         .attr("width", pointerWidth + 6)
+    //         .attr("height", 2)
+    //         .attr("fill", "white")
+    //       // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
+    //     })
+    //   } else {
+    //     exitLine = chartBody.selectAll("exitLine")
+    //       .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
+    //       .enter()
+    //       .append("rect")
+    //       .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+    //       .attr("y", (d) => yScale(c.StratExitPrice[0]) + pointerYMove)
+    //       .attr("width", pointerWidth + 6)
+    //       .attr("height", 2)
+    //       .attr("fill", "white")
+    //   }
+    // })
 
-  // let exitLine
-  // candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
-  //   if (c.StratExitPrice.length > 1) {
-  //     c.StratExitPrice.forEach((g) => {
-  //       exitLine = chartBody.selectAll("exitLine")
-  //         .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
-  //         .enter()
-  //         .append("rect")
-  //         .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-  //         .attr("y", (d) => yScale(g) + pointerYMove)
-  //         .attr("width", pointerWidth + 6)
-  //         .attr("height", 2)
-  //         .attr("fill", "white")
-  //       // .attr("transform", "rotate(" + rotateAngle + "," + 20 + "," + 20 + ")");
-  //     })
-  //   } else {
-  //     exitLine = chartBody.selectAll("exitLine")
-  //       .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
-  //       .enter()
-  //       .append("rect")
-  //       .attr("x", (d) => xScale(c.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-  //       .attr("y", (d) => yScale(c.StratExitPrice[0]) + pointerYMove)
-  //       .attr("width", pointerWidth + 6)
-  //       .attr("height", 2)
-  //       .attr("fill", "white")
-  //   }
-  // })
+    // exitLine = chartBody.selectAll("exitLine")
+    // .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
+    // .enter()
+    // .append("rect")
+    // .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
+    // // .attr("y", d => console.log(d))
+    // .attr("y", d => yScale(d.StratExitPrice) + pointerYMove)
+    // .attr("width", pointerWidth+6)
+    // .attr("height", 2)
+    // .attr("fill", "white")
 
-  // exitLine = chartBody.selectAll("exitLine")
-  // .data(candlesToShow.filter((p) => { return p.StratExitPrice.length != 0 }))
-  // .enter()
-  // .append("rect")
-  // .attr("x", (d) => xScale(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2)
-  // // .attr("y", d => console.log(d))
-  // .attr("y", d => yScale(d.StratExitPrice) + pointerYMove)
-  // .attr("width", pointerWidth+6)
-  // .attr("height", 2)
-  // .attr("fill", "white")
-
-  // draw high and low
-  let stems = chartBody.selectAll("g.line")
-    .data(candlesToShow)
-    .enter()
-    .append("line")
-    .attr("class", "stem")
-    .attr("x1", (d, i) => xScale(i) - xBand.bandwidth() / 2)
-    .attr("x2", (d, i) => xScale(i) - xBand.bandwidth() / 2)
-    .attr("y1", d => yScale(d.High))
-    .attr("y2", d => yScale(d.Low))
-    .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "darkgreen");
+    // draw high and low
+    let stems = chartBody.selectAll("g.line")
+      .data(candlesToShow)
+      .enter()
+      .append("line")
+      .attr("class", "stem")
+      .attr("x1", (d, i) => xScale(i) - xBand.bandwidth() / 2)
+      .attr("x2", (d, i) => xScale(i) - xBand.bandwidth() / 2)
+      .attr("y1", d => yScale(d.High))
+      .attr("y2", d => yScale(d.Low))
+      .attr("stroke", d => (d.Open === d.Close) ? "white" : (d.Open > d.Close) ? "red" : "darkgreen");
 
 
-  let stemsXArray = []
-  stems.selectAll(".stem")._parents.forEach(e => {
-    stemsXArray.push(e.x1.baseVal.value)
-  });
+    let stemsXArray = []
+    stems.selectAll(".stem")._parents.forEach(e => {
+      stemsXArray.push(e.x1.baseVal.value)
+    });
 
-  svg.append("defs")
-    .append("clipPath")
-    .attr("id", "clip")
-    .append("rect")
-    .attr("width", w)
-    .attr("height", h)
+    svg.append("defs")
+      .append("clipPath")
+      .attr("id", "clip")
+      .append("rect")
+      .attr("width", w)
+      .attr("height", h)
 
-  const extent = [[0, 0], [w, h]];
+    const extent = [[0, 0], [w, h]];
 
-  var resizeTimer;
-  var zoom = d3.zoom()
-    .scaleExtent([1, 100])
-    .translateExtent(extent)
-    .extent(extent)
-    .on("zoom", zoomed)
-    .on('zoom.end', zoomend)
-  svg.call(zoom)
+    var resizeTimer;
+    var zoom = d3.zoom()
+      .scaleExtent([1, 100])
+      .translateExtent(extent)
+      .extent(extent)
+      .on("zoom", zoomed)
+      .on('zoom.end', zoomend)
+    svg.call(zoom)
 
-  function zoomed() {
-    var t = d3.event.transform;
-    let xScaleZ = t.rescaleX(xScale);
+    function zoomed() {
+      var t = d3.event.transform;
+      let xScaleZ = t.rescaleX(xScale);
 
-    let hideTicksWithoutLabel = function () {
-      d3.selectAll('.xAxis .tick text').each(function (d) {
-        if (this.innerHTML === '') {
-          this.parentNode.style.display = 'none'
-        }
-      })
-    }
+      let hideTicksWithoutLabel = function () {
+        d3.selectAll('.xAxis .tick text').each(function (d) {
+          if (this.innerHTML === '') {
+            this.parentNode.style.display = 'none'
+          }
+        })
+      }
 
-    gX.call(
-      d3.axisBottom(xScaleZ).ticks(tickNumCandles).tickFormat((d, e, target) => {
-        if (d >= 0 && d <= dateTimes.length - 1) {
-          return processXAxisLabel(d, dateTimes)
-        }
-      })
-    )
+      gX.call(
+        d3.axisBottom(xScaleZ).ticks(tickNumCandles).tickFormat((d, e, target) => {
+          if (d >= 0 && d <= dateTimes.length - 1) {
+            return processXAxisLabel(d, dateTimes)
+          }
+        })
+      )
 
-    candles.attr("x", (d, i) => xScaleZ(i) - (xBand.bandwidth() * t.k) / 2)
-      .attr("width", xBand.bandwidth() * t.k);
+      candles.attr("x", (d, i) => xScaleZ(i) - (xBand.bandwidth() * t.k) / 2)
+        .attr("width", xBand.bandwidth() * t.k);
 
-    stems.attr("x1", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
-    stems.attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
+      stems.attr("x1", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
+      stems.attr("x2", (d, i) => xScaleZ(i) - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5);
 
-    // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
+      // console.log(stems.selectAll(".stem")._parents[0].x1.baseVal.value)
 
-    function changeStemsX() {
-      let substituteX = []
-      stems.selectAll(".stem")._parents.forEach(e => {
-        // console.log(e.x1.baseVal.value)
-        substituteX.push(e.x1.baseVal.value)
-      });
-      stemsXArray = substituteX
-    }
-    changeStemsX()
+      function changeStemsX() {
+        let substituteX = []
+        stems.selectAll(".stem")._parents.forEach(e => {
+          // console.log(e.x1.baseVal.value)
+          substituteX.push(e.x1.baseVal.value)
+        });
+        stemsXArray = substituteX
+      }
+      changeStemsX()
 
-    // Label X Zooming
-    labelTextTop.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveTop - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-    labelTextMid.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveMid - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-    labelTextBot.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveBot - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      // Label X Zooming
+      labelTextTop.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveTop - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      labelTextMid.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveMid - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      labelTextBot.attr("x", (d, i) => xScaleZ(d.index) - labelXMoveBot - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
-    // Pointers X Zooming
-    enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-    exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-    entryLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-    // exitLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
-
-    // SMAs
-    sma1
-      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
-      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
-
-    sma2
-      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
-      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
-
-    sma3
-      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
-      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
-
-    sma4
-      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
-      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
-
-    // EMAs
-    ema1
-      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
-      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
-
-    ema2
-      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
-      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
-
-    ema3
-      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
-      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
-
-    ema4
-      .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
-      .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
-
-    hideTicksWithoutLabel();
-
-    gX.selectAll(".tick text")
-    .style("color", "white")
-    .style("font-size", candlesXAxisFontSize)
-    .attr("stroke", "white")
-      .call(wrap, xBand.bandwidth())
-  }
-
-  function zoomend() {
-    var t = d3.event.transform;
-    let xScaleZ = t.rescaleX(xScale);
-    clearTimeout(resizeTimer)
-    resizeTimer = setTimeout(function () {
-
-      var xmin = new Date(xDateScale(Math.floor(xScaleZ.domain()[0])))
-      xmax = new Date(xDateScale(Math.floor(xScaleZ.domain()[1])))
-      filtered = _.filter(candlesToShow, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
-      minP = +d3.min(filtered, d => d.Low)
-      maxP = +d3.max(filtered, d => d.High)
-      buffer = Math.floor((maxP - minP) * 0.1)
-
-      yScale.domain([minP - buffer, maxP + buffer])
-      candles.transition()
-        .duration(100)
-        .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
-        .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
-
-      stems.transition().duration(100)
-        .attr("y1", (d) => yScale(d.High))
-        .attr("y2", (d) => yScale(d.Low))
-      // console.log(stemsXArray[0])
-
-      // shapes.transition()
-      //   .duration(100)
-      //   .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
-      //   .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
-
-      // label.transition().duration(100)
-      //   .attr("y", (d) => yScale(d.High) - 100)
-
-      // Label Y Zooming
-      labelTextTop.transition().duration(100)
-        .attr("y", (d) => yScale(d.High) - labelYMoveTop)
-      labelTextMid.transition().duration(100)
-        .attr("y", (d) => yScale((d.Open + d.Close) / 2))
-      labelTextBot.transition().duration(100)
-        .attr("y", (d) => yScale(d.Low) + labelYMoveBot)
-
-      // Pointers Y Zooming
-      enterPointer.transition().duration(100)
-        .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
-      exitPointer.transition().duration(100)
-        .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
-      entryLine.transition().duration(100)
-        .attr("y", (d) => yScale(d.StratEnterPrice) + labelYMoveTop)
+      // Pointers X Zooming
+      enterPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      exitPointer.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      entryLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
+      // exitLine.attr("x", (d, i) => xScaleZ(d.index) - pointerWidth / 2 - pointerXMove - xBand.bandwidth() / 2 + xBand.bandwidth() * 0.5)
 
       // SMAs
-      sma1.transition().duration(100)      
-        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(candlesToShow[i-1].sma1) : null)
-        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(d.sma1) : null);
+      sma1
+        .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+        .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
 
-      sma2.transition().duration(100)      
-        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(candlesToShow[i-1].sma2) : null)
-        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(d.sma2) : null);
+      sma2
+        .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+        .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
 
-      sma3.transition().duration(100)      
-        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(candlesToShow[i-1].sma3) : null)
-        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(d.sma3) : null);
+      sma3
+        .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+        .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
 
-      sma4.transition().duration(100)      
-        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(candlesToShow[i-1].sma4) : null)
-        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(d.sma4) : null);
+      sma4
+        .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+        .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
 
       // EMAs
-      ema1.transition().duration(100)      
-        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(candlesToShow[i-1].ema1) : null)
-        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(d.ema1) : null);
+      ema1
+        .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+        .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
 
-      ema2.transition().duration(100)      
-        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(candlesToShow[i-1].ema2) : null)
-        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(d.ema2) : null);
+      ema2
+        .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+        .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
 
-      ema3.transition().duration(100)      
-        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(candlesToShow[i-1].ema3) : null)
-        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(d.ema3) : null);
+      ema3
+        .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+        .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
 
-      ema4.transition().duration(100)      
-        .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(candlesToShow[i-1].ema4) : null)
-        .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(d.ema4) : null);
+      ema4
+        .attr("x1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScaleZ(i-1) - xBand.bandwidth() / 2 : null)
+        .attr("x2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? xScaleZ(i) - xBand.bandwidth() / 2 : null)
 
-      // candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
-      //   c.StratExitPrice.forEach((g) => {
-      //     console.log(g)
-      //     exitLine.transition().duration(100)
-      //       .attr("y", (d) => yScale(g) + labelYMoveTop)
-      //   })
-      // })
+      hideTicksWithoutLabel();
 
-
-      gY.transition()
-      .duration(100)
-      .call(d3.axisLeft()
-      .scale(yScale));
-      
-      gY.selectAll(".tick text")
+      gX.selectAll(".tick text")
       .style("color", "white")
-      .style("font-size", candlesYAxisFontSize)
+      .style("font-size", candlesXAxisFontSize)
       .attr("stroke", "white")
-      .style("fill", "white")
+        .call(wrap, xBand.bandwidth())
+    }
 
-    }, 50)
+    function zoomend() {
+      var t = d3.event.transform;
+      let xScaleZ = t.rescaleX(xScale);
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(function () {
 
-  }
+        var xmin = new Date(xDateScale(Math.floor(xScaleZ.domain()[0])))
+        xmax = new Date(xDateScale(Math.floor(xScaleZ.domain()[1])))
+        filtered = _.filter(candlesToShow, d => ((d.DateTime >= xmin) && (d.DateTime <= xmax)))
+        minP = +d3.min(filtered, d => d.Low)
+        maxP = +d3.max(filtered, d => d.High)
+        buffer = Math.floor((maxP - minP) * 0.1)
 
-  //crosshairs
-  var mouseG = svg.append("g")
-    .attr("class", "mouse-over-effects");
+        yScale.domain([minP - buffer, maxP + buffer])
+        candles.transition()
+          .duration(100)
+          .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
+          .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
 
-  mouseG.append("path") // this is the black vertical line to follow mouse
-    .attr("class", "mouse-line")
-    .style("stroke", "yellow")
-    .style("stroke-width", "1px")
-    .style("opacity", "0");
+        stems.transition().duration(100)
+          .attr("y1", (d) => yScale(d.High))
+          .attr("y2", (d) => yScale(d.Low))
+        // console.log(stemsXArray[0])
 
-  // var lines = document.getElementsByClassName('line');
+        // shapes.transition()
+        //   .duration(100)
+        //   .attr("y", (d) => yScale(Math.max(d.Open, d.Close)))
+        //   .attr("height", d => (d.Open === d.Close) ? 1 : yScale(Math.min(d.Open, d.Close)) - yScale(Math.max(d.Open, d.Close)));
 
-  // var mousePerLine = mouseG.selectAll('.mouse-per-line')
-  //   // .data(cities)
-  //   .enter()
-  //   .append("g")
-  //   .attr("class", "mouse-per-line");
+        // label.transition().duration(100)
+        //   .attr("y", (d) => yScale(d.High) - 100)
 
-  // mousePerLine.append("circle")
-  //   .attr("r", 7)
-  //   .style("stroke", function (d) {
-  //     return color(d.name);
-  //   })
-  //   .style("fill", "none")
-  //   .style("stroke-width", "1px")
-  //   .style("opacity", "0");
+        // Label Y Zooming
+        labelTextTop.transition().duration(100)
+          .attr("y", (d) => yScale(d.High) - labelYMoveTop)
+        labelTextMid.transition().duration(100)
+          .attr("y", (d) => yScale((d.Open + d.Close) / 2))
+        labelTextBot.transition().duration(100)
+          .attr("y", (d) => yScale(d.Low) + labelYMoveBot)
 
-  // mousePerLine.append("text")
-  //   .attr("transform", "translate(10,3)");
+        // Pointers Y Zooming
+        enterPointer.transition().duration(100)
+          .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
+        exitPointer.transition().duration(100)
+          .attr("y", (d) => yScale(d.Low) + labelYMoveTop)
+        entryLine.transition().duration(100)
+          .attr("y", (d) => yScale(d.StratEnterPrice) + labelYMoveTop)
 
-  mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
-    .attr('width', w) // can't catch mouse events on a g element
-    .attr('height', h)
-    .attr('fill', 'none')
-    .attr('pointer-events', 'all')
-    .on('mouseout', function () { // on mouse out hide line, circles and text
-      d3.select(".mouse-line")
-        .style("opacity", "0");
-      d3.selectAll(".mouse-per-line circle")
-        .style("opacity", "0");
-      d3.selectAll(".mouse-per-line text")
-        .style("opacity", "0");
-    })
-    .on('mouseover', function () { // on mouse in show line, circles and text
-      d3.select(".mouse-line")
-        .style("opacity", "1");
-      d3.selectAll(".mouse-per-line circle")
-        .style("opacity", "1");
-      d3.selectAll(".mouse-per-line text")
-        .style("opacity", "1");
-    })
-    .on('mousemove', function () { // mouse moving over canvas
-      var mouse = d3.mouse(this);
-      d3.select(".mouse-line")
-        .attr("d", function () {
-          var d = "M" + mouse[0] + "," + h;
-          d += " " + mouse[0] + "," + 0;
-          return d;
-        });
+        // SMAs
+        sma1.transition().duration(100)      
+          .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(candlesToShow[i-1].sma1) : null)
+          .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(d.sma1) : null);
 
-      stemsXArray.forEach((x, i) => {
-        if ((mouse[0] > (x - 4)) && (mouse[0] < (x + 4))) {
-          document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> / H <span>${candlesToShow[i].High}</span> / L <span>${candlesToShow[i].Low}</span> / C <span>${candlesToShow[i].Close}</span>`
-        }
+        sma2.transition().duration(100)      
+          .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(candlesToShow[i-1].sma2) : null)
+          .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(d.sma2) : null);
+
+        sma3.transition().duration(100)      
+          .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(candlesToShow[i-1].sma3) : null)
+          .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(d.sma3) : null);
+
+        sma4.transition().duration(100)      
+          .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(candlesToShow[i-1].sma4) : null)
+          .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(d.sma4) : null);
+
+        // EMAs
+        ema1.transition().duration(100)      
+          .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(candlesToShow[i-1].ema1) : null)
+          .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(d.ema1) : null);
+
+        ema2.transition().duration(100)      
+          .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(candlesToShow[i-1].ema2) : null)
+          .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(d.ema2) : null);
+
+        ema3.transition().duration(100)      
+          .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(candlesToShow[i-1].ema3) : null)
+          .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(d.ema3) : null);
+
+        ema4.transition().duration(100)      
+          .attr("y1", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(candlesToShow[i-1].ema4) : null)
+          .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(d.ema4) : null);
+
+        // candlesToShow.filter((p) => { return p.StratExitPrice != 0 }).forEach((c) => {
+        //   c.StratExitPrice.forEach((g) => {
+        //     console.log(g)
+        //     exitLine.transition().duration(100)
+        //       .attr("y", (d) => yScale(g) + labelYMoveTop)
+        //   })
+        // })
+
+
+        gY.transition()
+        .duration(100)
+        .call(d3.axisLeft()
+        .scale(yScale));
+        
+        gY.selectAll(".tick text")
+        .style("color", "white")
+        .style("font-size", candlesYAxisFontSize)
+        .attr("stroke", "white")
+        .style("fill", "white")
+
+      }, 50)
+
+    }
+
+    //crosshairs
+    var mouseG = svg.append("g")
+      .attr("class", "mouse-over-effects");
+
+    mouseG.append("path") // this is the black vertical line to follow mouse
+      .attr("class", "mouse-line")
+      .style("stroke", "yellow")
+      .style("stroke-width", "1px")
+      .style("opacity", "0");
+
+    // var lines = document.getElementsByClassName('line');
+
+    // var mousePerLine = mouseG.selectAll('.mouse-per-line')
+    //   // .data(cities)
+    //   .enter()
+    //   .append("g")
+    //   .attr("class", "mouse-per-line");
+
+    // mousePerLine.append("circle")
+    //   .attr("r", 7)
+    //   .style("stroke", function (d) {
+    //     return color(d.name);
+    //   })
+    //   .style("fill", "none")
+    //   .style("stroke-width", "1px")
+    //   .style("opacity", "0");
+
+    // mousePerLine.append("text")
+    //   .attr("transform", "translate(10,3)");
+
+    mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+      .attr('width', w) // can't catch mouse events on a g element
+      .attr('height', h)
+      .attr('fill', 'none')
+      .attr('pointer-events', 'all')
+      .on('mouseout', function () { // on mouse out hide line, circles and text
+        d3.select(".mouse-line")
+          .style("opacity", "0");
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "0");
+        d3.selectAll(".mouse-per-line text")
+          .style("opacity", "0");
       })
-    });
+      .on('mouseover', function () { // on mouse in show line, circles and text
+        d3.select(".mouse-line")
+          .style("opacity", "1");
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "1");
+        d3.selectAll(".mouse-per-line text")
+          .style("opacity", "1");
+      })
+      .on('mousemove', function () { // mouse moving over canvas
+        var mouse = d3.mouse(this);
+        d3.select(".mouse-line")
+          .attr("d", function () {
+            var d = "M" + mouse[0] + "," + h;
+            d += " " + mouse[0] + "," + 0;
+            return d;
+          });
+
+        stemsXArray.forEach((x, i) => {
+          if ((mouse[0] > (x - 4)) && (mouse[0] < (x + 4))) {
+            if (popup) {
+            document.getElementById("ohlcDisplay2").innerHTML = `O <span>${candlesToShow[i].Open}</span> / H <span>${candlesToShow[i].High}</span> / L <span>${candlesToShow[i].Low}</span> / C <span>${candlesToShow[i].Close}</span>`
+            } else {
+            document.getElementById("ohlcDisplay").innerHTML = `O <span>${candlesToShow[i].Open}</span> / H <span>${candlesToShow[i].High}</span> / L <span>${candlesToShow[i].Low}</span> / C <span>${candlesToShow[i].Close}</span>`
+            }
+          }
+        })
+      });
+  }
 }
 
 function wrap(text, width) {
@@ -2633,20 +2699,26 @@ function chunkProcessOption() {
 }
 
 function moveLeft() {
+  let slider = document.getElementsByClassName("slider")
+  let lBtn2 = document.getElementById("panCandlesLeftBtn2")
+  let rBtn2 = document.getElementById("panCandlesRightBtn2")
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
 
+  lBtn2.style.display = "inline"
   lBtn.style.display = "inline"
   candleDrawStartIndex -= candleDisplayNumber / 2
   candleDrawEndIndex -= candleDisplayNumber / 2
   if (candleDrawStartIndex <= 0) {
     candleDrawStartIndex = 0
+    lBtn2.style.display = "none"
     lBtn.style.display = "none"
   }
 
-  let slider = document.getElementById("chartSlider")
-  slider.value = candleDrawStartIndex / (allCandles.length - candleDisplayNumber) * 100.0
+  slider[0].value = candleDrawStartIndex / (allCandles.length - candleDisplayNumber) * 100.0
+  slider[1].value = candleDrawStartIndex / (allCandles.length - candleDisplayNumber) * 100.0
 
+  rBtn2.style.display = "inline"
   rBtn.style.display = "inline"
 
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
@@ -2655,20 +2727,28 @@ function moveLeft() {
 }
 
 function moveRight() {
+  let slider = document.getElementsByClassName("slider")
+  let lBtn2 = document.getElementById("panCandlesLeftBtn2")
+  let rBtn2 = document.getElementById("panCandlesRightBtn2")
   let lBtn = document.getElementById("panCandlesLeftBtn")
   let rBtn = document.getElementById("panCandlesRightBtn")
 
+  rBtn2.style.display = "inline"
   rBtn.style.display = "inline"
   candleDrawStartIndex += candleDisplayNumber / 2
   candleDrawEndIndex += candleDisplayNumber / 2
   if (candleDrawEndIndex >= allCandles.length) {
     candleDrawEndIndex = allCandles.length
+    rBtn2.style.display = "none"
     rBtn.style.display = "none"
   }
 
-  let slider = document.getElementById("chartSlider")
-  slider.value = (candleDrawEndIndex - candleDisplayNumber) / (allCandles.length - candleDisplayNumber) * 100.0
+
+  slider[0].value = (candleDrawEndIndex - candleDisplayNumber) / (allCandles.length - candleDisplayNumber) * 100.0
+  slider[1].value = (candleDrawEndIndex - candleDisplayNumber) / (allCandles.length - candleDisplayNumber) * 100.0
+
   
+  lBtn2.style.display = "inline"
   lBtn.style.display = "inline"
 
   drawChart(candleDrawStartIndex, candleDrawEndIndex)
@@ -2677,27 +2757,36 @@ function moveRight() {
 }
 
 function candleChartSlider() {
-  let slider = document.getElementById("chartSlider")
-  slider.style.display = "inline"
-  slider.addEventListener('change', function () {
-    let sliderDisplayNumber = Math.round((allCandles.length - candleDisplayNumber) * (slider.value / 100))
-    candleDrawStartIndex = sliderDisplayNumber
-    candleDrawEndIndex = candleDisplayNumber + sliderDisplayNumber
-
-    // console.log(candleDrawEndIndex, allCandles.length)
-    if (candleDrawEndIndex >= allCandles.length) {
-      document.getElementById("panCandlesRightBtn").style.display = "none"
-    } else if (candleDrawStartIndex == 0) {
-      document.getElementById("panCandlesLeftBtn").style.display = "none"
-    } else {
-      document.getElementById("panCandlesLeftBtn").style.display = "inline"
-      document.getElementById("panCandlesRightBtn").style.display = "inline"
-    }
-
-    drawChart(candleDrawStartIndex, candleDrawEndIndex)
-    volumeGraph(candleDrawStartIndex, candleDrawEndIndex)
-    volatilityGraph(candleDrawStartIndex, candleDrawEndIndex)
-  })
+  let slider = document.getElementsByClassName("slider")
+  for (i = 0; i < slider.length; i++) {
+    // if (sliderOption == i){
+      slider[i].style.display = "inline"
+      slider[i].addEventListener('change', function () {
+        let sliderDisplayNumber = Math.round((allCandles.length - candleDisplayNumber) * (this.value / 100))
+        document.getElementsByClassName("slider")[0].value = this.value
+        document.getElementsByClassName("slider")[1].value = this.value
+        candleDrawStartIndex = sliderDisplayNumber
+        candleDrawEndIndex = candleDisplayNumber + sliderDisplayNumber
+    
+        if (candleDrawEndIndex >= allCandles.length) {
+          document.getElementById("panCandlesRightBtn2").style.display = "none"
+          document.getElementById("panCandlesRightBtn").style.display = "none"
+        } else if (candleDrawStartIndex == 0) {
+          document.getElementById("panCandlesLeftBtn2").style.display = "none"
+          document.getElementById("panCandlesLeftBtn").style.display = "none"
+        } else {
+          document.getElementById("panCandlesLeftBtn2").style.display = "inline"
+          document.getElementById("panCandlesRightBtn2").style.display = "inline"
+          document.getElementById("panCandlesLeftBtn").style.display = "inline"
+          document.getElementById("panCandlesRightBtn").style.display = "inline"
+        }
+    
+        drawChart(candleDrawStartIndex, candleDrawEndIndex)
+        volumeGraph(candleDrawStartIndex, candleDrawEndIndex)
+        volatilityGraph(candleDrawStartIndex, candleDrawEndIndex)
+      })
+    // }
+  }
 }
 
 function getPickerDateTime(pickerID) {

@@ -418,14 +418,14 @@ label {
   }
 }
 
-#candlestickChart, #volatilityGraph, #volumeGraph {
+#candlestickChart, #volatilityGraph, #volumeGraph, #candlestickChart2 {
   display: block;
   position: relative;
   width: 100%;
 }
 
 @media only screen and (max-width: 700px) {
-  #candlestickChart {
+  #candlestickChart, #candlestickChart2 {
     padding-top: 5rem;
   }
 }
