@@ -89,6 +89,15 @@ document.getElementById("legendCheckbox3SMA").style.display = "none"
 document.getElementById("legendLabel4SMA").style.display = "none"
 document.getElementById("legendCheckbox4SMA").style.display = "none"
 
+document.getElementById('legendLabel1SMA2').style.display = "none"
+document.getElementById('legendCheckbox1SMA2').style.display = "none"
+document.getElementById('legendLabel2SMA2').style.display = "none"
+document.getElementById('legendCheckbox2SMA2').style.display = "none"
+document.getElementById('legendLabel3SMA2').style.display = "none"
+document.getElementById('legendCheckbox3SMA2').style.display = "none"
+document.getElementById('legendLabel4SMA2').style.display = "none"
+document.getElementById('legendCheckbox4SMA2').style.display = "none"
+
 // EMAs
 let checked1EMA = false
 let checked2EMA = false
@@ -102,6 +111,15 @@ document.getElementById("legendLabel3EMA").style.display = "none"
 document.getElementById("legendCheckbox3EMA").style.display = "none"
 document.getElementById("legendLabel4EMA").style.display = "none"
 document.getElementById("legendCheckbox4EMA").style.display = "none"
+
+document.getElementById('legendLabel1EMA2').style.display = "none"
+document.getElementById('legendCheckbox1EMA2').style.display = "none"
+document.getElementById('legendLabel2EMA2').style.display = "none"
+document.getElementById('legendCheckbox2EMA2').style.display = "none"
+document.getElementById('legendLabel3EMA2').style.display = "none"
+document.getElementById('legendCheckbox3EMA2').style.display = "none"
+document.getElementById('legendLabel4EMA2').style.display = "none"
+document.getElementById('legendCheckbox4EMA2').style.display = "none"
 
 // VOLUME
 document.getElementById("legendLabel1Average").style = "display: none;"
@@ -396,6 +414,15 @@ function connectWs(id) {
       document.getElementById('legendCheckbox2EMA').checked = true
       document.getElementById('legendCheckbox3EMA').checked = true
       document.getElementById('legendCheckbox4EMA').checked = true
+
+      document.getElementById('legendCheckbox1SMA2').checked = true
+      document.getElementById('legendCheckbox2SMA2').checked = true
+      document.getElementById('legendCheckbox3SMA2').checked = true
+      document.getElementById('legendCheckbox4SMA2').checked = true
+      document.getElementById('legendCheckbox1EMA2').checked = true
+      document.getElementById('legendCheckbox2EMA2').checked = true
+      document.getElementById('legendCheckbox3EMA2').checked = true
+      document.getElementById('legendCheckbox4EMA2').checked = true
     });
 
     socket.onopen = () => {
@@ -826,6 +853,26 @@ function drawChart(start, end) {
   document.getElementById('legendLabel4EMA').style.display = "block"
   document.getElementById('legendCheckbox4EMA').style.display = "block"
 
+  // Show Legend for SMA
+  document.getElementById('legendLabel1SMA2').style.display = "block"
+  document.getElementById('legendCheckbox1SMA2').style.display = "block"
+  document.getElementById('legendLabel2SMA2').style.display = "block"
+  document.getElementById('legendCheckbox2SMA2').style.display = "block"
+  document.getElementById('legendLabel3SMA2').style.display = "block"
+  document.getElementById('legendCheckbox3SMA2').style.display = "block"
+  document.getElementById('legendLabel4SMA2').style.display = "block"
+  document.getElementById('legendCheckbox4SMA2').style.display = "block"
+
+  // Show Legend for EMA
+  document.getElementById('legendLabel1EMA2').style.display = "block"
+  document.getElementById('legendCheckbox1EMA2').style.display = "block"
+  document.getElementById('legendLabel2EMA2').style.display = "block"
+  document.getElementById('legendCheckbox2EMA2').style.display = "block"
+  document.getElementById('legendLabel3EMA2').style.display = "block"
+  document.getElementById('legendCheckbox3EMA2').style.display = "block"
+  document.getElementById('legendLabel4EMA2').style.display = "block"
+  document.getElementById('legendCheckbox4EMA2').style.display = "block"
+  
   let candlesToShow = allCandles.slice(start, end)
   // console.log(JSON.stringify(candlesToShow))
   if (!candlesToShow || candlesToShow.length == 0) {
@@ -978,6 +1025,17 @@ function drawChart(start, end) {
       .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma1 !== 0 ? yScale(d.sma1) : null);
 
     document.getElementById('legendCheckbox1SMA').addEventListener('change', function () {
+      document.getElementById('legendCheckbox1SMA2').checked = this.checked
+      checked1SMA = this.checked
+      if (checked1SMA) {
+        sma1.style("display", "block");
+      } else {
+        sma1.style("display", "none");
+      }
+    })
+
+    document.getElementById('legendCheckbox1SMA2').addEventListener('change', function () {
+      document.getElementById('legendCheckbox1SMA').checked = this.checked
       checked1SMA = this.checked
       if (checked1SMA) {
         sma1.style("display", "block");
@@ -1005,6 +1063,17 @@ function drawChart(start, end) {
       .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma2 !== 0 ? yScale(d.sma2) : null);
 
     document.getElementById('legendCheckbox2SMA').addEventListener('change', function () {
+      document.getElementById('legendCheckbox2SMA2').checked = this.checked
+      checked2SMA = this.checked
+      if (checked2SMA) {
+        sma2.style("display", "block");
+      } else {
+        sma2.style("display", "none");
+      }
+    })
+
+    document.getElementById('legendCheckbox2SMA2').addEventListener('change', function () {
+      document.getElementById('legendCheckbox2SMA').checked = this.checked
       checked2SMA = this.checked
       if (checked2SMA) {
         sma2.style("display", "block");
@@ -1032,6 +1101,17 @@ function drawChart(start, end) {
       .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma3 !== 0 ? yScale(d.sma3) : null);
 
     document.getElementById('legendCheckbox3SMA').addEventListener('change', function () {
+      document.getElementById('legendCheckbox3SMA2').checked = this.checked
+      checked3SMA = this.checked
+      if (checked3SMA) {
+        sma3.style("display", "block");
+      } else {
+        sma3.style("display", "none");
+      }
+    })
+
+    document.getElementById('legendCheckbox3SMA2').addEventListener('change', function () {
+      document.getElementById('legendCheckbox3SMA').checked = this.checked
       checked3SMA = this.checked
       if (checked3SMA) {
         sma3.style("display", "block");
@@ -1059,6 +1139,17 @@ function drawChart(start, end) {
       .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].sma4 !== 0 ? yScale(d.sma4) : null);
 
     document.getElementById('legendCheckbox4SMA').addEventListener('change', function () {
+      document.getElementById('legendCheckbox4SMA2').checked = this.checked
+      checked4SMA = this.checked
+      if (checked4SMA) {
+        sma4.style("display", "block");
+      } else {
+        sma4.style("display", "none");
+      }
+    })
+
+    document.getElementById('legendCheckbox4SMA2').addEventListener('change', function () {
+      document.getElementById('legendCheckbox4SMA').checked = this.checked
       checked4SMA = this.checked
       if (checked4SMA) {
         sma4.style("display", "block");
@@ -1086,6 +1177,17 @@ function drawChart(start, end) {
       .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema1 !== 0 ? yScale(d.ema1) : null);
 
     document.getElementById('legendCheckbox1EMA').addEventListener('change', function () {
+      document.getElementById('legendCheckbox1EMA2').checked = this.checked
+      checked1EMA = this.checked
+      if (checked1EMA) {
+        ema1.style("display", "block");
+      } else {
+        ema1.style("display", "none");
+      }
+    })
+
+    document.getElementById('legendCheckbox1EMA2').addEventListener('change', function () {
+      document.getElementById('legendCheckbox1EMA').checked = this.checked
       checked1EMA = this.checked
       if (checked1EMA) {
         ema1.style("display", "block");
@@ -1112,6 +1214,17 @@ function drawChart(start, end) {
       .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema2 !== 0 ? yScale(d.ema2) : null);
 
     document.getElementById('legendCheckbox2EMA').addEventListener('change', function () {
+      document.getElementById('legendCheckbox2EMA2').checked = this.checked
+      checked2EMA = this.checked
+      if (checked2EMA) {
+        ema2.style("display", "block");
+      } else {
+        ema2.style("display", "none");
+      }
+    })
+
+    document.getElementById('legendCheckbox2EMA2').addEventListener('change', function () {
+      document.getElementById('legendCheckbox2EMA').checked = this.checked
       checked2EMA = this.checked
       if (checked2EMA) {
         ema2.style("display", "block");
@@ -1138,6 +1251,17 @@ function drawChart(start, end) {
       .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema3 !== 0 ? yScale(d.ema3) : null);
 
     document.getElementById('legendCheckbox3EMA').addEventListener('change', function () {
+      document.getElementById('legendCheckbox3EMA2').checked = this.checked
+      checked3EMA = this.checked
+      if (checked3EMA) {
+        ema3.style("display", "block");
+      } else {
+        ema3.style("display", "none");
+      }
+    })
+
+    document.getElementById('legendCheckbox3EMA2').addEventListener('change', function () {
+      document.getElementById('legendCheckbox3EMA').checked = this.checked
       checked3EMA = this.checked
       if (checked3EMA) {
         ema3.style("display", "block");
@@ -1164,6 +1288,17 @@ function drawChart(start, end) {
       .attr("y2", (d, i) => i !== 0 && candlesToShow[i-1].ema4 !== 0 ? yScale(d.ema4) : null);
 
     document.getElementById('legendCheckbox4EMA').addEventListener('change', function () {
+      document.getElementById('legendCheckbox4EMA2').checked = this.checked
+      checked4EMA = this.checked
+      if (checked4EMA) {
+        ema4.style("display", "block");
+      } else {
+        ema4.style("display", "none");
+      }
+    })
+
+    document.getElementById('legendCheckbox4EMA2').addEventListener('change', function () {
+      document.getElementById('legendCheckbox4EMA').checked = this.checked
       checked4EMA = this.checked
       if (checked4EMA) {
         ema4.style("display", "block");
