@@ -80,46 +80,46 @@ let checked1SMA = false
 let checked2SMA = false
 let checked3SMA = false
 let checked4SMA = false
-document.getElementById("legendLabel1SMA").style.display = "none"
-document.getElementById("legendCheckbox1SMA").style.display = "none"
-document.getElementById("legendLabel2SMA").style.display = "none"
-document.getElementById("legendCheckbox2SMA").style.display = "none"
-document.getElementById("legendLabel3SMA").style.display = "none"
-document.getElementById("legendCheckbox3SMA").style.display = "none"
-document.getElementById("legendLabel4SMA").style.display = "none"
-document.getElementById("legendCheckbox4SMA").style.display = "none"
+// document.getElementById("legendLabel1SMA").style.display = "none"
+// document.getElementById("legendCheckbox1SMA").style.display = "none"
+// document.getElementById("legendLabel2SMA").style.display = "none"
+// document.getElementById("legendCheckbox2SMA").style.display = "none"
+// document.getElementById("legendLabel3SMA").style.display = "none"
+// document.getElementById("legendCheckbox3SMA").style.display = "none"
+// document.getElementById("legendLabel4SMA").style.display = "none"
+// document.getElementById("legendCheckbox4SMA").style.display = "none"
 
-document.getElementById('legendLabel1SMA2').style.display = "none"
-document.getElementById('legendCheckbox1SMA2').style.display = "none"
-document.getElementById('legendLabel2SMA2').style.display = "none"
-document.getElementById('legendCheckbox2SMA2').style.display = "none"
-document.getElementById('legendLabel3SMA2').style.display = "none"
-document.getElementById('legendCheckbox3SMA2').style.display = "none"
-document.getElementById('legendLabel4SMA2').style.display = "none"
-document.getElementById('legendCheckbox4SMA2').style.display = "none"
+// document.getElementById('legendLabel1SMA2').style.display = "none"
+// document.getElementById('legendCheckbox1SMA2').style.display = "none"
+// document.getElementById('legendLabel2SMA2').style.display = "none"
+// document.getElementById('legendCheckbox2SMA2').style.display = "none"
+// document.getElementById('legendLabel3SMA2').style.display = "none"
+// document.getElementById('legendCheckbox3SMA2').style.display = "none"
+// document.getElementById('legendLabel4SMA2').style.display = "none"
+// document.getElementById('legendCheckbox4SMA2').style.display = "none"
 
 // EMAs
 let checked1EMA = false
 let checked2EMA = false
 let checked3EMA = false
 let checked4EMA = false
-document.getElementById("legendLabel1EMA").style.display = "none"
-document.getElementById("legendCheckbox1EMA").style.display = "none"
-document.getElementById("legendLabel2EMA").style.display = "none"
-document.getElementById("legendCheckbox2EMA").style.display = "none"
-document.getElementById("legendLabel3EMA").style.display = "none"
-document.getElementById("legendCheckbox3EMA").style.display = "none"
-document.getElementById("legendLabel4EMA").style.display = "none"
-document.getElementById("legendCheckbox4EMA").style.display = "none"
+// document.getElementById("legendLabel1EMA").style.display = "none"
+// document.getElementById("legendCheckbox1EMA").style.display = "none"
+// document.getElementById("legendLabel2EMA").style.display = "none"
+// document.getElementById("legendCheckbox2EMA").style.display = "none"
+// document.getElementById("legendLabel3EMA").style.display = "none"
+// document.getElementById("legendCheckbox3EMA").style.display = "none"
+// document.getElementById("legendLabel4EMA").style.display = "none"
+// document.getElementById("legendCheckbox4EMA").style.display = "none"
 
-document.getElementById('legendLabel1EMA2').style.display = "none"
-document.getElementById('legendCheckbox1EMA2').style.display = "none"
-document.getElementById('legendLabel2EMA2').style.display = "none"
-document.getElementById('legendCheckbox2EMA2').style.display = "none"
-document.getElementById('legendLabel3EMA2').style.display = "none"
-document.getElementById('legendCheckbox3EMA2').style.display = "none"
-document.getElementById('legendLabel4EMA2').style.display = "none"
-document.getElementById('legendCheckbox4EMA2').style.display = "none"
+// document.getElementById('legendLabel1EMA2').style.display = "none"
+// document.getElementById('legendCheckbox1EMA2').style.display = "none"
+// document.getElementById('legendLabel2EMA2').style.display = "none"
+// document.getElementById('legendCheckbox2EMA2').style.display = "none"
+// document.getElementById('legendLabel3EMA2').style.display = "none"
+// document.getElementById('legendCheckbox3EMA2').style.display = "none"
+// document.getElementById('legendLabel4EMA2').style.display = "none"
+// document.getElementById('legendCheckbox4EMA2').style.display = "none"
 
 // VOLUME
 document.getElementById("legendLabel1Average").style = "display: none;"
@@ -130,7 +130,7 @@ document.getElementById("legendLabel4Average").style = "display: none;"
 console.log(document.getElementById("candlestickContainer").clientWidth)
 console.log(window.innerWidth/10)
 /// CANDLESTICKS
-let candleDisplayNumber = 260
+let candleDisplayNumber = 500
 let candleDrawStartIndex = 0
 let tickNumCandles = 10
 let tickNumProfitX = 6
@@ -878,7 +878,6 @@ function drawChart(start, end) {
   if (!candlesToShow || candlesToShow.length == 0) {
     return
   }
-  console.log(start, end)
   //reset chart
   d3.selectAll("#candlestickChart2 > *").remove();
   d3.selectAll("#candlestickChart > *").remove();

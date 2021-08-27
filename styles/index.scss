@@ -328,10 +328,10 @@ select {
 }
 
 div.modal-content {
-  background-color: $blue;
+  background-color: #01001c;
 }
 
-#ohlcDisplay {
+#ohlcDisplay, #ohlcDisplay2 {
   position: absolute;
   margin-left: 5rem;
   margin-top: 0;

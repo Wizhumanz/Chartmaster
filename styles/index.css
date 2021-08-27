@@ -365,10 +365,10 @@ select {
   }
 }
 div.modal-content {
-  background-color: #001b6b;
+  background-color: #01001c;
 }
 
-#ohlcDisplay {
+#ohlcDisplay, #ohlcDisplay2 {
   position: absolute;
   margin-left: 5rem;
   margin-top: 0;
@@ -379,13 +379,13 @@ div.modal-content {
   color: #fffdd0;
 }
 @media only screen and (max-width: 700px) {
-  #ohlcDisplay {
+  #ohlcDisplay, #ohlcDisplay2 {
     margin-left: 0rem;
     font-size: x-small;
     margin-top: 3rem;
   }
 }
-#ohlcDisplay span {
+#ohlcDisplay span, #ohlcDisplay2 span {
   color: hotpink;
   margin-left: 0.25rem;
 }
